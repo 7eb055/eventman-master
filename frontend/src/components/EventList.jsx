@@ -3,8 +3,6 @@ import EventCard from './EventCard';
 import Button from './Button';
 import './css/EventList.css';
 import { getEvents } from '../services/api';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -17,14 +15,17 @@ const EventList = () => {
   const fetchEvents = async (pageNum) => {
     setLoading(true);
     try {
-      // Always pass an object for params
-      const data = await getEvents({ page: pageNum });
-      setEvents(prev => [...prev, ...(data.events || data)]); // fallback if data.events is undefined
-      setHasMore(data.hasMore !== undefined ? data.hasMore : false);
+      const data = await getEvents(pageNum);
+      setEvents(prev => [...prev, ...data.events]);
+      setHasMore(data.hasMore);
       setPage(pageNum);
     } catch (err) {
-      console.error('Failed to load events:', err);
-      setError(err);
+      console.error('Falling back to mock data:', err);
+      const startIndex = 0;
+      const endIndex = pageNum * 6;
+      setEvents(eventsData.slice(startIndex, endIndex));
+      setHasMore(endIndex < eventsData.length);
+      setError(null);
     } finally {
       setLoading(false);
     }
@@ -89,7 +90,7 @@ const EventList = () => {
             className="load-more-btn"
           >
             Show More Events
-            <FontAwesomeIcon icon={faArrowDown} />
+            <i className="fas fa-arrow-down"></i>
           </Button>
         </div>
       )}
@@ -103,7 +104,7 @@ const EventList = () => {
 
       {error && (
         <div className="error-message">
-          <FontAwesomeIcon icon={faExclamationTriangle} />
+          <i className="fas fa-exclamation-triangle"></i>
           <p>{error.message || 'Failed to load events'}</p>
           <Button onClick={() => fetchEvents(1)}>Try Again</Button>
         </div>

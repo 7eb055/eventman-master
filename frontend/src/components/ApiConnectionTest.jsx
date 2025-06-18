@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { testConnection } from '../services/api';
+import { testConnection, getCsrfToken } from '../services/api';
 
 const ApiConnectionTest = () => {
   const [status, setStatus] = useState('Checking API connection...');
+  const [csrfStatus, setCsrfStatus] = useState('Not tested');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,6 +25,17 @@ const ApiConnectionTest = () => {
 
     checkApiConnection();
   }, []);
+
+  const handleCheckCsrf = async () => {
+    setCsrfStatus('Testing CSRF token...');
+    try {
+      await getCsrfToken();
+      setCsrfStatus('CSRF token obtained successfully');
+    } catch (err) {
+      setCsrfStatus(`CSRF token error: ${err.message}`);
+      console.error('CSRF Error:', err);
+    }
+  };
 
   const testApiEndpoint = async (endpoint) => {
     try {
@@ -77,6 +89,24 @@ const ApiConnectionTest = () => {
             <p>{error}</p>
           </div>
         )}
+      </div>
+      
+      <div style={{ marginBottom: '15px' }}>
+        <h3>CSRF Token</h3>
+        <p>{csrfStatus}</p>
+        <button 
+          onClick={handleCheckCsrf}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: '#4a6cf7',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Test CSRF Token
+        </button>
       </div>
       
       <div>
