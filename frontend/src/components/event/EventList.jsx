@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import EventCard from './EventCard';
 import Button from '../Button';
-import '../../css/EventList.css';
-import { getEvents } from '../../../services/api';
+import '../../components/css/EventList.css';
+import { getEvents } from '../../services/api';
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -21,11 +21,7 @@ const EventList = () => {
       setPage(pageNum);
     } catch (err) {
       console.error('Falling back to mock data:', err);
-      const startIndex = 0;
-      const endIndex = pageNum * 6;
-      setEvents(eventsData.slice(startIndex, endIndex));
-      setHasMore(endIndex < eventsData.length);
-      setError(null);
+      setError(err);
     } finally {
       setLoading(false);
     }

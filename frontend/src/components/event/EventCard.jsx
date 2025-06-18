@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import formatDate from '../../utils/formatDate';
-import './css/EventCard.css';
+import '../../components/css/EventCard.css';
 
 function EventCard({ event }) {
   const eventType = event.eventType || 'Conference';

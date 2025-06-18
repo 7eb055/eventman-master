@@ -32,7 +32,7 @@ const checkServerAvailable = async () => {
   }
 };
 
-const getCsrfToken = async () => {
+export const getCsrfToken = async () => {
   try {
     if (!(await checkServerAvailable())) {
       throw new Error('Server not available');

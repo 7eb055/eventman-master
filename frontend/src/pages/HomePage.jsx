@@ -1,6 +1,6 @@
 import React from 'react';
-import EventList from '../components/EventList';
-import CtaSection from '../components/CtaSection';
+import EventList from '../components/event/EventList';
+import CtaSection from '../components/common/CtaSection';
 import './css/HomePage.css';
 
 const HomePage = () => {

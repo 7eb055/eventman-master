@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../css/Header.css';
+import '../../components/css/Header.css';
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -60,17 +60,6 @@ const Header = () => {
               </button>
             </form>
           </div>
-
-          <nav className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
-            <ul>
-              <li><Link to="/browse-events" className="nav-link">Browse Events</Link></li>
-              <li><Link to="/create-event" className="nav-link">Create Event</Link></li>
-              <li><Link to="/help" className="nav-link">Help</Link></li>
-              <li className="divider"></li>
-              <li><Link to="/sign-in" className="nav-link sign-in">Sign In</Link></li>
-              <li><Link to="/sign-up" className="nav-link sign-up">Sign Up</Link></li>
-            </ul>
-          </nav>
         </div>
       </div>
     </header>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
-import './css/Footer.css';
+import '../../components/css/Footer.css';
 
 const Footer = () => {
   return (
@@ -58,9 +58,7 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>© 2025 EventSmart. All rights reserved.</p>
         <div className="footer-policy">
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Service</a>
-          <a href="#">Cookie Policy</a>
+          {/* Add privacy policy, terms, etc. here if needed */}
         </div>
       </div>
     </footer>
