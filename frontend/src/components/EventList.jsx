@@ -3,6 +3,8 @@ import EventCard from './EventCard';
 import Button from './Button';
 import './css/EventList.css';
 import { getEvents } from '../services/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -87,7 +89,7 @@ const EventList = () => {
             className="load-more-btn"
           >
             Show More Events
-            <i className="fas fa-arrow-down"></i>
+            <FontAwesomeIcon icon={faArrowDown} />
           </Button>
         </div>
       )}
@@ -101,7 +103,7 @@ const EventList = () => {
 
       {error && (
         <div className="error-message">
-          <i className="fas fa-exclamation-triangle"></i>
+          <FontAwesomeIcon icon={faExclamationTriangle} />
           <p>{error.message || 'Failed to load events'}</p>
           <Button onClick={() => fetchEvents(1)}>Try Again</Button>
         </div>
