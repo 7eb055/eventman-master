@@ -32,22 +32,11 @@ const checkServerAvailable = async () => {
   }
 };
 
-const getCsrfToken = async () => {
-  try {
-    if (!(await checkServerAvailable())) {
-      throw new Error('Server not available');
-    }
-    console.log('Fetching CSRF token...');
-    const response = await axios.get(`${API_URL}/sanctum/csrf-cookie`, { timeout: 3000 });
-    console.log('CSRF token acquired:', response);
-    return response;
-  } catch (error) {
-    console.error('CSRF token fetch failed:', error);
-    throw error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED'
-      ? new Error('Cannot connect to authentication service. Check if server is running.')
-      : error;
-  }
-};
+export async function getCsrfToken() {
+  return fetch('http://localhost:8000/sanctum/csrf-cookie', {
+    credentials: 'include'
+  });
+}
 
 // Response Interceptor
 api.interceptors.response.use(
@@ -183,7 +172,7 @@ export const getCurrentUser = async () => {
 // Event Endpoints
 export const getEvents = async (params = {}) => {
   try {
-    const response = await api.get('/events', { params });
+    const response = await api.get('/api/events', { params });
     return response.data;
   } catch (error) {
     console.error('Get Events Error:', error);

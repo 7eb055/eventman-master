@@ -15,17 +15,14 @@ const EventList = () => {
   const fetchEvents = async (pageNum) => {
     setLoading(true);
     try {
-      const data = await getEvents(pageNum);
-      setEvents(prev => [...prev, ...data.events]);
-      setHasMore(data.hasMore);
+      // Always pass an object for params
+      const data = await getEvents({ page: pageNum });
+      setEvents(prev => [...prev, ...(data.events || data)]); // fallback if data.events is undefined
+      setHasMore(data.hasMore !== undefined ? data.hasMore : false);
       setPage(pageNum);
     } catch (err) {
-      console.error('Falling back to mock data:', err);
-      const startIndex = 0;
-      const endIndex = pageNum * 6;
-      setEvents(eventsData.slice(startIndex, endIndex));
-      setHasMore(endIndex < eventsData.length);
-      setError(null);
+      console.error('Failed to load events:', err);
+      setError(err);
     } finally {
       setLoading(false);
     }
