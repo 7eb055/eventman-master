@@ -7,6 +7,13 @@ use App\Models\Event;
 
 class EventController extends Controller
 {
+
+    public function index() {
+        $events = Event::all();
+        return response()->json($events);
+    }
+
+
     public function store(Request $request)
     {
         $data = $request->validate([

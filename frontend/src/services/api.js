@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // Configuration
-const API_URL = 'http://localhost:8000';
+const API_ROOT = 'http://localhost:8000';
+const API_URL = 'http://localhost:8000/api';
 const DEFAULT_TIMEOUT = 5000;
 let serverErrorShown = false;
 
@@ -20,12 +21,12 @@ const api = axios.create({
 // Utility Functions
 const checkServerAvailable = async () => {
   try {
-    await axios.get(`${API_URL}/debug`, { timeout: 2000 });
+    await axios.get(`${API_ROOT}/up`, { timeout: 2000 });
     return true;
   } catch (error) {
     if (!serverErrorShown) {
       console.error('Laravel API server unavailable:', error.message);
-      alert('Cannot connect to server. Ensure Laravel backend is running at http://localhost:8000');
+      alert(`Cannot connect to server. Ensure Laravel backend is running at ${API_ROOT}`);
       serverErrorShown = true;
     }
     return false;
@@ -104,26 +105,26 @@ export const sendTestData = async (data) => {
 export const registerUser = async (userData) => {
   try {
     console.log('Registering user:', userData);
-    if (!(await checkServerAvailable())) {
-      throw new Error('Server not available');
-    }
+    // if (!(await checkServerAvailable())) {
+    //   throw new Error('Server not available');
+    // }
 
-    let csrfSuccess = false;
-    try {
-      await getCsrfToken();
-      csrfSuccess = true;
-    } catch (error) {
-      console.warn('CSRF token retrieval failed:', error.message);
-    }
+    // let csrfSuccess = false;
+    // try {
+    //   await getCsrfToken();
+    //   csrfSuccess = true;
+    // } catch (error) {
+    //   console.warn('CSRF token retrieval failed:', error.message);
+    // }
 
-    const config = !csrfSuccess ? {
-      headers: {
-        'X-CSRF-TOKEN': 'development-token',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    } : {};
+    // const config = !csrfSuccess ? {
+    //   headers: {
+    //     'X-CSRF-TOKEN': 'development-token',
+    //     'X-Requested-With': 'XMLHttpRequest'
+    //   }
+    // } : {};
 
-    const response = await api.post('/register', userData, config);
+    const response = await api.post('/register', userData);
     console.log('Registration successful:', response.data);
     return response.data;
   } catch (error) {

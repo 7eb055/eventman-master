@@ -11,36 +11,38 @@ use App\Http\Controllers\PromoCodeController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 
+
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+    Route::apiResource('events', EventController::class);
 
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'currentUser']);
-    
+
     // Events
-    Route::apiResource('events', EventController::class);
     Route::get('/events/category/{category}', [EventController::class, 'byCategory']);
     Route::get('/events/upcoming', [EventController::class, 'upcoming']);
     Route::get('/events/past', [EventController::class, 'past']);
     Route::get('/events/organizer/{organizerId}', [EventController::class, 'byOrganizer']);
-    
+    // Route::apiResource('events', EventController::class);
+
     // Tickets
     Route::post('events/{event}/tickets', [TicketController::class, 'purchase']);
-    
+
     // Reports
     Route::get('events/{event}/attendance-report', [ReportController::class, 'eventAttendance']);
-    
+
     // QR Verification
     Route::post('tickets/{ticket}/verify', [TicketController::class, 'verify']);
-    
+
     // Payment routes
     Route::post('/orders/{order}/pay', [PaymentController::class, 'initiatePayment']);
     Route::post('/payments/confirm', [PaymentController::class, 'confirmPayment']);
-    
+
     // Promo code routes
     Route::post('/promo-codes/validate', [PromoCodeController::class, 'validateCode']);
     Route::apiResource('promo-codes', PromoCodeController::class)->except(['show']);

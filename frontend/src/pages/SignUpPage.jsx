@@ -7,7 +7,7 @@ import './css/signUp.css';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    full_name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -48,7 +48,7 @@ const SignUpPage = () => {
     try {
       // Prepare the data to match Laravel's expected format
       const userData = {
-        name: formData.fullName,
+        full_name: formData.fullName,
         email: formData.email,
         password: formData.password,
         password_confirmation: formData.confirmPassword,
