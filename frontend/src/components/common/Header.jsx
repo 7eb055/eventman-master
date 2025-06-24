@@ -30,9 +30,7 @@ const Header = () => {
               <span></span>
               <span></span>
             </button>
-          </div>
-
-          <div className={`search-container ${isMenuOpen ? 'open' : ''}`}>
+          </div>          <div className={`search-container ${isMenuOpen ? 'open' : ''}`}>
             <form onSubmit={handleSearch} className="search-form">
               <div className="input-group">
                 <i className="fas fa-search search-icon"></i>
@@ -59,6 +57,17 @@ const Header = () => {
                 <span>Search</span>
               </button>
             </form>
+          </div>
+
+          <div className={`auth-buttons ${isMenuOpen ? 'open' : ''}`}>
+            <Link to="/sign-in" className="auth-button signin-button">
+              <i className="fas fa-sign-in-alt"></i>
+              <span>Sign In</span>
+            </Link>
+            <Link to="/sign-up" className="auth-button signup-button">
+              <i className="fas fa-user-plus"></i>
+              <span>Sign Up</span>
+            </Link>
           </div>
         </div>
       </div>

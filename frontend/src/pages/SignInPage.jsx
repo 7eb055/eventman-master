@@ -1,17 +1,35 @@
 // src/pages/SignIn.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import { login } from '../services/auth'; // Import your login function
 import './css/signIn.css';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  
-  const handleSubmit = (e) => {
+  const [error, setError] = useState(''); // To display login errors
+  const [loading, setLoading] = useState(false); // To handle loading state
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, you would handle authentication here
-    console.log('Signing in with:', { email, password, rememberMe });
+    setLoading(true);
+    setError('');
+
+    try {
+      // Actually call the backend API to log in
+      await login({ email, password });
+      
+      // If login is successful, redirect to a protected page
+      navigate('/dashboard'); // Or any other page like '/'
+    } catch (err) {
+      // If login fails, display an error message
+      setError('Invalid email or password. Please try again.');
+      console.error('Login failed:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +49,9 @@ const SignIn = () => {
         </div>
         
         <form onSubmit={handleSubmit} className="signin-form">
+          {/* Add a place to display errors */}
+          {error && <p className="error-message" style={{color: 'red', textAlign: 'center'}}>{error}</p>}
+
           <div className="form-group">
             <div className="input-group">
               <span className="input-icon">
@@ -90,8 +111,9 @@ const SignIn = () => {
           <button 
             type="submit" 
             className="signin-btn"
+            disabled={loading} // Disable button while loading
           >
-            Sign In
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
           
           <div className="divider">

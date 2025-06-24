@@ -17,6 +17,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
     Route::apiResource('events', EventController::class);
 
+  Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
 // Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
