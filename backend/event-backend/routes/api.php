@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Authentication
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'currentUser']);
+    Route::post('/token', [AuthController::class, 'getToken']);
+    Route::post('/revoke-token', [AuthController::class, 'revokeToken'])->middleware('auth:sanctum');
 
     // Events
     Route::get('/events/category/{category}', [EventController::class, 'byCategory']);

@@ -152,12 +152,11 @@ export const registerUser = async (userData) => {
 
 export const loginUser = async (credentials) => {
   try {
-    await getCsrfToken();
-    const response = await api.post('/login', credentials);
+    const response = await axios.post('/api/login', credentials); // Changed endpoint
     return response.data;
   } catch (error) {
-    console.error('Login Error:', error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || 'Login failed');
+    console.error('Login error:', error);
+    throw error;
   }
 };
 

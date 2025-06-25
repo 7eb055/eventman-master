@@ -21,7 +21,7 @@ export const login = async (credentials) => {
   await authApi.get('/sanctum/csrf-cookie');
   
   // Step 2: Now that the cookie is set, perform the login request.
-  const response = await authApi.post('/login', credentials);
+  const response = await authApi.post('/api/login', credentials);
   
   return response.data;
 };
