@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const GetTicket = () => {
+const GetTicket = ({ event }) => {
   const [ticketCount, setTicketCount] = useState(1);
   const [selectedTicketType, setSelectedTicketType] = useState('general');
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -10,8 +10,9 @@ const GetTicket = () => {
     expiry: '',
     cvv: ''
   });
-  
-  const event = {
+
+  // Use event prop if provided, otherwise fallback to dummy event
+  const eventData = event || {
     title: "Tech Innovators Conference 2025",
     date: "July 15, 2025",
     time: "9:00 AM - 5:00 PM",
@@ -20,26 +21,27 @@ const GetTicket = () => {
     image: "https://i.pinimg.com/736x/b6/55/2b/b6552be1a23bf22cd79c36747f384e71.jpg",
     organizer: "Tech Ghana Association"
   };
-  
+
+  // Optionally, ticket types could be dynamic from eventData.ticket_types or similar
   const ticketTypes = [
-    { id: 'general', name: 'General Admission', price: 150, benefits: ['Event Access', 'Lunch Included', 'Swag Bag'] },
+    { id: 'general', name: 'General Admission', price: Number(eventData.ticket_price) || 150, benefits: ['Event Access', 'Lunch Included', 'Swag Bag'] },
     { id: 'vip', name: 'VIP Experience', price: 350, benefits: ['Priority Seating', 'Backstage Access', 'Meet & Greet', 'Premium Gift'] },
     { id: 'student', name: 'Student Pass', price: 80, benefits: ['Event Access', 'Student Networking Session'] }
   ];
-  
+
   const selectedTicket = ticketTypes.find(t => t.id === selectedTicketType);
   const subtotal = selectedTicket ? selectedTicket.price * ticketCount : 0;
   const serviceFee = 5;
   const total = subtotal + serviceFee;
-  
+
   const handleCardChange = (e) => {
     const { name, value } = e.target;
     setCardDetails({ ...cardDetails, [name]: value });
   };
-  
+
   const handlePurchase = (e) => {
     e.preventDefault();
-    alert(`Thank you for your purchase! ${ticketCount} ticket(s) for ${event.title} have been reserved.`);
+    alert(`Thank you for your purchase! ${ticketCount} ticket(s) for ${eventData.title} have been reserved.`);
   };
 
   return (
@@ -49,7 +51,6 @@ const GetTicket = () => {
           <h1 className="display-4 fw-bold text-primary">Get Your Tickets</h1>
           <p className="lead text-muted">Secure your spot for an unforgettable experience</p>
         </div>
-        
         <div className="row g-4">
           {/* Event Details */}
           <div className="col-lg-7">
@@ -57,8 +58,8 @@ const GetTicket = () => {
               <div className="row g-0">
                 <div className="col-md-5 position-relative">
                   <img 
-                    src={event.image} 
-                    alt={event.title} 
+                    src={eventData.banner_url || eventData.image || `https://via.placeholder.com/600x300?text=${encodeURIComponent(eventData.title || 'Event')}`} 
+                    alt={eventData.title} 
                     className="img-fluid h-100 object-fit-cover"
                   />
                   <div className="position-absolute top-0 start-0 bg-primary text-white p-2 px-3 rounded-bottom-end">
@@ -67,32 +68,33 @@ const GetTicket = () => {
                 </div>
                 <div className="col-md-7">
                   <div className="card-body p-4">
-                    <h2 className="card-title fw-bold">{event.title}</h2>
+                    <h2 className="card-title fw-bold">{eventData.title}</h2>
                     <div className="d-flex flex-wrap gap-3 my-3">
                       <div className="d-flex align-items-center">
                         <i className="bi bi-calendar-event text-primary fs-5 me-2"></i>
-                        <span className="fw-medium">{event.date}</span>
+                        <span className="fw-medium">{eventData.start_date || eventData.date}</span>
                       </div>
-                      <div className="d-flex align-items-center">
-                        <i className="bi bi-clock text-primary fs-5 me-2"></i>
-                        <span className="fw-medium">{event.time}</span>
-                      </div>
+                      {eventData.time && (
+                        <div className="d-flex align-items-center">
+                          <i className="bi bi-clock text-primary fs-5 me-2"></i>
+                          <span className="fw-medium">{eventData.time}</span>
+                        </div>
+                      )}
                       <div className="d-flex align-items-center">
                         <i className="bi bi-geo-alt text-primary fs-5 me-2"></i>
-                        <span className="fw-medium">{event.location}</span>
+                        <span className="fw-medium">{eventData.venue || eventData.location}</span>
                       </div>
                     </div>
-                    <p className="card-text text-muted">{event.description}</p>
+                    <p className="card-text text-muted">{eventData.description}</p>
                     <div className="mt-3">
                       <p className="mb-0">
-                        <span className="fw-medium">Organizer:</span> {event.organizer}
+                        <span className="fw-medium">Organizer:</span> {eventData.organizer || 'N/A'}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            
             {/* Ticket Selection */}
             <div className="card shadow-lg mt-4 rounded-4 border-0">
               <div className="card-header bg-white py-3">
@@ -127,7 +129,6 @@ const GetTicket = () => {
                     </div>
                   ))}
                 </div>
-                
                 <div className="d-flex align-items-center justify-content-between mt-4">
                   <div>
                     <label className="fw-medium me-2">Quantity:</label>
@@ -149,7 +150,6 @@ const GetTicket = () => {
                       </button>
                     </div>
                   </div>
-                  
                   <div className="text-end">
                     <h4 className="mb-0">GHS {subtotal.toFixed(2)}</h4>
                     <p className="small text-muted mb-0">Before fees</p>
@@ -158,7 +158,6 @@ const GetTicket = () => {
               </div>
             </div>
           </div>
-          
           {/* Order Summary & Payment */}
           <div className="col-lg-5">
             <div className="card shadow-lg rounded-4 border-0 sticky-top" style={{top: '20px'}}>
@@ -181,7 +180,6 @@ const GetTicket = () => {
                     <span className="text-primary">GHS {total.toFixed(2)}</span>
                   </div>
                 </div>
-                
                 <div className="mb-4">
                   <h5 className="fw-bold mb-3">Payment Method</h5>
                   <div className="d-flex gap-2 mb-3">
@@ -198,7 +196,6 @@ const GetTicket = () => {
                       <i className="bi bi-phone me-2"></i> Mobile Money
                     </button>
                   </div>
-                  
                   {paymentMethod === 'card' && (
                     <div className="bg-light p-3 rounded-3">
                       <div className="mb-3">
@@ -249,7 +246,6 @@ const GetTicket = () => {
                       </div>
                     </div>
                   )}
-                  
                   {paymentMethod === 'mobile' && (
                     <div className="bg-light p-3 rounded-3">
                       <div className="mb-3">
@@ -271,7 +267,6 @@ const GetTicket = () => {
                     </div>
                   )}
                 </div>
-                
                 <div className="form-check mb-4">
                   <input 
                     className="form-check-input" 
@@ -283,14 +278,12 @@ const GetTicket = () => {
                     Tickets are non-refundable except in the case of event cancellation.
                   </label>
                 </div>
-                
                 <button 
                   className="btn btn-primary w-100 py-3 fw-bold fs-5"
                   onClick={handlePurchase}
                 >
                   Purchase Tickets - GHS {total.toFixed(2)}
                 </button>
-                
                 <div className="text-center mt-3">
                   <p className="small text-muted mb-0">
                     <i className="bi bi-lock-fill me-1"></i> Your payment is securely encrypted
@@ -301,7 +294,6 @@ const GetTicket = () => {
           </div>
         </div>
       </div>
-      
       {/* Tailwind-powered styles */}
       <style jsx>{`
         .ticket-option {

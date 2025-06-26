@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import EventCard from './EventCard';
-import Button from './Button';
-import './css/EventList.css';
-import { getEvents } from '../services/api';
+import Button from '../Button';
+import '../../css/EventList.css';
+import { getEvents } from '../../../services/api';
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -40,8 +40,7 @@ const EventList = () => {
       <div className="event-list-header">
         <h1 className="event-list-title">Discover Upcoming Events</h1>
         <p className="event-list-subtitle">Find experiences that match your interests</p>
-        
-        <div className="event-filters">
+        <div className="event-filters d-flex flex-wrap gap-2 mb-4 justify-content-center">
           <button 
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
             onClick={() => setFilter('all')}
@@ -69,9 +68,11 @@ const EventList = () => {
         </div>
       </div>
 
-      <div className="event-grid">
+      <div className="event-grid row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {events.map(event => (
-          <EventCard key={event.id} event={event} />
+          <div key={event.id} className="col d-flex">
+            <EventCard event={event} />
+          </div>
         ))}
       </div>
 

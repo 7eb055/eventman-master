@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('events', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->enum('type', ['email', 'sms']);
+            $table->string('subject', 255);
+            $table->text('content');
+            $table->timestamp('sent_at')->useCurrent();
+            $table->enum('status', ['sent', 'failed']);
             $table->timestamps();
         });
     }
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
+        Schema::dropIfExists('notifications');
     }
 };

@@ -11,15 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('users')) {
+            Schema::create('users', function (Blueprint $table) {
+                $table->id();
+                $table->string('name', 100); // Changed from full_name to name
+                $table->string('email', 191)->unique();
+                $table->string('password');
+                $table->enum('role', ['organizer', 'attendee', 'admin']);
+                $table->boolean('is_suspended')->default(false);
+                $table->timestamps();
+            });
+        } else {
+            // Modify existing table
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('name', 100)->change(); // Changed from full_name to name
+                $table->string('email', 191)->unique()->change();
+                $table->string('password')->change();
+                $table->enum('role', ['organizer', 'attendee', 'admin'])->change();
+                $table->boolean('is_suspended')->default(false)->change();
+            });
+        }
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
