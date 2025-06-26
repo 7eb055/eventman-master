@@ -11,19 +11,40 @@ const authApi = axios.create({
 });
 
 /**
- * Logs in a user using Laravel Sanctum.
- * It first gets a CSRF cookie and then attempts to log in.
+ * Handles the login API call and stores the auth token in localStorage.
+ * Using localStorage instead of cookies prevents the "431 Header too large"
+ * error with the Vite development server.
+ *
  * @param {object} credentials - The user's email and password.
  * @returns {Promise<object>} The user data from the backend.
  */
 export const login = async (credentials) => {
-  // Step 1: This is crucial. Get the CSRF cookie from Sanctum.
-  await authApi.get('/sanctum/csrf-cookie');
-  
-  // Step 2: Now that the cookie is set, perform the login request.
-  const response = await authApi.post('/api/login', credentials);
-  
-  return response.data;
+  // Ensure your backend API URL is correct
+  const response = await fetch('http://localhost:8000/api/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(credentials),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Login failed due to a server error.');
+  }
+
+  const data = await response.json();
+
+  // Store token and user data in localStorage
+  if (data.token && data.user) {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+  } else {
+    throw new Error('Token or user data not found in login response.');
+  }
+
+  return data; // Return the full data object, including user and token
 };
 
 /**
@@ -35,11 +56,28 @@ export const getUser = async () => {
 };
 
 /**
- * Logs out the user.
+ * Handles user logout by clearing data from localStorage.
  */
-export const logout = async () => {
-    // Use the special 'authApi' instance to post to /logout at the root path
-    await authApi.post('/logout');
+export const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  // Optionally, you can also call a backend endpoint to invalidate the token on the server
 };
 
-// Add your register function here if needed
+/**
+ * Retrieves the stored auth token from localStorage.
+ * @returns {string|null} The auth token.
+ */
+export const getToken = () => {
+  return localStorage.getItem('token');
+};
+
+/**
+ * Retrieves the stored user data from localStorage.
+ * @returns {object|null} The parsed user object.
+ */
+export const getCurrentUser = () => {
+  const userStr = localStorage.getItem('user');
+  if (!userStr) return null;
+  return JSON.parse(userStr);
+};

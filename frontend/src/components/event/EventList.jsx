@@ -12,11 +12,12 @@ const EventList = () => {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
 
-  const fetchEvents = async (pageNum) => {
+  const fetchEvents = async (pageNum, filterValue = filter) => {
     setLoading(true);
     try {
-      const data = await getEvents(pageNum);
-      setEvents(prev => [...prev, ...data.events]);
+      // Pass filter to getEvents API
+      const data = await getEvents(pageNum, filterValue);
+      setEvents(prev => pageNum === 1 ? data.events : [...prev, ...data.events]);
       setHasMore(data.hasMore);
       setPage(pageNum);
     } catch (err) {
@@ -28,8 +29,14 @@ const EventList = () => {
   };
 
   useEffect(() => {
-    fetchEvents(1);
-  }, []);
+    fetchEvents(1, filter);
+    // eslint-disable-next-line
+  }, [filter]);
+
+  const handleFilter = (newFilter) => {
+    setFilter(newFilter);
+    fetchEvents(1, newFilter);
+  };
 
   return (
     <div className="event-list">
@@ -40,25 +47,25 @@ const EventList = () => {
         <div className="event-filters">
           <button 
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => setFilter('all')}
+            onClick={() => handleFilter('all')}
           >
             All Events
           </button>
           <button 
             className={`filter-btn ${filter === 'today' ? 'active' : ''}`}
-            onClick={() => setFilter('today')}
+            onClick={() => handleFilter('today')}
           >
             Today
           </button>
           <button 
             className={`filter-btn ${filter === 'week' ? 'active' : ''}`}
-            onClick={() => setFilter('week')}
+            onClick={() => handleFilter('week')}
           >
             This Week
           </button>
           <button 
             className={`filter-btn ${filter === 'month' ? 'active' : ''}`}
-            onClick={() => setFilter('month')}
+            onClick={() => handleFilter('month')}
           >
             This Month
           </button>

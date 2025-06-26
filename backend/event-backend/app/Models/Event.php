@@ -12,11 +12,17 @@ class Event extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'title',
+        'event_type',
+        'image',
         'description',
-        'date',
+        'venue',
+        'capacity',
+        'ticket_price',
         'location',
+        'start_date',
         'organizer_id',
+        'status',
     ];
 
     /**

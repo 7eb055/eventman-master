@@ -181,14 +181,13 @@ export const getCurrentUser = async () => {
 };
 
 // Event Endpoints
-export const getEvents = async (params = {}) => {
-  try {
-    const response = await api.get('/events', { params });
-    return response.data;
-  } catch (error) {
-    console.error('Get Events Error:', error);
-    throw error;
-  }
+export const getEvents = async (page = 1) => {
+  const response = await fetch('http://localhost:8000/api/events');
+  if (!response.ok) throw new Error('Failed to fetch events');
+  const data = await response.json();
+  // If data is an array, return as events; if it's an object, try to extract .events
+  const events = Array.isArray(data) ? data : data.events || [];
+  return { events, hasMore: false };
 };
 
 export const getEventById = async (id) => {

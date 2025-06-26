@@ -16,19 +16,23 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => 'required|string',
+        $validated = $request->validate([
+            'title' => 'required|string|max:175',
+            'event_type' => 'required|string|max:100',
+            'image' => 'nullable|string|max:175',
             'description' => 'nullable|string',
-            'venue' => 'required|string',
+            'venue' => 'required|string|max:175',
             'capacity' => 'required|integer',
             'ticket_price' => 'required|numeric',
-            'location' => 'required|string',
-            'start_date' => 'required|date'
+            'location' => 'required|string|max:175',
+            'start_date' => 'required|date',
         ]);
 
-        $event = $request->user()->organizedEvents()->create($data);
+        $validated['organizer_id'] = $request->user()->id;
 
-        return response()->json($event, 201);
+        $event = Event::create($validated);
+
+        return response()->json(['message' => 'Event created!', 'event' => $event], 201);
     }
 
     public function byCategory($category)
@@ -53,5 +57,13 @@ class EventController extends Controller
     {
         $events = Event::where('organizer_id', $organizerId)->get();
         return response()->json($events);
+    }
+
+    public function show($id) {
+        $event = Event::find($id);
+        if (!$event) {
+            return response()->json(['error' => 'Event not found'], 404);
+        }
+        return response()->json($event);
     }
 }

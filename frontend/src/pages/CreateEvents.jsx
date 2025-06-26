@@ -1,27 +1,28 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { getToken } from '../services/auth';
 
 const CreateEvent = () => {
   const [formData, setFormData] = useState({
     title: '',
-    date: '',
-    time: '',
-    location: '',
+    event_type: 'Conference',
+    image: '',
     description: '',
-    eventType: 'Conference',
-    price: '',
-    image: ''
+    venue: '',
+    capacity: '',
+    ticket_price: '',
+    location: '',
+    start_date: '', // ISO string: 'YYYY-MM-DDTHH:mm'
   });
 
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [apiError, setApiError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors({ ...errors, [name]: null });
     }
@@ -29,62 +30,77 @@ const CreateEvent = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
-    if (!formData.title.trim()) {
-      newErrors.title = 'Event title is required';
-    }
-    
-    if (!formData.date) {
-      newErrors.date = 'Date is required';
-    }
-    
-    if (!formData.location.trim()) {
-      newErrors.location = 'Location is required';
-    }
-    
-    if (!formData.description.trim() || formData.description.length < 30) {
-      newErrors.description = 'Description must be at least 30 characters';
-    }
-    
-    if (formData.price && isNaN(formData.price)) {
-      newErrors.price = 'Price must be a number';
-    }
-    
+    if (!formData.title.trim()) newErrors.title = 'Event title is required';
+    if (!formData.event_type) newErrors.event_type = 'Event type is required';
+    if (!formData.venue.trim()) newErrors.venue = 'Venue is required';
+    if (!formData.location.trim()) newErrors.location = 'Location is required';
+    if (!formData.start_date) newErrors.start_date = 'Start date and time are required';
+    if (!formData.capacity || isNaN(formData.capacity) || parseInt(formData.capacity) <= 0) newErrors.capacity = 'Capacity must be a positive number';
+    if (!formData.ticket_price || isNaN(formData.ticket_price) || parseFloat(formData.ticket_price) < 0) newErrors.ticket_price = 'Ticket price must be a number (0 for free)';
+    if (formData.description && formData.description.length < 30) newErrors.description = 'Description must be at least 30 characters';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setApiError('');
     if (validateForm()) {
-      console.log('Event Created:', formData);
-      setSubmitted(true);
-      
-      // Reset form after successful submission
-      setTimeout(() => {
-        setFormData({
-          title: '',
-          date: '',
-          time: '',
-          location: '',
-          description: '',
-          eventType: 'Conference',
-          price: '',
-          image: ''
+      try {
+        const token = getToken();
+        const response = await fetch('http://localhost:8000/api/events', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: formData.title,
+            event_type: formData.event_type,
+            image: formData.image,
+            description: formData.description,
+            venue: formData.venue,
+            capacity: formData.capacity,
+            ticket_price: formData.ticket_price,
+            location: formData.location,
+            start_date: formData.start_date,
+          }),
         });
-        setSubmitted(false);
-      }, 3000);
+        if (!response.ok) {
+          const errorData = await response.json();
+          if (errorData.errors) setErrors(errorData.errors);
+          setApiError(errorData.message || 'Failed to create event.');
+          return;
+        }
+        setSubmitted(true);
+        setTimeout(() => {
+          setFormData({
+            title: '',
+            event_type: 'Conference',
+            image: '',
+            description: '',
+            venue: '',
+            capacity: '',
+            ticket_price: '',
+            location: '',
+            start_date: '',
+          });
+          setSubmitted(false);
+        }, 3000);
+      } catch (err) {
+        setApiError('Network or server error.');
+      }
     }
   };
 
   const eventTypes = [
-    'Conference', 
-    'Trade Show/Exhibition', 
-    'Networking Event/Meetup', 
-    'Workshop', 
-    'Concert', 
-    'Festival', 
+    'Conference',
+    'Trade Show/Exhibition',
+    'Networking Event/Meetup',
+    'Workshop',
+    'Concert',
+    'Festival',
     'Retreat/Conference Camping'
   ];
 
@@ -98,7 +114,6 @@ const CreateEvent = () => {
                 <h1 className="text-center mb-0">Create New Event</h1>
                 <p className="text-center mb-0 opacity-75">Fill out the form to list your event</p>
               </div>
-              
               <div className="card-body p-4 p-md-5">
                 {submitted && (
                   <div className="alert alert-success d-flex align-items-center">
@@ -109,7 +124,12 @@ const CreateEvent = () => {
                     </div>
                   </div>
                 )}
-                
+                {apiError && (
+                  <div className="alert alert-danger d-flex align-items-center">
+                    <i className="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+                    <div>{apiError}</div>
+                  </div>
+                )}
                 <form onSubmit={handleSubmit}>
                   <div className="row">
                     <div className="col-md-6 mb-4">
@@ -130,100 +150,116 @@ const CreateEvent = () => {
                         {errors.title && <div className="invalid-feedback">{errors.title}</div>}
                       </div>
                     </div>
-                    
                     <div className="col-md-6 mb-4">
-                      <label htmlFor="eventType" className="form-label fw-bold">Event Type</label>
+                      <label htmlFor="event_type" className="form-label fw-bold">Event Type *</label>
                       <div className="input-group">
                         <span className="input-group-text">
                           <i className="bi bi-tag"></i>
                         </span>
                         <select
                           className="form-select"
-                          id="eventType"
-                          name="eventType"
-                          value={formData.eventType}
+                          id="event_type"
+                          name="event_type"
+                          value={formData.event_type}
                           onChange={handleChange}
                         >
                           {eventTypes.map((type) => (
                             <option key={type} value={type}>{type}</option>
                           ))}
                         </select>
+                        {errors.event_type && <div className="invalid-feedback">{errors.event_type}</div>}
                       </div>
                     </div>
-                    
                     <div className="col-md-6 mb-4">
-                      <label htmlFor="date" className="form-label fw-bold">Date *</label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <i className="bi bi-calendar"></i>
-                        </span>
-                        <input
-                          type="date"
-                          className={`form-control ${errors.date ? 'is-invalid' : ''}`}
-                          id="date"
-                          name="date"
-                          value={formData.date}
-                          onChange={handleChange}
-                        />
-                        {errors.date && <div className="invalid-feedback">{errors.date}</div>}
-                      </div>
-                    </div>
-                    
-                    <div className="col-md-6 mb-4">
-                      <label htmlFor="time" className="form-label fw-bold">Time</label>
-                      <div className="input-group">
-                        <span className="input-group-text">
-                          <i className="bi bi-clock"></i>
-                        </span>
-                        <input
-                          type="time"
-                          className="form-control"
-                          id="time"
-                          name="time"
-                          value={formData.time}
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="col-md-6 mb-4">
-                      <label htmlFor="location" className="form-label fw-bold">Location *</label>
+                      <label htmlFor="venue" className="form-label fw-bold">Venue *</label>
                       <div className="input-group">
                         <span className="input-group-text">
                           <i className="bi bi-geo-alt"></i>
                         </span>
                         <input
                           type="text"
+                          className={`form-control ${errors.venue ? 'is-invalid' : ''}`}
+                          id="venue"
+                          name="venue"
+                          placeholder="Venue name or address"
+                          value={formData.venue}
+                          onChange={handleChange}
+                        />
+                        {errors.venue && <div className="invalid-feedback">{errors.venue}</div>}
+                      </div>
+                    </div>
+                    <div className="col-md-6 mb-4">
+                      <label htmlFor="location" className="form-label fw-bold">Location *</label>
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="bi bi-geo"></i>
+                        </span>
+                        <input
+                          type="text"
                           className={`form-control ${errors.location ? 'is-invalid' : ''}`}
                           id="location"
                           name="location"
-                          placeholder="Venue name or address"
+                          placeholder="City, Region, Country"
                           value={formData.location}
                           onChange={handleChange}
                         />
                         {errors.location && <div className="invalid-feedback">{errors.location}</div>}
                       </div>
                     </div>
-                    
                     <div className="col-md-6 mb-4">
-                      <label htmlFor="price" className="form-label fw-bold">Ticket Price (GHS)</label>
+                      <label htmlFor="start_date" className="form-label fw-bold">Start Date & Time *</label>
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="bi bi-calendar"></i>
+                        </span>
+                        <input
+                          type="datetime-local"
+                          className={`form-control ${errors.start_date ? 'is-invalid' : ''}`}
+                          id="start_date"
+                          name="start_date"
+                          value={formData.start_date}
+                          onChange={handleChange}
+                        />
+                        {errors.start_date && <div className="invalid-feedback">{errors.start_date}</div>}
+                      </div>
+                    </div>
+                    <div className="col-md-6 mb-4">
+                      <label htmlFor="capacity" className="form-label fw-bold">Capacity *</label>
+                      <div className="input-group">
+                        <span className="input-group-text">
+                          <i className="bi bi-people"></i>
+                        </span>
+                        <input
+                          type="number"
+                          className={`form-control ${errors.capacity ? 'is-invalid' : ''}`}
+                          id="capacity"
+                          name="capacity"
+                          placeholder="Number of attendees"
+                          value={formData.capacity}
+                          onChange={handleChange}
+                        />
+                        {errors.capacity && <div className="invalid-feedback">{errors.capacity}</div>}
+                      </div>
+                    </div>
+                    <div className="col-md-6 mb-4">
+                      <label htmlFor="ticket_price" className="form-label fw-bold">Ticket Price (GHS) *</label>
                       <div className="input-group">
                         <span className="input-group-text">
                           <i className="bi bi-currency-exchange"></i>
                         </span>
                         <input
-                          type="text"
-                          className={`form-control ${errors.price ? 'is-invalid' : ''}`}
-                          id="price"
-                          name="price"
+                          type="number"
+                          step="0.01"
+                          className={`form-control ${errors.ticket_price ? 'is-invalid' : ''}`}
+                          id="ticket_price"
+                          name="ticket_price"
                           placeholder="0 for free events"
-                          value={formData.price}
+                          value={formData.ticket_price}
                           onChange={handleChange}
                         />
-                        {errors.price && <div className="invalid-feedback">{errors.price}</div>}
+                        {errors.ticket_price && <div className="invalid-feedback">{errors.ticket_price}</div>}
                       </div>
                     </div>
-                    
                     <div className="col-12 mb-4">
                       <label htmlFor="image" className="form-label fw-bold">Event Image URL</label>
                       <div className="input-group">
@@ -241,9 +277,8 @@ const CreateEvent = () => {
                         />
                       </div>
                     </div>
-                    
                     <div className="col-12 mb-4">
-                      <label htmlFor="description" className="form-label fw-bold">Description *</label>
+                      <label htmlFor="description" className="form-label fw-bold">Description</label>
                       <div className="input-group">
                         <span className="input-group-text align-items-start pt-2">
                           <i className="bi bi-textarea-t"></i>
@@ -263,27 +298,27 @@ const CreateEvent = () => {
                         {formData.description.length}/300 characters
                       </div>
                     </div>
-                    
                     <div className="col-12 mt-4">
                       <div className="d-grid gap-3 d-md-flex justify-content-md-end">
-                        <button 
-                          type="reset" 
+                        <button
+                          type="reset"
                           className="btn btn-outline-secondary px-4 py-2"
                           onClick={() => setFormData({
                             title: '',
-                            date: '',
-                            time: '',
-                            location: '',
+                            event_type: 'Conference',
+                            image: '',
                             description: '',
-                            eventType: 'Conference',
-                            price: '',
-                            image: ''
+                            venue: '',
+                            capacity: '',
+                            ticket_price: '',
+                            location: '',
+                            start_date: '',
                           })}
                         >
                           <i className="bi bi-x-circle me-2"></i> Reset Form
                         </button>
-                        <button 
-                          type="submit" 
+                        <button
+                          type="submit"
                           className="btn btn-primary px-4 py-2"
                         >
                           <i className="bi bi-calendar-plus me-2"></i> Create Event

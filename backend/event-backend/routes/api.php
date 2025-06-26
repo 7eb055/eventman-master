@@ -8,11 +8,19 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\PromoCodeController;
+use App\Http\Controllers\OrganizerDashboardController;
+use App\Http\Controllers\AttendeeDashboardController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 
 
-// Public routes
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
+
+// Public routes for registration and login
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
     Route::apiResource('events', EventController::class);
@@ -20,7 +28,7 @@ Route::post('/login', [AuthController::class, 'login']);
   Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Authenticated routes
+// Protected routes that require a valid token
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -33,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/events/upcoming', [EventController::class, 'upcoming']);
     Route::get('/events/past', [EventController::class, 'past']);
     Route::get('/events/organizer/{organizerId}', [EventController::class, 'byOrganizer']);
-    // Route::apiResource('events', EventController::class);
+    Route::get('/events/{id}', [EventController::class, 'show']);
 
     // Tickets
     Route::post('events/{event}/tickets', [TicketController::class, 'purchase']);
@@ -51,6 +59,18 @@ Route::middleware('auth:sanctum')->group(function () {
     // Promo code routes
     Route::post('/promo-codes/validate', [PromoCodeController::class, 'validateCode']);
     Route::apiResource('promo-codes', PromoCodeController::class)->except(['show']);
+
+    // Routes for Organizers
+    Route::middleware('role:organizer')->group(function () {
+        Route::get('/organizer/dashboard', [OrganizerDashboardController::class, 'index']);
+    });
+
+    // Routes for Attendees
+    Route::middleware('role:attendee')->group(function () {
+        Route::get('/attendee/dashboard', [AttendeeDashboardController::class, 'index']);
+    });
+
+    Route::post('/events', [EventController::class, 'store']);
 });
 
 // Webhook route (exclude CSRF protection)

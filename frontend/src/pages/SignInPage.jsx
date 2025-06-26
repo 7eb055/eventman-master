@@ -19,10 +19,18 @@ const SignIn = () => {
 
     try {
       // Actually call the backend API to log in
-      await login({ email, password });
+      const userData = await login({ email, password });
       
       // If login is successful, redirect to a protected page
-      navigate('/dashboard'); // Or any other page like '/'
+      // Redirect based on the user's role
+      if (userData.user.role === 'organizer') {
+        navigate('/organizer-dashboard');
+      } else if (userData.user.role === 'attendee') {
+        navigate('/attendee-dashboard');
+      } else {
+        // Fallback for other roles or if role is not defined
+        navigate('/');
+      }
     } catch (err) {
       // If login fails, display an error message
       setError('Invalid email or password. Please try again.');
