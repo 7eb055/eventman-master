@@ -7,7 +7,7 @@ import './css/signUp.css';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
-    full_name: '',
+    fullName: '', // changed from full_name
     email: '',
     password: '',
     confirmPassword: '',

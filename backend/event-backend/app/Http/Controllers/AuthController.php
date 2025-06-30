@@ -16,8 +16,10 @@ class AuthController extends Controller
             'full_name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
+            'role' =>'required|in:organizer,attendee',
             'phone' => 'nullable|string',
-            'company_name' => 'nullable|string'
+            'company_name' => 'nullable|string',
+
         ]);
 
         $user = User::create([
@@ -26,7 +28,7 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
             'phone' => $data['phone'] ?? 'N/A',
             'company_name' => $data['company_name'] ?? 'N/A',
-            'role' => isset($data['company_name']) ? 'organizer' : 'attendee'
+            'role'=> $data['role']
         ]);
 
         return response()->json([
