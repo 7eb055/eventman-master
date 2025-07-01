@@ -1,47 +1,90 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import api from '../services/api';
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell 
 } from 'recharts';
 import { Link } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const OrganizerDashboard = () => {
-  // Dashboard statistics
-  const stats = {
-    totalEvents: 12,
-    attendees: 340,
-    revenue: "$8,240",
-    conversionRate: "24.3%"
-  };
+  const [dashboard, setDashboard] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Recent events data
-  const recentEvents = [
-    { id: 1, name: "Tech Conference", date: "2023-10-15", attendees: 120, status: "Completed" },
-    { id: 2, name: "Music Festival", date: "2023-11-22", attendees: 85, status: "Upcoming" },
-    { id: 3, name: "Business Workshop", date: "2023-09-30", attendees: 45, status: "Completed" },
-    { id: 4, name: "Art Exhibition", date: "2023-12-05", attendees: 90, status: "Draft" }
-  ];
-
-  // Attendee demographics
-  const attendeeData = [
-    { name: '18-24', value: 35 },
-    { name: '25-34', value: 45 },
-    { name: '35-44', value: 15 },
-    { name: '45+', value: 5 }
-  ];
-
-  // Revenue data for chart
-  const revenueData = [
-    { month: 'Jan', revenue: 1200 },
-    { month: 'Feb', revenue: 1900 },
-    { month: 'Mar', revenue: 1400 },
-    { month: 'Apr', revenue: 1650 },
-    { month: 'May', revenue: 2000 },
-    { month: 'Jun', revenue: 2240 }
-  ];
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await api.get('/organizer/dashboard');
+        setDashboard(response.data.data);
+      } catch (err) {
+        // Show more detailed error for debugging
+        let msg = 'Failed to load dashboard data.';
+        if (err.response) {
+          msg += ` (Status: ${err.response.status})`;
+          if (err.response.data && err.response.data.message) {
+            msg += ` - ${err.response.data.message}`;
+          }
+        } else if (err.message) {
+          msg += ` (${err.message})`;
+        }
+        setError(msg);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
 
   // Color palette for charts
   const COLORS = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e'];
+
+  // Export handlers
+  const exportEventsCSV = () => {
+    if (!dashboard?.events?.length) return;
+    const headers = ['Title', 'Start Date', 'Tickets Sold', 'Revenue'];
+    const rows = dashboard.events.map(e => [e.title, e.start_date, e.tickets_sold, e.revenue]);
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += headers.join(',') + '\n';
+    rows.forEach(row => {
+      csvContent += row.join(',') + '\n';
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'events.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportStatsJSON = () => {
+    if (!dashboard) return;
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(dashboard, null, 2));
+    const link = document.createElement('a');
+    link.setAttribute('href', dataStr);
+    link.setAttribute('download', 'dashboard_stats.json');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportPDF = () => {
+    if (!dashboard?.events?.length) return;
+    const doc = new jsPDF();
+    doc.text('Organizer Events Report', 14, 16);
+    autoTable(doc, {
+      startY: 24,
+      head: [['Title', 'Start Date', 'Tickets Sold', 'Revenue']],
+      body: dashboard.events.map(e => [e.title, e.start_date, e.tickets_sold, e.revenue]),
+    });
+    doc.save('events_report.pdf');
+  };
+
+  if (loading) return <div className="text-center mt-5">Loading...</div>;
+  if (error) return <div className="alert alert-danger mt-5">{error}</div>;
+  if (!dashboard) return null;
 
   return (
     <div className="container-fluid">
@@ -63,7 +106,7 @@ const OrganizerDashboard = () => {
                   <div className="text-xs fw-bold text-primary text-uppercase mb-1">
                     Total Events
                   </div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.totalEvents}</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">{dashboard.total_events}</div>
                 </div>
                 <div className="col-auto">
                   <i className="fas fa-calendar fa-2x text-gray-300"></i>
@@ -79,12 +122,12 @@ const OrganizerDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-success text-uppercase mb-1">
-                    Attendees
+                    Upcoming Events
                   </div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.attendees}</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">{dashboard.upcoming_events_count}</div>
                 </div>
                 <div className="col-auto">
-                  <i className="fas fa-users fa-2x text-gray-300"></i>
+                  <i className="fas fa-bolt fa-2x text-gray-300"></i>
                 </div>
               </div>
             </div>
@@ -97,12 +140,12 @@ const OrganizerDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-info text-uppercase mb-1">
-                    Revenue
+                    Tickets Sold
                   </div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.revenue}</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">{dashboard.total_tickets_sold}</div>
                 </div>
                 <div className="col-auto">
-                  <i className="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                  <i className="fas fa-ticket-alt fa-2x text-gray-300"></i>
                 </div>
               </div>
             </div>
@@ -115,75 +158,13 @@ const OrganizerDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-warning text-uppercase mb-1">
-                    Conversion Rate
+                    Revenue
                   </div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.conversionRate}</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">${dashboard.total_revenue}</div>
                 </div>
                 <div className="col-auto">
-                  <i className="fas fa-percent fa-2x text-gray-300"></i>
+                  <i className="fas fa-dollar-sign fa-2x text-gray-300"></i>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Row */}
-      <div className="row">
-        {/* Revenue Chart */}
-        <div className="col-xl-8 col-lg-7">
-          <div className="card shadow mb-4">
-            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">Revenue Overview</h6>
-            </div>
-            <div className="card-body">
-              <div className="chart-area" style={{ height: '320px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={revenueData}>
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="revenue" fill="#4e73df" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Attendee Demographics */}
-        <div className="col-xl-4 col-lg-5">
-          <div className="card shadow mb-4">
-            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">Attendee Demographics</h6>
-            </div>
-            <div className="card-body">
-              <div className="chart-pie pt-4 pb-2" style={{ height: '280px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={attendeeData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {attendeeData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="mt-4 text-center small">
-                {attendeeData.map((data, index) => (
-                  <span key={index} className="me-3">
-                    <i className="fas fa-circle" style={{ color: COLORS[index] }}></i> {data.name}
-                  </span>
-                ))}
               </div>
             </div>
           </div>
@@ -191,53 +172,99 @@ const OrganizerDashboard = () => {
       </div>
 
       {/* Recent Events Table */}
-      <div className="row">
-        <div className="col-12">
-          <div className="card shadow mb-4">
-            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">Recent Events</h6>
-              <a href="#" className="btn btn-sm btn-outline-primary">View All</a>
+      <div className="card shadow mb-4">
+        <div className="card-header py-3">
+          <h6 className="m-0 fw-bold text-primary">Your Events</h6>
+        </div>
+        <div className="card-body">
+          <div className="table-responsive">
+            <table className="table table-bordered" width="100%" cellSpacing="0">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Start Date</th>
+                  <th>Tickets Sold</th>
+                  <th>Revenue</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dashboard.events && dashboard.events.length > 0 ? (
+                  dashboard.events.map(event => (
+                    <tr key={event.id}>
+                      <td>{event.title}</td>
+                      <td>{event.start_date}</td>
+                      <td>{event.tickets_sold}</td>
+                      <td>${event.revenue}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td colSpan="4" className="text-center">No events found.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Export Buttons */}
+      <div className="mb-4 d-flex gap-2">
+        <button className="btn btn-outline-success" onClick={exportEventsCSV}>
+          <i className="fas fa-file-csv me-1"></i> Export Events CSV
+        </button>
+        <button className="btn btn-outline-info" onClick={exportStatsJSON}>
+          <i className="fas fa-file-code me-1"></i> Export Dashboard JSON
+        </button>
+        <button className="btn btn-outline-danger" onClick={exportPDF}>
+          <i className="fas fa-file-pdf me-1"></i> Export Events PDF
+        </button>
+      </div>
+
+      {/* Analytics & Charts Section */}
+      <div className="row mb-4">
+        {/* Revenue Over Time Bar Chart */}
+        <div className="col-lg-6 mb-4">
+          <div className="card shadow h-100">
+            <div className="card-header py-3">
+              <h6 className="m-0 fw-bold text-primary">Revenue by Event</h6>
             </div>
             <div className="card-body">
-              <div className="table-responsive">
-                <table className="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Event Name</th>
-                      <th>Date</th>
-                      <th>Attendees</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recentEvents.map(event => (
-                      <tr key={event.id}>
-                        <td>{event.name}</td>
-                        <td>{event.date}</td>
-                        <td>{event.attendees}</td>
-                        <td>
-                          <span className={`badge bg-${
-                            event.status === 'Completed' ? 'success' : 
-                            event.status === 'Upcoming' ? 'info' : 
-                            'secondary'
-                          }`}>
-                            {event.status}
-                          </span>
-                        </td>
-                        <td>
-                          <button className="btn btn-sm btn-outline-primary me-1">
-                            <i className="fas fa-edit"></i>
-                          </button>
-                          <button className="btn btn-sm btn-outline-info">
-                            <i className="fas fa-chart-bar"></i>
-                          </button>
-                        </td>
-                      </tr>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={dashboard.events} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <XAxis dataKey="title" tick={{ fontSize: 12 }} interval={0} angle={-20} textAnchor="end" height={60} />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="revenue" fill="#4e73df" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+        {/* Tickets Sold Pie Chart */}
+        <div className="col-lg-6 mb-4">
+          <div className="card shadow h-100">
+            <div className="card-header py-3">
+              <h6 className="m-0 fw-bold text-primary">Tickets Sold Distribution</h6>
+            </div>
+            <div className="card-body d-flex justify-content-center align-items-center">
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={dashboard.events}
+                    dataKey="tickets_sold"
+                    nameKey="title"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#36b9cc"
+                    label
+                  >
+                    {dashboard.events.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>

@@ -19,6 +19,9 @@ return new class extends Migration
                 $table->string('password');
                 $table->enum('role', ['organizer', 'attendee', 'admin']);
                 $table->boolean('is_suspended')->default(false);
+                $table->string('phone', 30)->nullable(); // Added phone
+                $table->string('company_name', 255)->nullable(); // Added company_name
+                $table->json('notification_preferences')->nullable(); // Added notification_preferences
                 $table->timestamps();
             });
         } else {
@@ -29,6 +32,15 @@ return new class extends Migration
                 $table->string('password')->change();
                 $table->enum('role', ['organizer', 'attendee', 'admin'])->change();
                 $table->boolean('is_suspended')->default(false)->change();
+                if (!Schema::hasColumn('users', 'phone')) {
+                    $table->string('phone', 30)->nullable();
+                }
+                if (!Schema::hasColumn('users', 'company_name')) {
+                    $table->string('company_name', 255)->nullable();
+                }
+                if (!Schema::hasColumn('users', 'notification_preferences')) {
+                    $table->json('notification_preferences')->nullable();
+                }
             });
         }
 

@@ -19,7 +19,7 @@ class OrganizerDashboardController extends Controller
         $organizer = $request->user();
 
         // Eager load tickets to calculate sales and revenue efficiently
-        $events = Event::with('tickets')->where('user_id', $organizer->id)->get();
+        $events = Event::with('tickets')->where('organizer_id', $organizer->id)->get();
 
         $totalEvents = $events->count();
         $upcomingEventsCount = $events->where('start_date', '>=', now())->count();
