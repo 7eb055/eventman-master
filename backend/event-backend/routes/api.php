@@ -13,6 +13,7 @@ use App\Http\Controllers\AttendeeDashboardController;
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ProfileController;
 
 
 /*
@@ -24,11 +25,8 @@ use Illuminate\Http\Request;
 // Public routes for registration and login
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-    Route::apiResource('events', EventController::class);
+Route::apiResource('events', EventController::class);
 
-  Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 // Protected routes that require a valid token
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
@@ -82,6 +80,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // For recommended events (simple example)
     Route::get('/events/recommended', [EventController::class, 'recommended']);
+
+    // Profile routes
+    Route::put('/user', [ProfileController::class, 'update']);
+    Route::post('/user/password', [ProfileController::class, 'changePassword']);
+    Route::post('/user/notifications', [ProfileController::class, 'updateNotifications']);
 });
 
 // Webhook route (exclude CSRF protection)

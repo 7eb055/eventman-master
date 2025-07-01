@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken, logout } from './auth';
 
 // Configuration
 const API_ROOT = 'http://localhost:8000';
@@ -17,6 +18,31 @@ const api = axios.create({
     'X-Requested-With': 'XMLHttpRequest'
   }
 });
+
+// Add a request interceptor to include the token
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Add a response interceptor to handle 401 errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Session expired or unauthorized, log out and reload
+      logout();
+      window.location.href = '/sign-in';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Utility Functions
 const checkServerAvailable = async () => {
@@ -49,35 +75,6 @@ export const getCsrfToken = async () => {
       : error;
   }
 };
-
-// Response Interceptor
-api.interceptors.response.use(
-  response => response,
-  error => {
-    const { response, code, message } = error;
-
-    if (code === 'ERR_NETWORK' || code === 'ECONNABORTED') {
-      console.error('Network error:', message);
-      return Promise.reject(new Error('Cannot connect to server. Check if backend is running.'));
-    }
-
-    if (response?.status === 401) {
-      console.error('Session expired. Please log in again.');
-    }
-
-    if (response) {
-      console.error('API Error:', {
-        status: response.status,
-        headers: response.headers,
-        data: response.data
-      });
-    } else {
-      console.error('API Error (No Response):', message);
-    }
-
-    return Promise.reject(error);
-  }
-);
 
 // API Methods
 // Test Endpoints

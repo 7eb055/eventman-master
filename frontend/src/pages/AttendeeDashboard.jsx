@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from 'react';
+import { getUser } from '../services/auth';
 import axios from 'axios';
 import './css/AttendeeDashboard.css';
 import UpcomingEventCard from '../components/event/UpcomingEventCard';
+import { Link } from 'react-router-dom';
 
 const API_URL = 'http://localhost:8000/api';
 
 const AttendeeDashboard = () => {
-  // User data (static for now)
-  const user = {
-    name: "Kwame Mensah",
-    email: "kwame.mensah@example.com",
-    joinDate: "January 2023",
-    ticketsPurchased: 12,
-    eventsAttended: 8
-  };
+  // User data from API
+  const [user, setUser] = useState(null);
+  const [userLoading, setUserLoading] = useState(true);
+  const [userError, setUserError] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await getUser();
+        setUser(response.data);
+      } catch (err) {
+        setUserError('Failed to load user details.');
+      } finally {
+        setUserLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   // Upcoming events
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -52,6 +64,8 @@ const AttendeeDashboard = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  if (userLoading) return <div>Loading user details...</div>;
+  if (userError) return <div className="text-danger">{userError}</div>;
   if (loading) return <div>Loading events...</div>;
   if (error) return <div className="text-danger">{error}</div>;
 
@@ -62,17 +76,25 @@ const AttendeeDashboard = () => {
         <div className="d-flex justify-content-between align-items-center mb-5">
           <div>
             <h1 className="display-5 fw-bold text-primary mb-1">Dashboard</h1>
-            <p className="text-muted">Welcome back, {user.name}</p>
+            <p className="text-muted">Welcome back, {user && user.user && user.user.name}</p>
+            <div className="user-details">
+              <div><strong>Email:</strong> {user && user.user && user.user.email}</div>
+              <div><strong>Joined:</strong> {user && user.user && user.user.created_at ? formatDate(user.user.created_at) : 'N/A'}</div>
+              <div><strong>Tickets Purchased:</strong> {user && user.user && user.user.ticketsPurchased}</div>
+              <div><strong>Events Attended:</strong> {user && user.user && user.user.eventsAttended}</div>
+            </div>
           </div>
           <div className="d-flex align-items-center">
-            <div className="position-relative">
-              <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px' }}>
-                <span className="text-white fw-bold fs-5">{user.name.charAt(0)}</span>
+            <Link to="/profile" aria-label="Go to profile">
+              <div className="position-relative" style={{ cursor: 'pointer' }}>
+                <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center" style={{ width: '45px', height: '45px' }}>
+                  <span className="text-white fw-bold fs-5">{user && user.user && user.user.name.charAt(0)}</span>
+                </div>
+                <span className="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-2 border-white rounded-circle">
+                  <span className="visually-hidden">Online</span>
+                </span>
               </div>
-              <span className="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-2 border-white rounded-circle">
-                <span className="visually-hidden">Online</span>
-              </span>
-            </div>
+            </Link>
           </div>
         </div>
 

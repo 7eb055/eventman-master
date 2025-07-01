@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import '../../components/css/Header.css';
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [location, setLocation] = React.useState('');
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { user, logout } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -60,14 +62,24 @@ const Header = () => {
           </div>
 
           <div className={`auth-buttons ${isMenuOpen ? 'open' : ''}`}>
-            <Link to="/sign-in" className="auth-button signin-button">
-              <i className="fas fa-sign-in-alt"></i>
-              <span>Sign In</span>
-            </Link>
-            <Link to="/sign-up" className="auth-button signup-button">
-              <i className="fas fa-user-plus"></i>
-              <span>Sign Up</span>
-            </Link>
+            {!user && (
+              <>
+                <Link to="/sign-in" className="auth-button signin-button">
+                  <i className="fas fa-sign-in-alt"></i>
+                  <span>Sign In</span>
+                </Link>
+                <Link to="/sign-up" className="auth-button signup-button">
+                  <i className="fas fa-user-plus"></i>
+                  <span>Sign Up</span>
+                </Link>
+              </>
+            )}
+            {user && (
+              <button onClick={logout} className="auth-button logout-button">
+                <i className="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

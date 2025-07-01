@@ -24,6 +24,7 @@ import AdminPanel from './pages/AdminPanel';
 import HelpPage from './pages/HelpPage';
 import AboutUs from './pages/CompanyAboutUs';
 import ContactUs from './pages/CompanyContactUs';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 
 function App() {
@@ -32,37 +33,45 @@ function App() {
       <Header />
       <main className="main-content">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/events/:id" element={<EventDetailPage />} />
-          <Route path="/create-event" element={< CreateEvent />} />
-          <Route path="/learn-more" element={<div>Learn More Page (To be implemented)</div>} />
           <Route path="/sign-in" element={<SignInPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/browse-events" element={<BrowseEvents />} />
-          <Route path="/get-ticket" element={<GetTicket />} />
-          <Route path="/ticket-purchase" element={<TicketPurchase />} />
           <Route path="/help" element={<HelpPage />} />
           <Route path="/test-api" element={<TestApi />} />
           <Route path="/api-test" element={<ApiConnectionTest />} />
           <Route path="/api-diagnostics" element={<ApiTestPage />} />
-          <Route path="/attendee-dashboard" element={<AttendeeDashboard />} />
-          <Route path="/organizer-dashboard" element={<OrganizerDashboard />} />
-          <Route path="/organizer-dashboard/events" element={<OrganizerDashboard />} />
-          <Route path="/organizer-dashboard/reviews" element={<OrganizerDashboard />} />
-          <Route path="/organizer-dashboard/pricing" element={<OrganizerDashboard />} />
-          <Route path="/company-dashboard" element={<CompanyDashboard />} />
-          <Route path="/company-dashboard/events" element={<CompanyDashboard />} />
-          <Route path="/company-dashboard/analytics" element={<CompanyDashboard />} />
-          <Route path="/company-dashboard/settings" element={<CompanyDashboard />} />
-          <Route path="/admin-panel" element={<AdminPanel />} />
-          <Route path="/admin-panel/dashboard" element={<AdminPanel />} />
-          <Route path="/admin-panel/users" element={<AdminPanel />} />
-          <Route path="/admin-panel/events" element={<AdminPanel />} />
-          <Route path="/admin-panel/analytics" element={<AdminPanel />} />
-          <Route path="/admin-panel/settings" element={<AdminPanel />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/profile" element={<Profile />} />
+
+          {/* Attendee Routes */}
+          <Route path="/get-ticket" element={<ProtectedRoute roles={['attendee']}><GetTicket /></ProtectedRoute>} />
+          <Route path="/ticket-purchase" element={<ProtectedRoute roles={['attendee']}><TicketPurchase /></ProtectedRoute>} />
+          <Route path="/attendee-dashboard" element={<ProtectedRoute roles={['attendee']}><AttendeeDashboard /></ProtectedRoute>} />
+
+          {/* Organizer Routes */}
+          <Route path="/create-event" element={<ProtectedRoute roles={['organizer']}><CreateEvent /></ProtectedRoute>} />
+          <Route path="/organizer-dashboard" element={<ProtectedRoute roles={['organizer']}><OrganizerDashboard /></ProtectedRoute>} />
+          <Route path="/organizer-dashboard/events" element={<ProtectedRoute roles={['organizer']}><OrganizerDashboard /></ProtectedRoute>} />
+          <Route path="/organizer-dashboard/reviews" element={<ProtectedRoute roles={['organizer']}><OrganizerDashboard /></ProtectedRoute>} />
+          <Route path="/organizer-dashboard/pricing" element={<ProtectedRoute roles={['organizer']}><OrganizerDashboard /></ProtectedRoute>} />
+          <Route path="/company-dashboard" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
+          <Route path="/company-dashboard/events" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
+          <Route path="/company-dashboard/analytics" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
+          <Route path="/company-dashboard/settings" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
+
+          {/* Admin Routes */}
+          <Route path="/admin-panel" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />
+          <Route path="/admin-panel/dashboard" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />
+          <Route path="/admin-panel/users" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />
+          <Route path="/admin-panel/events" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />
+          <Route path="/admin-panel/analytics" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />
+          <Route path="/admin-panel/settings" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />
+
+          {/* Shared Authenticated Routes */}
+          <Route path="/profile" element={<ProtectedRoute roles={['attendee','organizer','admin']}><Profile /></ProtectedRoute>} />
         </Routes>
       </main>
       <Footer />
