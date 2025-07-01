@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './css/AttendeeDashboard.css';
+import UpcomingEventCard from '../components/event/UpcomingEventCard';
 
 const API_URL = 'http://localhost:8000/api';
 
@@ -138,49 +139,7 @@ const AttendeeDashboard = () => {
             <div className="row row-cols-1 row-cols-md-2 g-4">
               {upcomingEvents.map(event => (
                 <div key={event.id} className="col">
-                  <div className="card border-0 shadow-sm rounded-4 h-100 event-card">
-                    <div className="row g-0">
-                      <div className="col-md-4">
-                        <img 
-                          src={event.image} 
-                          alt={event.name} 
-                          className="img-fluid h-100 rounded-start-4 object-fit-cover"
-                        />
-                      </div>
-                      <div className="col-md-8">
-                        <div className="card-body d-flex flex-column h-100 p-4">
-                          <div className="mb-3">
-                            <span className="badge bg-primary mb-2">{event.status}</span>
-                            <h5 className="card-title fw-bold">{event.name}</h5>
-                            <div className="d-flex flex-wrap gap-3 small">
-                              <div className="d-flex align-items-center">
-                                <i className="bi bi-calendar-event text-primary me-2"></i>
-                                <span>{formatDate(event.date)}</span>
-                              </div>
-                              <div className="d-flex align-items-center">
-                                <i className="bi bi-clock text-primary me-2"></i>
-                                <span>{event.time}</span>
-                              </div>
-                            </div>
-                            <div className="d-flex align-items-center mt-2">
-                              <i className="bi bi-geo-alt text-primary me-2"></i>
-                              <span>{event.location}</span>
-                            </div>
-                          </div>
-                          
-                          <div className="mt-auto d-flex justify-content-between align-items-center">
-                            <span className="badge bg-light text-dark border">
-                              <i className="bi bi-ticket-perforated me-2"></i>
-                              {event.ticketType}
-                            </span>
-                            <button className="btn btn-sm btn-outline-primary d-flex align-items-center">
-                              View Details <i className="bi bi-arrow-right ms-2"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <UpcomingEventCard event={event} attendee={user} />
                 </div>
               ))}
             </div>
