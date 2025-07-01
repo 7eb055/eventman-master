@@ -66,4 +66,11 @@ class EventController extends Controller
         }
         return response()->json($event);
     }
+
+    public function recommended()
+    {
+        // Simple: return upcoming events, or implement your own logic
+        $events = Event::where('start_date', '>', now())->orderBy('start_date')->limit(5)->get();
+        return response()->json($events);
+    }
 }

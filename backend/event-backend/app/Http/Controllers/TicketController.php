@@ -7,9 +7,19 @@ use App\Models\Event;
 use App\Events\TicketPurchased;
 use App\Models\Ticket;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Services\TicketService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {
+    protected $ticketService;
+
+    public function __construct(TicketService $ticketService)
+    {
+        $this->ticketService = $ticketService;
+    }
+
     public function purchase(Request $request, Event $event)
     {
         // Validate available capacity
@@ -84,6 +94,38 @@ class TicketController extends Controller
             ],
             'time' => $ticket->checked_in_at
         ]);
+    }
+
+    // Generate ticket after purchase/registration
+    public function generate(Request $request)
+    {
+        $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'ticket_type' => 'nullable|string',
+        ]);
+        $user = Auth::user();
+        $event = Event::findOrFail($request->event_id);
+        $result = $this->ticketService->generateTicket($user, $event, $request->ticket_type ?? 'standard');
+        return response()->json([
+            'ticket' => $result['ticket'],
+            'pdf_path' => $result['pdf_path'],
+            'qr' => $result['qr'],
+        ]);
+    }
+
+    // Download ticket PDF
+    public function download($ticketId)
+    {
+        $ticket = Ticket::findOrFail($ticketId);
+        $user = Auth::user();
+        if ($ticket->attendee_id !== $user->id) {
+            abort(403, 'Unauthorized');
+        }
+        $pdfPath = 'tickets/ticket_' . $ticket->id . '.pdf';
+        if (!Storage::exists($pdfPath)) {
+            abort(404, 'Ticket PDF not found');
+        }
+        return response()->download(storage_path('app/' . $pdfPath), 'YourTicket.pdf');
     }
 
     /**
