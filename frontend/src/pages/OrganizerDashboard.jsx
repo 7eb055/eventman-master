@@ -3,6 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell 
 } from 'recharts';
+import { Link } from 'react-router-dom';
 
 const OrganizerDashboard = () => {
   // Dashboard statistics
@@ -47,9 +48,9 @@ const OrganizerDashboard = () => {
       {/* Page Heading */}
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 className="h3 mb-0 text-gray-800">Organizer Dashboard</h1>
-        <a href="#" className="d-none d-sm-inline-block btn btn-primary shadow-sm">
+        <Link to="/create-event" className="d-none d-sm-inline-block btn btn-primary shadow-sm">
           <i className="fas fa-plus fa-sm text-white-50 me-1"></i> Create Event
-        </a>
+        </Link>
       </div>
 
       {/* Stats Cards */}
