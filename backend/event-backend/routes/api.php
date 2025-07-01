@@ -10,6 +10,7 @@ use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\PromoCodeController;
 use App\Http\Controllers\OrganizerDashboardController;
 use App\Http\Controllers\AttendeeDashboardController;
+use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 
@@ -71,6 +72,16 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/events', [EventController::class, 'store']);
+
+    // Ticket generation and download
+    Route::post('/tickets/generate', [\App\Http\Controllers\TicketController::class, 'generate']);
+    Route::get('/tickets/{ticket}/download', [\App\Http\Controllers\TicketController::class, 'download']);
+
+    // For attended events
+    Route::get('/users/{user}/events/attended', [AttendanceController::class, 'attendedEvents']);
+
+    // For recommended events (simple example)
+    Route::get('/events/recommended', [EventController::class, 'recommended']);
 });
 
 // Webhook route (exclude CSRF protection)
