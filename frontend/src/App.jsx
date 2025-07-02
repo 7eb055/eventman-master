@@ -26,12 +26,13 @@ import AboutUs from './pages/CompanyAboutUs';
 import ContactUs from './pages/CompanyContactUs';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import EditEvent from './pages/EditEvent';
-
+import AnnouncementsBanner from './components/common/AnnouncementsBanner';
 
 function App() {
   return (
     <Router>
       <Header />
+      <AnnouncementsBanner />
       <main className="main-content">
         <Routes>
           {/* Public Routes */}

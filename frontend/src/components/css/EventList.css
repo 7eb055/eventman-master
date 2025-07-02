@@ -1,4 +1,3 @@
-
 :root {
   --primary: #6f42c1;
   --secondary: #0dcaf0;
@@ -158,3 +157,5 @@
 @media (max-width: 768px) {
   .event-list-title {
     font-size: 2rem;
+  }
+}

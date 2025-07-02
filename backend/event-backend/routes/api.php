@@ -15,6 +15,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminController;
 
 
 /*
@@ -95,6 +96,50 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/system-activity', [AdminDashboardController::class, 'systemActivity']);
     Route::get('/admin/pending-approvals', [AdminDashboardController::class, 'pendingApprovals']);
     Route::get('/admin/system-users', [AdminDashboardController::class, 'systemUsers']);
+
+    // Admin emergency actions
+    Route::post('/admin/lockdown', [AdminController::class, 'lockdown']);
+    Route::post('/admin/system-alert', [AdminController::class, 'systemAlert']);
+    Route::post('/admin/purge-inactive-users', [AdminController::class, 'purgeInactiveUsers']);
+    Route::post('/admin/users', [AdminController::class, 'createUser']);
+    Route::put('/admin/users/{id}', [AdminController::class, 'updateUser']);
+    Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser']);
+
+    // Admin event management
+    Route::post('/admin/events/{id}/approve', [AdminController::class, 'approveEvent']);
+    Route::post('/admin/events/{id}/reject', [AdminController::class, 'rejectEvent']);
+    Route::delete('/admin/events/{id}', [AdminController::class, 'deleteEvent']);
+
+    // Admin settings management
+    Route::get('/admin/settings', [AdminController::class, 'getSettings']);
+    Route::post('/admin/settings', [AdminController::class, 'saveSettings']);
+
+    // Role management
+    Route::get('/admin/roles', [AdminController::class, 'listRoles']);
+    Route::post('/admin/roles', [AdminController::class, 'createRole']);
+    Route::put('/admin/roles/{id}', [AdminController::class, 'updateRole']);
+    Route::delete('/admin/roles/{id}', [AdminController::class, 'deleteRole']);
+    Route::post('/admin/users/{userId}/assign-role', [AdminController::class, 'assignRoleToUser']);
+    Route::post('/admin/users/{userId}/remove-role', [AdminController::class, 'removeRoleFromUser']);
+    // Permission management
+    Route::get('/admin/permissions', [AdminController::class, 'listPermissions']);
+    Route::post('/admin/permissions', [AdminController::class, 'createPermission']);
+    Route::put('/admin/permissions/{id}', [AdminController::class, 'updatePermission']);
+    Route::delete('/admin/permissions/{id}', [AdminController::class, 'deletePermission']);
+    Route::post('/admin/roles/{roleId}/assign-permission', [AdminController::class, 'assignPermissionToRole']);
+    Route::post('/admin/roles/{roleId}/remove-permission', [AdminController::class, 'removePermissionFromRole']);
+
+    // Announcements
+    Route::get('/admin/announcements', [AdminController::class, 'listAnnouncements']);
+    Route::post('/admin/announcements', [AdminController::class, 'createAnnouncement']);
+    Route::put('/admin/announcements/{id}', [AdminController::class, 'updateAnnouncement']);
+    Route::delete('/admin/announcements/{id}', [AdminController::class, 'deleteAnnouncement']);
+
+    // API Key management
+    Route::get('/admin/api-keys', [AdminController::class, 'listApiKeys']);
+    Route::post('/admin/api-keys', [AdminController::class, 'createApiKey']);
+    Route::post('/admin/api-keys/{id}/revoke', [AdminController::class, 'revokeApiKey']);
+    Route::delete('/admin/api-keys/{id}', [AdminController::class, 'deleteApiKey']);
 });
 
 // Webhook route (exclude CSRF protection)

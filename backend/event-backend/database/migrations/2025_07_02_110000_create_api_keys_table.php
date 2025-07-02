@@ -4,25 +4,21 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
+        // Schema::dropIfExists('api_keys'); // Drop table if it exists
         Schema::create('api_keys', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->comment('Service name');
-            $table->string('api_key', 191)->unique();
-            $table->timestamp('last_used')->nullable();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('label')->nullable();
+            $table->string('key')->unique();
+            $table->boolean('active')->default(true);
+            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('api_keys');

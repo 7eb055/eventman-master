@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import api from '../services/api';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import EmergencyActionsModal from '../components/common/EmergencyActionsModal';
+import UserModal from '../components/common/UserModal';
+import AnnouncementManager from '../components/admin/AnnouncementManager';
+import ApiKeyManager from '../components/admin/ApiKeyManager';
 
 const AdminPanel = () => {
   // Dynamic state for all admin data
@@ -249,7 +255,7 @@ const AdminPanel = () => {
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
               <h6 className="m-0 fw-bold text-primary">Recent System Activity</h6>
-              <button className="btn btn-sm btn-outline-primary">View All</button>
+              <button className="btn btn-sm btn-outline-primary" onClick={handleViewAllActivity}>View All</button>
             </div>
             <div className="card-body">
               <div className="list-group list-group-flush">
@@ -330,7 +336,7 @@ const AdminPanel = () => {
         <div className="card shadow mb-4">
           <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
             <h6 className="m-0 fw-bold text-primary">System User Management</h6>
-            <button className="btn btn-sm btn-primary">
+            <button className="btn btn-sm btn-primary" onClick={handleAddUser}>
               <i className="fas fa-plus me-1"></i> Add Admin User
             </button>
           </div>
@@ -371,10 +377,10 @@ const AdminPanel = () => {
                       </td>
                       <td>{user.joinDate}</td>
                       <td>
-                        <button className="btn btn-sm btn-outline-primary me-1">
+                        <button className="btn btn-sm btn-outline-primary me-1" onClick={() => handleEditUser(user)}>
                           <i className="fas fa-edit"></i>
                         </button>
-                        <button className="btn btn-sm btn-outline-danger">
+                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteUser(user)}>
                           <i className="fas fa-trash"></i>
                         </button>
                       </td>
@@ -389,46 +395,275 @@ const AdminPanel = () => {
     </div>
   );
 
-  // Example: Replace hardcoded data in renderDashboardView and other render methods
-  // (You may need to update the props/data passed to each chart/table component)
+  // System Report Download Handlers
+  const handleDownloadCSV = () => {
+    if (!stats) return;
+    const headers = ['Total Users', 'Total Events', 'Total Revenue', 'Active Events', 'Pending Approvals', 'Support Tickets'];
+    const row = [
+      stats.totalUsers,
+      stats.totalEvents,
+      stats.totalRevenue,
+      stats.activeEvents,
+      stats.pendingApprovals,
+      stats.supportTickets
+    ];
+    let csvContent = headers.join(',') + '\n' + row.join(',') + '\n';
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'system_report.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-  // Example: Platform Usage Bar Chart (Users, Events, Revenue by Month)
-  const renderPlatformUsageChart = () => (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={platformData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-        <XAxis dataKey="month" />
-        <YAxis />
-        <Tooltip />
-        <Bar dataKey="users" fill="#4e73df" name="Users" />
-        <Bar dataKey="events" fill="#1cc88a" name="Events" />
-        <Bar dataKey="revenue" fill="#f6c23e" name="Revenue" />
-      </BarChart>
-    </ResponsiveContainer>
-  );
+  const handleDownloadJSON = () => {
+    if (!stats) return;
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(stats, null, 2));
+    const link = document.createElement('a');
+    link.setAttribute('href', dataStr);
+    link.setAttribute('download', 'system_report.json');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-  // Example: User Role Distribution Pie Chart
-  const renderUserRolePieChart = () => (
-    <ResponsiveContainer width="100%" height={250}>
-      <PieChart>
-        <Pie
-          data={userRoleData}
-          dataKey="value"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius={80}
-          label
-        >
-          {userRoleData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-          ))}
-        </Pie>
-        <Tooltip />
-      </PieChart>
-    </ResponsiveContainer>
-  );
+  const handleDownloadPDF = () => {
+    if (!stats) return;
+    const doc = new jsPDF();
+    doc.text('System Report', 14, 16);
+    autoTable(doc, {
+      startY: 24,
+      head: [['Total Users', 'Total Events', 'Total Revenue', 'Active Events', 'Pending Approvals', 'Support Tickets']],
+      body: [[
+        stats.totalUsers,
+        stats.totalEvents,
+        stats.totalRevenue,
+        stats.activeEvents,
+        stats.pendingApprovals,
+        stats.supportTickets
+      ]],
+    });
+    doc.save('system_report.pdf');
+  };
 
-  // Example: System Activity Table
+  // Emergency Actions Modal State and Handlers
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null); // 'lockdown' | 'alert' | 'purge' | null
+  const [loadingAction, setLoadingAction] = useState(false);
+
+  const handleLockdown = () => setConfirmAction('lockdown');
+  const handleAlert = () => setConfirmAction('alert');
+  const handlePurge = () => setConfirmAction('purge');
+
+  const handleConfirmAction = async () => {
+    setLoadingAction(true);
+    try {
+      if (confirmAction === 'lockdown') {
+        await api.post('/admin/lockdown');
+        alert('Platform lockdown initiated!');
+      } else if (confirmAction === 'alert') {
+        await api.post('/admin/system-alert', { message: 'System-wide alert from admin.' });
+        alert('System-wide alert sent!');
+      } else if (confirmAction === 'purge') {
+        await api.post('/admin/purge-inactive-users');
+        alert('Inactive users purged!');
+      }
+    } catch (err) {
+      alert('Action failed. Please try again.');
+    } finally {
+      setLoadingAction(false);
+      setConfirmAction(null);
+      setShowEmergencyModal(false);
+    }
+  };
+
+  const handleCancelConfirm = () => setConfirmAction(null);
+
+  // User Modal State and Handlers
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [userModalLoading, setUserModalLoading] = useState(false);
+
+  const handleAddUser = () => {
+    setEditingUser(null);
+    setShowUserModal(true);
+  };
+  const handleEditUser = (user) => {
+    setEditingUser(user);
+    setShowUserModal(true);
+  };
+  const handleSaveUser = async (form) => {
+    setUserModalLoading(true);
+    try {
+      if (editingUser) {
+        // Edit existing user
+        await api.put(`/admin/users/${editingUser.id}`, form);
+      } else {
+        // Add new user
+        await api.post('/admin/users', form);
+      }
+      setShowUserModal(false);
+      // Refresh user list
+      const usersRes = await api.get('/admin/system-users');
+      setSystemUsers(usersRes.data);
+    } catch (err) {
+      alert('Failed to save user.');
+    } finally {
+      setUserModalLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (user) => {
+    if (!window.confirm(`Are you sure you want to delete user ${user.name}? This action cannot be undone.`)) return;
+    try {
+      await api.delete(`/admin/users/${user.id}`);
+      // Refresh user list
+      const usersRes = await api.get('/admin/system-users');
+      setSystemUsers(usersRes.data);
+    } catch (err) {
+      alert('Failed to delete user.');
+    }
+  };
+
+  // Event Oversight State and Handlers
+  const [eventList, setEventList] = useState([]);
+  const [eventLoading, setEventLoading] = useState(false);
+  const [eventError, setEventError] = useState(null);
+  const [eventActionLoading, setEventActionLoading] = useState(false);
+
+  const fetchEvents = async () => {
+    setEventLoading(true);
+    setEventError(null);
+    try {
+      const res = await api.get('/events');
+      setEventList(res.data);
+    } catch (err) {
+      setEventError('Failed to load events.');
+    } finally {
+      setEventLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (currentView === 'events') fetchEvents();
+  }, [currentView]);
+
+  const handleApproveEvent = async (event) => {
+    if (!window.confirm(`Approve event "${event.title}"?`)) return;
+    setEventActionLoading(true);
+    try {
+      await api.post(`/admin/events/${event.id}/approve`);
+      fetchEvents();
+    } catch (err) {
+      alert('Failed to approve event.');
+    } finally {
+      setEventActionLoading(false);
+    }
+  };
+  const handleRejectEvent = async (event) => {
+    if (!window.confirm(`Reject event "${event.title}"?`)) return;
+    setEventActionLoading(true);
+    try {
+      await api.post(`/admin/events/${event.id}/reject`);
+      fetchEvents();
+    } catch (err) {
+      alert('Failed to reject event.');
+    } finally {
+      setEventActionLoading(false);
+    }
+  };
+  const handleDeleteEvent = async (event) => {
+    if (!window.confirm(`Delete event "${event.title}"? This cannot be undone.`)) return;
+    setEventActionLoading(true);
+    try {
+      await api.delete(`/admin/events/${event.id}`);
+      fetchEvents();
+    } catch (err) {
+      alert('Failed to delete event.');
+    } finally {
+      setEventActionLoading(false);
+    }
+  };
+
+  // System Settings State and Handlers
+  const [settings, setSettings] = useState({ maintenance: false, emailTemplate: '', supportEmail: '', maxUploadSize: 10 });
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settingsError, setSettingsError] = useState(null);
+  const [settingsSuccess, setSettingsSuccess] = useState(null);
+
+  const fetchSettings = async () => {
+    setSettingsLoading(true);
+    setSettingsError(null);
+    try {
+      const res = await api.get('/admin/settings');
+      setSettings({
+        maintenance: res.data.maintenance,
+        emailTemplate: res.data.emailTemplate,
+        supportEmail: res.data.supportEmail || '',
+        maxUploadSize: res.data.maxUploadSize ? Number(res.data.maxUploadSize) : 10,
+      });
+    } catch (err) {
+      setSettingsError('Failed to load settings.');
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (currentView === 'settings') fetchSettings();
+  }, [currentView]);
+
+  const handleSettingsChange = e => {
+    const { name, value, type, checked } = e.target;
+    setSettings(s => ({ ...s, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+  const handleSaveSettings = async e => {
+    e.preventDefault();
+    setSettingsLoading(true);
+    setSettingsError(null);
+    setSettingsSuccess(null);
+    try {
+      await api.post('/admin/settings', settings);
+      setSettingsSuccess('Settings saved successfully.');
+    } catch (err) {
+      setSettingsError('Failed to save settings.');
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
+
+  // System Activity Modal State
+  const [showActivityModal, setShowActivityModal] = useState(false);
+  const [activityPage, setActivityPage] = useState(1);
+  const [activityPerPage] = useState(20);
+  const [activityTotal, setActivityTotal] = useState(0);
+  const [activityAll, setActivityAll] = useState([]);
+  const [activityLoading, setActivityLoading] = useState(false);
+  const [activityError, setActivityError] = useState(null);
+
+  const fetchAllActivity = async (page = 1) => {
+    setActivityLoading(true);
+    setActivityError(null);
+    try {
+      const res = await api.get(`/admin/system-activity?page=${page}&perPage=${activityPerPage}`);
+      setActivityAll(res.data.data || res.data);
+      setActivityTotal(res.data.total || res.data.length);
+      setActivityPage(page);
+    } catch (err) {
+      setActivityError('Failed to load system activity.');
+    } finally {
+      setActivityLoading(false);
+    }
+  };
+
+  const handleViewAllActivity = () => {
+    setShowActivityModal(true);
+    fetchAllActivity(1);
+  };
+
   const renderSystemActivityTable = () => (
     <table className="table table-striped">
       <thead>
@@ -504,6 +739,136 @@ const AdminPanel = () => {
     </table>
   );
 
+  // Example: Events Table
+  const renderEventsTable = () => (
+    <div className="table-responsive">
+      <table className="table table-bordered">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Organizer</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {eventList.map(event => (
+            <tr key={event.id}>
+              <td>{event.title}</td>
+              <td>{event.event_type}</td>
+              <td>{event.organizer_id}</td>
+              <td>{event.status || '-'}</td>
+              <td>{event.start_date}</td>
+              <td>
+                <button className="btn btn-sm btn-success me-1" onClick={() => handleApproveEvent(event)} disabled={eventActionLoading}>
+                  <i className="fas fa-check"></i>
+                </button>
+                <button className="btn btn-sm btn-warning me-1" onClick={() => handleRejectEvent(event)} disabled={eventActionLoading}>
+                  <i className="fas fa-times"></i>
+                </button>
+                <button className="btn btn-sm btn-danger" onClick={() => handleDeleteEvent(event)} disabled={eventActionLoading}>
+                  <i className="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  // Role Management State and Handlers
+  const [roles, setRoles] = useState([]);
+  const [permissions, setPermissions] = useState([]);
+  const [roleLoading, setRoleLoading] = useState(false);
+  const [roleError, setRoleError] = useState(null);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [editingRole, setEditingRole] = useState(null);
+  const [roleForm, setRoleForm] = useState({ name: '', description: '', permissions: [] });
+
+  const fetchRoles = async () => {
+    setRoleLoading(true);
+    setRoleError(null);
+    try {
+      const res = await api.get('/admin/roles');
+      setRoles(res.data);
+    } catch (err) {
+      setRoleError('Failed to load roles.');
+    } finally {
+      setRoleLoading(false);
+    }
+  };
+  const fetchPermissions = async () => {
+    try {
+      const res = await api.get('/admin/permissions');
+      setPermissions(res.data);
+    } catch {}
+  };
+  useEffect(() => {
+    if (currentView === 'roles') {
+      fetchRoles();
+      fetchPermissions();
+    }
+  }, [currentView]);
+
+  const handleAddRole = () => {
+    setEditingRole(null);
+    setRoleForm({ name: '', description: '', permissions: [] });
+    setShowRoleModal(true);
+  };
+  const handleEditRole = (role) => {
+    setEditingRole(role);
+    setRoleForm({
+      name: role.name,
+      description: role.description,
+      permissions: role.permissions ? role.permissions.map(p => p.id) : [],
+    });
+    setShowRoleModal(true);
+  };
+  const handleRoleFormChange = e => {
+    const { name, value, type, checked } = e.target;
+    if (name === 'permissions') {
+      const id = Number(value);
+      setRoleForm(f => ({
+        ...f,
+        permissions: checked ? [...f.permissions, id] : f.permissions.filter(pid => pid !== id)
+      }));
+    } else {
+      setRoleForm(f => ({ ...f, [name]: value }));
+    }
+  };
+  const handleSaveRole = async (e) => {
+    e.preventDefault();
+    try {
+      let roleRes;
+      if (editingRole) {
+        roleRes = await api.put(`/admin/roles/${editingRole.id}`, { name: roleForm.name, description: roleForm.description });
+      } else {
+        roleRes = await api.post('/admin/roles', { name: roleForm.name, description: roleForm.description });
+      }
+      // Assign permissions
+      const roleId = editingRole ? editingRole.id : roleRes.data.role.id;
+      for (const pid of roleForm.permissions) {
+        await api.post(`/admin/roles/${roleId}/assign-permission`, { permission_id: pid });
+      }
+      setShowRoleModal(false);
+      fetchRoles();
+    } catch (err) {
+      alert('Failed to save role.');
+    }
+  };
+  const handleDeleteRole = async (role) => {
+    if (!window.confirm(`Delete role "${role.name}"? This cannot be undone.`)) return;
+    try {
+      await api.delete(`/admin/roles/${role.id}`);
+      fetchRoles();
+    } catch (err) {
+      alert('Failed to delete role.');
+    }
+  };
+
   // Example usage in your main render or dashboard view:
   // Place these where you want the charts/tables to appear
   // {renderPlatformUsageChart()}
@@ -511,6 +876,7 @@ const AdminPanel = () => {
   // {renderSystemActivityTable()}
   // {renderPendingApprovalsTable()}
   // {renderSystemUsersTable()}
+  // {renderEventsTable()}
 
   if (loading) return <div>Loading admin dashboard...</div>;
   if (error) return <div style={{color: 'red'}}>{error}</div>;
@@ -525,10 +891,17 @@ const AdminPanel = () => {
           <p className="text-muted mb-0">Manage platform operations, users, and system settings</p>
         </div>
         <div className="d-flex">
-          <button className="btn btn-sm btn-outline-primary me-2">
-            <i className="fas fa-download fa-sm me-1"></i> System Report
-          </button>
-          <button className="btn btn-sm btn-danger">
+          <div className="btn-group me-2">
+            <button className="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <i className="fas fa-download fa-sm me-1"></i> System Report
+            </button>
+            <ul className="dropdown-menu">
+              <li><button className="dropdown-item" onClick={handleDownloadCSV}>Download CSV</button></li>
+              <li><button className="dropdown-item" onClick={handleDownloadPDF}>Download PDF</button></li>
+              <li><button className="dropdown-item" onClick={handleDownloadJSON}>Download JSON</button></li>
+            </ul>
+          </div>
+          <button className="btn btn-sm btn-danger" onClick={() => setShowEmergencyModal(true)}>
             <i className="fas fa-exclamation-triangle fa-sm me-1"></i> Emergency Actions
           </button>
         </div>
@@ -578,16 +951,45 @@ const AdminPanel = () => {
                 <i className="fas fa-cogs me-1"></i> System Settings
               </button>
             </li>
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${currentView === 'roles' ? 'active' : ''}`}
+                onClick={() => setCurrentView('roles')}
+              >
+                <i className="fas fa-user-shield me-1"></i> Role Management
+              </button>
+            </li>
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${currentView === 'announcements' ? 'active' : ''}`}
+                onClick={() => setCurrentView('announcements')}
+              >
+                <i className="fas fa-bullhorn me-1"></i> Announcements
+              </button>
+            </li>
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${currentView === 'apiKeys' ? 'active' : ''}`}
+                onClick={() => setCurrentView('apiKeys')}
+              >
+                <i className="fas fa-key me-1"></i> API Keys
+              </button>
+            </li>
           </ul>
         </div>
         <div className="card-body p-0">
           {currentView === 'dashboard' && renderDashboardView()}
           {currentView === 'users' && renderUserManagement()}
           {currentView === 'events' && (
-            <div className="p-4 text-center">
-              <i className="fas fa-calendar-check fa-3x text-muted mb-3"></i>
-              <h5>Event Oversight</h5>
-              <p className="text-muted">Monitor and manage all events across the platform</p>
+            <div className="p-4">
+              <h5 className="mb-3">Event Oversight</h5>
+              {eventLoading ? (
+                <div>Loading events...</div>
+              ) : eventError ? (
+                <div className="text-danger">{eventError}</div>
+              ) : (
+                renderEventsTable()
+              )}
             </div>
           )}
           {currentView === 'analytics' && (
@@ -598,14 +1000,214 @@ const AdminPanel = () => {
             </div>
           )}
           {currentView === 'settings' && (
-            <div className="p-4 text-center">
-              <i className="fas fa-cogs fa-3x text-muted mb-3"></i>
-              <h5>System Settings</h5>
-              <p className="text-muted">Configure platform settings and preferences</p>
+            <div className="p-4" style={{maxWidth: 600}}>
+              <h5 className="mb-3">System Settings</h5>
+              {settingsLoading ? (
+                <div>Loading settings...</div>
+              ) : settingsError ? (
+                <div className="text-danger">{settingsError}</div>
+              ) : (
+                <form onSubmit={handleSaveSettings}>
+                  <div className="form-check form-switch mb-3">
+                    <input className="form-check-input" type="checkbox" id="maintenance" name="maintenance" checked={settings.maintenance} onChange={handleSettingsChange} />
+                    <label className="form-check-label" htmlFor="maintenance">Maintenance Mode</label>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Default Email Template</label>
+                    <textarea className="form-control" name="emailTemplate" rows="4" value={settings.emailTemplate} onChange={handleSettingsChange}></textarea>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Support Email</label>
+                    <input className="form-control" name="supportEmail" type="email" value={settings.supportEmail} onChange={handleSettingsChange} required />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Max Upload Size (MB)</label>
+                    <input className="form-control" name="maxUploadSize" type="number" min="1" max="100" value={settings.maxUploadSize} onChange={handleSettingsChange} required />
+                  </div>
+                  <button className="btn btn-primary" type="submit" disabled={settingsLoading}>Save Settings</button>
+                  {settingsSuccess && <span className="text-success ms-3">{settingsSuccess}</span>}
+                </form>
+              )}
+            </div>
+          )}
+          {currentView === 'roles' && (
+            <div className="p-4" style={{maxWidth: 800}}>
+              <h5 className="mb-3">Role Management</h5>
+              <button className="btn btn-primary mb-3" onClick={handleAddRole}><i className="fas fa-plus me-1"></i> Add Role</button>
+              {roleLoading ? <div>Loading roles...</div> : roleError ? <div className="text-danger">{roleError}</div> : (
+                <div className="table-responsive">
+                  <table className="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Permissions</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {roles.map(role => (
+                        <tr key={role.id}>
+                          <td>{role.name}</td>
+                          <td>{role.description}</td>
+                          <td>{role.permissions && role.permissions.length ? role.permissions.map(p => p.name).join(', ') : '-'}</td>
+                          <td>
+                            <button className="btn btn-sm btn-outline-primary me-1" onClick={() => handleEditRole(role)}><i className="fas fa-edit"></i></button>
+                            <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteRole(role)}><i className="fas fa-trash"></i></button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {/* Role Modal */}
+              {showRoleModal && (
+                <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:2100,display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0.5)'}}>
+                  <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div className="modal-content bg-white">
+                      <div className="modal-header bg-primary text-white">
+                        <h5 className="modal-title">{editingRole ? 'Edit Role' : 'Add Role'}</h5>
+                        <button type="button" className="btn-close" aria-label="Close" onClick={()=>setShowRoleModal(false)}></button>
+                      </div>
+                      <form onSubmit={handleSaveRole}>
+                        <div className="modal-body">
+                          <div className="mb-3">
+                            <label className="form-label">Role Name</label>
+                            <input className="form-control" name="name" value={roleForm.name} onChange={handleRoleFormChange} required />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Description</label>
+                            <input className="form-control" name="description" value={roleForm.description} onChange={handleRoleFormChange} />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Permissions</label>
+                            <div className="row">
+                              {permissions.map(perm => (
+                                <div className="col-md-4" key={perm.id}>
+                                  <div className="form-check">
+                                    <input className="form-check-input" type="checkbox" name="permissions" value={perm.id} id={`perm-${perm.id}`} checked={roleForm.permissions.includes(perm.id)} onChange={handleRoleFormChange} />
+                                    <label className="form-check-label" htmlFor={`perm-${perm.id}`}>{perm.name}</label>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="modal-footer">
+                          <button type="button" className="btn btn-secondary" onClick={()=>setShowRoleModal(false)}>Cancel</button>
+                          <button type="submit" className="btn btn-primary">{editingRole ? 'Save Changes' : 'Add Role'}</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          {currentView === 'announcements' && (
+            <div className="p-4" style={{maxWidth: 700}}>
+              <h5 className="mb-3">Platform Announcements</h5>
+              <AnnouncementManager roles={roles} />
+            </div>
+          )}
+          {currentView === 'apiKeys' && (
+            <div className="p-4" style={{maxWidth: 700}}>
+              <h5 className="mb-3">API Key Management</h5>
+              <ApiKeyManager />
             </div>
           )}
         </div>
       </div>
+
+      {/* Emergency Actions Modal */}
+      <EmergencyActionsModal
+        show={showEmergencyModal}
+        onClose={() => setShowEmergencyModal(false)}
+        onLockdown={handleLockdown}
+        onAlert={handleAlert}
+        onPurge={handlePurge}
+      />
+      {/* Emergency Action Confirmation Modal */}
+      {confirmAction && (
+        <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:2100,display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0.5)'}}>
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content bg-white">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title">Confirm Action</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={handleCancelConfirm}></button>
+              </div>
+              <div className="modal-body">
+                <p>Are you sure you want to {confirmAction === 'lockdown' ? 'lockdown the platform' : confirmAction === 'alert' ? 'send a system-wide alert' : 'purge all inactive users'}?</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleCancelConfirm} disabled={loadingAction}>Cancel</button>
+                <button type="button" className="btn btn-danger" onClick={handleConfirmAction} disabled={loadingAction}>
+                  {loadingAction ? 'Processing...' : 'Confirm'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* User Modal */}
+      <UserModal
+        show={showUserModal}
+        onClose={() => setShowUserModal(false)}
+        onSave={handleSaveUser}
+        user={editingUser}
+        loading={userModalLoading}
+      />
+
+      {/* System Activity Modal */}
+      {showActivityModal && (
+        <div style={{position:'fixed',top:0,left:0,width:'100vw',height:'100vh',zIndex:2100,display:'flex',alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0.5)'}}>
+          <div className="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div className="modal-content bg-white">
+              <div className="modal-header bg-primary text-white">
+                <h5 className="modal-title">System Activity Log</h5>
+                <button type="button" className="btn-close" aria-label="Close" onClick={()=>setShowActivityModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                {activityLoading ? <div>Loading...</div> : activityError ? <div className="text-danger">{activityError}</div> : (
+                  <div className="table-responsive" style={{maxHeight: '60vh', overflowY: 'auto'}}>
+                    <table className="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>User</th>
+                          <th>Action</th>
+                          <th>Time</th>
+                          <th>Type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {activityAll.map((activity, idx) => (
+                          <tr key={activity.id || idx}>
+                            <td>{activity.user}</td>
+                            <td>{activity.action}</td>
+                            <td>{activity.time || activity.created_at}</td>
+                            <td>{activity.type}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer justify-content-between">
+                <div>
+                  Page {activityPage} of {Math.ceil(activityTotal / activityPerPage)}
+                </div>
+                <div>
+                  <button className="btn btn-secondary me-2" disabled={activityPage === 1} onClick={()=>fetchAllActivity(activityPage-1)}>Previous</button>
+                  <button className="btn btn-secondary" disabled={activityPage >= Math.ceil(activityTotal / activityPerPage)} onClick={()=>fetchAllActivity(activityPage+1)}>Next</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
