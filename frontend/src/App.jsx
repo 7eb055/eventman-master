@@ -25,6 +25,7 @@ import HelpPage from './pages/HelpPage';
 import AboutUs from './pages/CompanyAboutUs';
 import ContactUs from './pages/CompanyContactUs';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import EditEvent from './pages/EditEvent';
 
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
           <Route path="/company-dashboard/events" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
           <Route path="/company-dashboard/analytics" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
           <Route path="/company-dashboard/settings" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
+          <Route path="/edit-event/:id" element={<ProtectedRoute roles={['organizer']}><EditEvent /></ProtectedRoute>} />
 
           {/* Admin Routes */}
           <Route path="/admin-panel" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />

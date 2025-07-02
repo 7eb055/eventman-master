@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { getToken } from '../services/auth';
@@ -19,6 +20,7 @@ const CreateEvent = () => {
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [apiError, setApiError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,7 +89,8 @@ const CreateEvent = () => {
             start_date: '',
           });
           setSubmitted(false);
-        }, 3000);
+          navigate('/organizer-dashboard');
+        }, 2000);
       } catch (err) {
         setApiError('Network or server error.');
       }

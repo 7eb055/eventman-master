@@ -3,7 +3,8 @@ import { getUser } from '../services/auth';
 import axios from 'axios';
 import './css/AttendeeDashboard.css';
 import UpcomingEventCard from '../components/event/UpcomingEventCard';
-import { Link } from 'react-router-dom';
+import TicketModal from '../components/event/TicketModal';
+import { Link, useNavigate } from 'react-router-dom';
 
 const API_URL = 'http://localhost:8000/api';
 
@@ -13,11 +14,18 @@ const AttendeeDashboard = () => {
   const [userLoading, setUserLoading] = useState(true);
   const [userError, setUserError] = useState(null);
 
+  // Store purchased event IDs
+  const [purchasedEventIds, setPurchasedEventIds] = useState([]);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await getUser();
         setUser(response.data);
+        // If dashboard API returns events the user has tickets for:
+        if (response.data && response.data.events) {
+          setPurchasedEventIds(response.data.events.map(e => e.id));
+        }
       } catch (err) {
         setUserError('Failed to load user details.');
       } finally {
@@ -58,10 +66,38 @@ const AttendeeDashboard = () => {
     // { id: 1, name: 'Recommended Event', date: '2025-08-01', location: 'Kumasi', price: 50 }
   ]);
 
+  const navigate = useNavigate();
+
   // Format date to "Month Day, Year" format
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  // Handler for Get Tickets button
+  const handleGetTickets = (eventId) => {
+    navigate(`/events/${eventId}`);
+  };
+
+  // Ticket download/modal logic
+  const [showTicketModal, setShowTicketModal] = useState(false);
+  const [ticketModalData, setTicketModalData] = useState({ ticketUrl: '', qrCodeUrl: '' });
+
+  // Handler for Download Ticket button
+  const handleDownloadTicket = async (event) => {
+    // Simulate API call to get ticket PDF and QR code
+    // Replace with your real API call
+    const ticketUrl = `/api/tickets/${event.id}/download`;
+    const qrCodeUrl = `/api/tickets/${event.id}/qr`;
+    setTicketModalData({ ticketUrl, qrCodeUrl });
+    setShowTicketModal(true);
+    // Also trigger direct download
+    const link = document.createElement('a');
+    link.href = ticketUrl;
+    link.download = `ticket-${event.id}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (userLoading) return <div>Loading user details...</div>;
@@ -161,12 +197,19 @@ const AttendeeDashboard = () => {
             <div className="row row-cols-1 row-cols-md-2 g-4">
               {upcomingEvents.map(event => (
                 <div key={event.id} className="col">
-                  <UpcomingEventCard event={event} attendee={user} />
+                  <UpcomingEventCard 
+                    event={event} 
+                    attendee={user} 
+                    onDownloadTicket={handleDownloadTicket}
+                    ticketStatus={purchasedEventIds.includes(event.id) ? 'purchased' : 'not purchased'}
+                    showTicketStatus={true}
+                  />
                 </div>
               ))}
             </div>
           </div>
         </div>
+        <TicketModal show={showTicketModal} onClose={() => setShowTicketModal(false)} ticketUrl={ticketModalData.ticketUrl} qrCodeUrl={ticketModalData.qrCodeUrl} />
 
         {/* Past Events Section */}
         <div className="card border-0 shadow-sm rounded-4 mb-5">
@@ -258,7 +301,7 @@ const AttendeeDashboard = () => {
                       
                       <div className="d-flex justify-content-between align-items-center mt-auto">
                         <h4 className="mb-0 text-success fw-bold">GHS {event.price}</h4>
-                        <button className="btn btn-sm btn-primary">
+                        <button className="btn btn-sm btn-primary" onClick={() => handleGetTickets(event.id)}>
                           Get Tickets
                         </button>
                       </div>

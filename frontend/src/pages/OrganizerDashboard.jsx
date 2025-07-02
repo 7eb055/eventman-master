@@ -7,11 +7,15 @@ import {
 import { Link } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 
 const OrganizerDashboard = () => {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -80,6 +84,35 @@ const OrganizerDashboard = () => {
       body: dashboard.events.map(e => [e.title, e.start_date, e.tickets_sold, e.revenue]),
     });
     doc.save('events_report.pdf');
+  };
+
+  const handleDeleteClick = (event) => {
+    setEventToDelete(event);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!eventToDelete) return;
+    setDeletingId(eventToDelete.id);
+    try {
+      await api.delete(`/events/${eventToDelete.id}`);
+      setDashboard(prev => ({
+        ...prev,
+        events: prev.events.filter(e => e.id !== eventToDelete.id),
+        total_events: prev.total_events - 1,
+      }));
+      setShowDeleteModal(false);
+      setEventToDelete(null);
+    } catch (err) {
+      alert('Failed to delete event. Please try again.');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setEventToDelete(null);
   };
 
   if (loading) return <div className="text-center mt-5">Loading...</div>;
@@ -185,6 +218,8 @@ const OrganizerDashboard = () => {
                   <th>Start Date</th>
                   <th>Tickets Sold</th>
                   <th>Revenue</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -195,10 +230,29 @@ const OrganizerDashboard = () => {
                       <td>{event.start_date}</td>
                       <td>{event.tickets_sold}</td>
                       <td>${event.revenue}</td>
+                      <td>
+                        <Link to={`/edit-event/${event.id}`} className="btn btn-sm btn-outline-primary" title="Edit Event">
+                          <i className="bi bi-pencil"></i>
+                        </Link>
+                      </td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          title="Delete Event"
+                          onClick={() => handleDeleteClick(event)}
+                          disabled={deletingId === event.id}
+                        >
+                          {deletingId === event.id ? (
+                            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                          ) : (
+                            <i className="bi bi-trash"></i>
+                          )}
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan="4" className="text-center">No events found.</td></tr>
+                  <tr><td colSpan="6" className="text-center">No events found.</td></tr>
                 )}
               </tbody>
             </table>
@@ -269,6 +323,14 @@ const OrganizerDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Confirm Delete Modal */}
+      <ConfirmDeleteModal
+        show={showDeleteModal}
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleConfirmDelete}
+        eventTitle={eventToDelete?.title}
+      />
     </div>
   );
 };

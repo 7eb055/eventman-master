@@ -26,7 +26,7 @@ use App\Http\Controllers\AdminDashboardController;
 // Public routes for registration and login
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::apiResource('events', EventController::class);
+Route::get('/events', [EventController::class, 'index']);
 
 // Protected routes that require a valid token
 Route::middleware('auth:sanctum')->group(function () {
@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/revoke-token', [AuthController::class, 'revokeToken'])->middleware('auth:sanctum');
 
     // Events
+    Route::apiResource('events', EventController::class)->except(['index', 'show']);
     Route::get('/events/category/{category}', [EventController::class, 'byCategory']);
     Route::get('/events/upcoming', [EventController::class, 'upcoming']);
     Route::get('/events/past', [EventController::class, 'past']);

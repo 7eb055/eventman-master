@@ -10,8 +10,9 @@ import '../../components/css/EventCard.css';
  *   attendee: attendee object (optional, for attendee-specific info)
  *   showTicketStatus: boolean (show ticket status badge)
  *   ticketStatus: string (e.g. 'purchased', 'not purchased')
+ *   onDownloadTicket: function (handler for downloading ticket)
  */
-function UpcomingEventCard({ event, attendee = null, showTicketStatus = false, ticketStatus = null }) {
+function UpcomingEventCard({ event, attendee = null, showTicketStatus = false, ticketStatus = null, onDownloadTicket }) {
   // Use correct backend field names with fallback
   const eventType = event.event_type || event.eventType || 'Conference';
   const bannerUrl = event.banner_url || event.image || `https://via.placeholder.com/600x300?text=${encodeURIComponent(event.title || 'Event')}`;
@@ -75,6 +76,11 @@ function UpcomingEventCard({ event, attendee = null, showTicketStatus = false, t
             View Details
             <i className="fas fa-arrow-right"></i>
           </Link>
+          {ticketStatus === 'purchased' && (
+            <button className="btn btn-outline-primary ms-2" onClick={() => onDownloadTicket && onDownloadTicket(event)}>
+              Download Ticket
+            </button>
+          )}
         </div>
       </div>
     </div>
