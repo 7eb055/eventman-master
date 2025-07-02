@@ -1,69 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
+import api from '../services/api';
 
 const AdminPanel = () => {
-  // System statistics
-  const stats = {
-    totalUsers: 2847,
-    totalEvents: 156,
-    totalRevenue: "$125,430",
-    activeEvents: 24,
-    pendingApprovals: 12,
-    supportTickets: 8
-  };
+  // Dynamic state for all admin data
+  const [stats, setStats] = useState(null);
+  const [platformData, setPlatformData] = useState([]);
+  const [userRoleData, setUserRoleData] = useState([]);
+  const [systemActivity, setSystemActivity] = useState([]);
+  const [pendingApprovals, setPendingApprovals] = useState([]);
+  const [systemUsers, setSystemUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Platform usage data
-  const platformData = [
-    { month: 'Jan', users: 1200, events: 45, revenue: 15500 },
-    { month: 'Feb', users: 1350, events: 52, revenue: 18200 },
-    { month: 'Mar', users: 1580, events: 38, revenue: 14800 },
-    { month: 'Apr', users: 1740, events: 64, revenue: 22500 },
-    { month: 'May', users: 1950, events: 71, revenue: 26200 },
-    { month: 'Jun', users: 2240, events: 58, revenue: 21800 },
-    { month: 'Jul', users: 2450, events: 82, revenue: 31200 },
-    { month: 'Aug', users: 2680, events: 76, revenue: 28600 },
-    { month: 'Sep', users: 2520, events: 69, revenue: 24800 },
-    { month: 'Oct', users: 2750, events: 85, revenue: 33500 },
-    { month: 'Nov', users: 2840, events: 78, revenue: 29200 },
-    { month: 'Dec', users: 2847, events: 92, revenue: 35400 }
-  ];
-
-  // User role distribution
-  const userRoleData = [
-    { name: 'Attendees', value: 2245, color: '#4e73df' },
-    { name: 'Organizers', value: 387, color: '#1cc88a' },
-    { name: 'Companies', value: 158, color: '#36b9cc' },
-    { name: 'Admins', value: 57, color: '#f6c23e' }
-  ];
-
-  // Recent system activity
-  const [systemActivity] = useState([
-    { id: 1, user: "System", action: "Database backup completed", time: "5 min ago", type: "system" },
-    { id: 2, user: "Admin", action: "Approved event: Tech Conference 2024", time: "12 min ago", type: "approval" },
-    { id: 3, user: "Security", action: "Failed login attempts blocked", time: "18 min ago", type: "security" },
-    { id: 4, user: "System", action: "Payment processing resumed", time: "25 min ago", type: "system" },
-    { id: 5, user: "Admin", action: "User account suspended: suspicious activity", time: "1 hour ago", type: "security" },
-    { id: 6, user: "System", action: "Email notification sent: 1,245 users", time: "2 hours ago", type: "system" },
-    { id: 7, user: "Admin", action: "New company registered: TechCorp Ltd", time: "3 hours ago", type: "approval" }
-  ]);
-
-  // Pending approvals
-  const [pendingApprovals] = useState([
-    { id: 1, type: "Event", name: "AI Summit 2024", requestor: "TechCorp", date: "2024-01-15", priority: "High" },
-    { id: 2, type: "Company", name: "EventPro Solutions", requestor: "John Smith", date: "2024-01-14", priority: "Medium" },
-    { id: 3, type: "Event", name: "Music Festival Summer", requestor: "Entertainment Plus", date: "2024-01-13", priority: "High" },
-    { id: 4, type: "Refund", name: "Ticket refund request", requestor: "Jane Doe", date: "2024-01-12", priority: "Low" },
-    { id: 5, type: "Event", name: "Business Workshop Series", requestor: "EduEvents", date: "2024-01-11", priority: "Medium" }
-  ]);
-
-  // System users management
-  const [systemUsers] = useState([
-    { id: 1, name: "Sarah Johnson", email: "sarah@eventman.com", role: "Super Admin", lastActive: "Online", status: "Active", joinDate: "2023-01-15" },
-    { id: 2, name: "Michael Chen", email: "michael@eventman.com", role: "Admin", lastActive: "2 hours ago", status: "Active", joinDate: "2023-03-22" },
-    { id: 3, name: "Emily Rodriguez", email: "emily@eventman.com", role: "Moderator", lastActive: "Yesterday", status: "Active", joinDate: "2023-05-10" },
-    { id: 4, name: "David Kim", email: "david@eventman.com", role: "Support", lastActive: "Today", status: "Active", joinDate: "2023-07-18" },
-    { id: 5, name: "Lisa Wang", email: "lisa@eventman.com", role: "Admin", lastActive: "3 days ago", status: "Inactive", joinDate: "2023-02-05" }
-  ]);
+  useEffect(() => {
+    const fetchAdminData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [statsRes, platformRes, roleRes, activityRes, pendingRes, usersRes] = await Promise.all([
+          api.get('/admin/stats'),
+          api.get('/admin/platform-usage'),
+          api.get('/admin/role-distribution'),
+          api.get('/admin/system-activity'),
+          api.get('/admin/pending-approvals'),
+          api.get('/admin/system-users'),
+        ]);
+        setStats(statsRes.data);
+        // Merge platform usage data for charting
+        const months = [
+          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+        const usage = months.map((month, idx) => {
+          const users = platformRes.data.usersByMonth.find(u => u.month === idx + 1)?.users || 0;
+          const events = platformRes.data.eventsByMonth.find(e => e.month === idx + 1)?.events || 0;
+          const revenue = platformRes.data.revenueByMonth.find(r => r.month === idx + 1)?.revenue || 0;
+          return { month, users, events, revenue };
+        });
+        setPlatformData(usage);
+        // Role distribution for pie chart
+        setUserRoleData(roleRes.data.map(role => ({ name: role.role, value: role.value })));
+        setSystemActivity(activityRes.data);
+        setPendingApprovals(pendingRes.data);
+        setSystemUsers(usersRes.data);
+      } catch (err) {
+        setError('Failed to load admin data.');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAdminData();
+  }, []);
 
   // Color palette for charts
   const COLORS = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'];
@@ -99,7 +88,7 @@ const AdminPanel = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-primary text-uppercase mb-1">Total Users</div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.totalUsers.toLocaleString()}</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.totalUsers?.toLocaleString?.() ?? stats.totalUsers}</div>
                 </div>
                 <div className="col-auto">
                   <i className="fas fa-users fa-2x text-gray-300"></i>
@@ -131,7 +120,7 @@ const AdminPanel = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-info text-uppercase mb-1">Total Revenue</div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.totalRevenue}</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">${Number(stats.totalRevenue).toLocaleString()}</div>
                 </div>
                 <div className="col-auto">
                   <i className="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -150,23 +139,7 @@ const AdminPanel = () => {
                   <div className="h5 mb-0 fw-bold text-gray-800">{stats.activeEvents}</div>
                 </div>
                 <div className="col-auto">
-                  <i className="fas fa-clock fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-xl-2 col-md-4 mb-4">
-          <div className="card border-left-danger shadow h-100 py-2">
-            <div className="card-body">
-              <div className="row no-gutters align-items-center">
-                <div className="col mr-2">
-                  <div className="text-xs fw-bold text-danger text-uppercase mb-1">Pending Approvals</div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.pendingApprovals}</div>
-                </div>
-                <div className="col-auto">
-                  <i className="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                  <i className="fas fa-bolt fa-2x text-gray-300"></i>
                 </div>
               </div>
             </div>
@@ -178,11 +151,27 @@ const AdminPanel = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
-                  <div className="text-xs fw-bold text-secondary text-uppercase mb-1">Support Tickets</div>
+                  <div className="text-xs fw-bold text-secondary text-uppercase mb-1">Pending Approvals</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">{stats.pendingApprovals}</div>
+                </div>
+                <div className="col-auto">
+                  <i className="fas fa-hourglass-half fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-2 col-md-4 mb-4">
+          <div className="card border-left-dark shadow h-100 py-2">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs fw-bold text-dark text-uppercase mb-1">Support Tickets</div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{stats.supportTickets}</div>
                 </div>
                 <div className="col-auto">
-                  <i className="fas fa-life-ring fa-2x text-gray-300"></i>
+                  <i className="fas fa-ticket-alt fa-2x text-gray-300"></i>
                 </div>
               </div>
             </div>
@@ -399,6 +388,133 @@ const AdminPanel = () => {
       </div>
     </div>
   );
+
+  // Example: Replace hardcoded data in renderDashboardView and other render methods
+  // (You may need to update the props/data passed to each chart/table component)
+
+  // Example: Platform Usage Bar Chart (Users, Events, Revenue by Month)
+  const renderPlatformUsageChart = () => (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={platformData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+        <XAxis dataKey="month" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="users" fill="#4e73df" name="Users" />
+        <Bar dataKey="events" fill="#1cc88a" name="Events" />
+        <Bar dataKey="revenue" fill="#f6c23e" name="Revenue" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+
+  // Example: User Role Distribution Pie Chart
+  const renderUserRolePieChart = () => (
+    <ResponsiveContainer width="100%" height={250}>
+      <PieChart>
+        <Pie
+          data={userRoleData}
+          dataKey="value"
+          nameKey="name"
+          cx="50%"
+          cy="50%"
+          outerRadius={80}
+          label
+        >
+          {userRoleData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
+    </ResponsiveContainer>
+  );
+
+  // Example: System Activity Table
+  const renderSystemActivityTable = () => (
+    <table className="table table-striped">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Action</th>
+          <th>Time</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {systemActivity.map((activity, idx) => (
+          <tr key={activity.id || idx}>
+            <td>{activity.user}</td>
+            <td>{activity.action}</td>
+            <td>{activity.time || activity.created_at}</td>
+            <td>{activity.type}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  // Example: Pending Approvals Table
+  const renderPendingApprovalsTable = () => (
+    <table className="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Requestor</th>
+          <th>Date</th>
+          <th>Status/Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        {pendingApprovals.map((item, idx) => (
+          <tr key={item.id || idx}>
+            <td>{item.name || item.title}</td>
+            <td>{item.type || 'Event'}</td>
+            <td>{item.requestor || item.organizer_id || '-'}</td>
+            <td>{item.date || item.created_at}</td>
+            <td>{item.priority || item.status}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  // Example: System Users Table
+  const renderSystemUsersTable = () => (
+    <table className="table table-hover">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Join Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {systemUsers.map((user, idx) => (
+          <tr key={user.id || idx}>
+            <td>{user.name}</td>
+            <td>{user.email}</td>
+            <td>{user.role}</td>
+            <td>{user.status || (user.deleted_at ? 'Inactive' : 'Active')}</td>
+            <td>{user.joinDate || user.created_at}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  // Example usage in your main render or dashboard view:
+  // Place these where you want the charts/tables to appear
+  // {renderPlatformUsageChart()}
+  // {renderUserRolePieChart()}
+  // {renderSystemActivityTable()}
+  // {renderPendingApprovalsTable()}
+  // {renderSystemUsersTable()}
+
+  if (loading) return <div>Loading admin dashboard...</div>;
+  if (error) return <div style={{color: 'red'}}>{error}</div>;
+  if (!stats) return null;
 
   return (
     <div className="container-fluid">

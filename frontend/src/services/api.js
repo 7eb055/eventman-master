@@ -2,9 +2,9 @@ import axios from 'axios';
 import { getToken, logout } from './auth';
 
 // Configuration
-const API_ROOT = 'http://localhost:8000';
-const API_URL = 'http://localhost:8000/api';
-const DEFAULT_TIMEOUT = 5000;
+const API_ROOT = 'http://127.0.0.1:8000';
+const API_URL = 'http://127.0.0.1:8000/api';
+const DEFAULT_TIMEOUT = 15000; // Increased timeout to 15000ms
 let serverErrorShown = false;
 
 // Axios instance configuration

@@ -14,6 +14,7 @@ use App\Http\Controllers\AttendanceController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminDashboardController;
 
 
 /*
@@ -85,6 +86,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/user', [ProfileController::class, 'update']);
     Route::post('/user/password', [ProfileController::class, 'changePassword']);
     Route::post('/user/notifications', [ProfileController::class, 'updateNotifications']);
+
+    // Admin dashboard endpoints
+    Route::get('/admin/stats', [AdminDashboardController::class, 'stats']);
+    Route::get('/admin/platform-usage', [AdminDashboardController::class, 'platformUsage']);
+    Route::get('/admin/role-distribution', [AdminDashboardController::class, 'roleDistribution']);
+    Route::get('/admin/system-activity', [AdminDashboardController::class, 'systemActivity']);
+    Route::get('/admin/pending-approvals', [AdminDashboardController::class, 'pendingApprovals']);
+    Route::get('/admin/system-users', [AdminDashboardController::class, 'systemUsers']);
 });
 
 // Webhook route (exclude CSRF protection)

@@ -23,14 +23,16 @@ const SignIn = () => {
       
       // If login is successful, redirect to a protected page
       // Redirect based on the user's role
+      let redirectPath = '/';
       if (userData.user.role === 'organizer') {
-        navigate('/organizer-dashboard');
+        redirectPath = '/organizer-dashboard';
       } else if (userData.user.role === 'attendee') {
-        navigate('/attendee-dashboard');
-      } else {
-        // Fallback for other roles or if role is not defined
-        navigate('/');
+        redirectPath = '/attendee-dashboard';
+      } else if (userData.user.role === 'admin') {
+        redirectPath = '/admin-panel'; // Redirect to admin page
       }
+      // Refresh the page and redirect
+      window.location.replace(redirectPath);
     } catch (err) {
       // If login fails, display an error message
       setError('Invalid email or password. Please try again.');
