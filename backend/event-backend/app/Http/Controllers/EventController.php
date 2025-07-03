@@ -16,6 +16,10 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
+        if ($user->role === 'organizer' && !$user->email_verified_at) {
+            return response()->json(['message' => 'Please verify your email before creating events.'], 403);
+        }
         $validated = $request->validate([
             'title' => 'required|string|max:175',
             'event_type' => 'required|string|max:100',
@@ -28,7 +32,7 @@ class EventController extends Controller
             'start_date' => 'required|date',
         ]);
 
-        $validated['organizer_id'] = $request->user()->id;
+        $validated['organizer_id'] = $user->id;
 
         $event = Event::create($validated);
 

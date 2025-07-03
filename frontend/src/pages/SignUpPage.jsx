@@ -12,20 +12,42 @@ const SignUpPage = () => {
     password: '',
     confirmPassword: '',
     role: 'attendee', // Default role
-    location: ''
+    location: '',
+    companyName: '', // new
+    phone: '' // new
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
+
+  const validateField = (name, value) => {
+    let error = '';
+    if (name === 'fullName' && !value.trim()) error = 'Full name is required.';
+    if (name === 'email' && !/^\S+@\S+\.\S+$/.test(value)) error = 'Enter a valid email address.';
+    if (name === 'password' && value.length < 8) error = 'Password must be at least 8 characters.';
+    if (name === 'confirmPassword' && value !== formData.password) error = 'Passwords do not match.';
+    if (name === 'companyName' && formData.role === 'organizer' && !value.trim()) error = 'Company name is required for organizers.';
+    if (name === 'phone' && value && !/^\+?\d{7,15}$/.test(value)) error = 'Enter a valid phone number.';
+    return error;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setFieldErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    Object.entries(formData).forEach(([name, value]) => {
+      const err = validateField(name, value);
+      if (err) errors[name] = err;
+    });
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const togglePasswordVisibility = () => {
@@ -34,13 +56,9 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     
     console.log('Form submitted with values:', formData);
-    
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
     
     setIsLoading(true);
     setError('');
@@ -53,6 +71,8 @@ const SignUpPage = () => {
         password: formData.password,
         password_confirmation: formData.confirmPassword,
         role: formData.role,
+        company_name: formData.role === 'organizer' ? formData.companyName : '',
+        phone: formData.phone,
         location: formData.role === 'organizer' ? formData.location : null
       };
 
@@ -61,11 +81,19 @@ const SignUpPage = () => {
       // Call the registerUser function from our API service
       const response = await registerUser(userData);
       console.log('Registration successful response:', response);
-      
-      setSuccess('Registration successful! Redirecting to login...');
-      setTimeout(() => {
-        navigate('/sign-in');
-      }, 2000);
+
+      // Redirect based on user role
+      if (response.role === 'organizer') {
+        setSuccess('Registration successful! Please check your email to verify your account before creating events.');
+        setTimeout(() => {
+          navigate('/verify-email');
+        }, 2000);
+      } else {
+        setSuccess('Registration successful! Please check your email to verify your account.');
+        setTimeout(() => {
+          navigate('/verify-email');
+        }, 2000);
+      }
     } catch (err) {
       console.error('Registration error:', err);
       
@@ -80,6 +108,17 @@ const SignUpPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Enhanced password strength check
+  const getPasswordStrength = (password) => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
   };
 
   return (
@@ -118,6 +157,7 @@ const SignUpPage = () => {
                 placeholder="Enter your full name"
               />
             </div>
+            {fieldErrors.fullName && <div className="text-danger small">{fieldErrors.fullName}</div>}
           </div>
 
           <div className="form-group">
@@ -140,6 +180,7 @@ const SignUpPage = () => {
                 placeholder="you@example.com"
               />
             </div>
+            {fieldErrors.email && <div className="text-danger small">{fieldErrors.email}</div>}
           </div>
 
           <div className="form-group">
@@ -153,31 +194,48 @@ const SignUpPage = () => {
               required
             >
               <option value="attendee">Event Attendee</option>
-              <option value="organizer">Event Organizer</option>
+              <option value="organizer">Event Organizer / Company</option>
             </select>
           </div>
 
           {formData.role === 'organizer' && (
-            <div className="form-group">
-              <div className="input-group">
-                <span className="input-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                </span>
-                <input
-                  id="location"
-                  name="location"
-                  type="text"
-                  value={formData.location}
-                  onChange={handleChange}
-                  className="form-control"
-                  placeholder="Your location or business address"
-                  required={formData.role === 'organizer'}
-                />
+            <>
+              <div className="form-group">
+                <div className="input-group">
+                  <span className="input-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/></svg>
+                  </span>
+                  <input
+                    id="companyName"
+                    name="companyName"
+                    type="text"
+                    value={formData.companyName}
+                    onChange={handleChange}
+                    className="form-control"
+                    placeholder="Company Name"
+                    required={formData.role === 'organizer'}
+                  />
+                </div>
+                {fieldErrors.companyName && <div className="text-danger small">{fieldErrors.companyName}</div>}
               </div>
-            </div>
+              <div className="form-group">
+                <div className="input-group">
+                  <span className="input-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.72 19.72 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.13 1.13.37 2.23.72 3.28a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c1.05.35 2.15.59 3.28.72A2 2 0 0 1 22 16.92z"></path></svg>
+                  </span>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="form-control"
+                    placeholder="Phone Number (optional)"
+                  />
+                </div>
+                {fieldErrors.phone && <div className="text-danger small">{fieldErrors.phone}</div>}
+              </div>
+            </>
           )}
 
           <div className="form-group">
@@ -222,13 +280,17 @@ const SignUpPage = () => {
               <div className="strength-meter">
                 <div 
                   className={`strength-bar ${formData.password.length > 0 ? 'active' : ''}`}
-                  style={{ width: `${Math.min(100, formData.password.length * 10)}%` }}
+                  style={{ width: `${getPasswordStrength(formData.password) * 20}%` }}
                 ></div>
               </div>
               <div className="strength-text">
-                {formData.password.length === 0 ? 'Password strength' : 
-                 formData.password.length < 4 ? 'Weak' : 
-                 formData.password.length < 8 ? 'Medium' : 'Strong'}
+                {formData.password.length === 0 ? 'Password strength' :
+                  getPasswordStrength(formData.password) <= 2 ? 'Weak' :
+                  getPasswordStrength(formData.password) === 3 ? 'Medium' :
+                  getPasswordStrength(formData.password) === 4 ? 'Strong' : 'Very Strong'}
+              </div>
+              <div className="strength-hints small text-muted">
+                Use at least 8 characters, with uppercase, lowercase, numbers, and symbols.
               </div>
             </div>
           </div>
@@ -252,6 +314,7 @@ const SignUpPage = () => {
                 placeholder="Confirm your password"
               />
             </div>
+            {fieldErrors.confirmPassword && <div className="text-danger small">{fieldErrors.confirmPassword}</div>}
           </div>
 
           <div className="form-options">
@@ -319,18 +382,27 @@ const SignUpPage = () => {
             <span>or sign up with</span>
           </div>
           
-          <div className="social-login">
-            <button type="button" className="social-btn google">
+          {/* Social Signup Buttons */}
+          <div className="social-login mb-3">
+            <button type="button" className="social-btn google" onClick={() => window.location.href = 'http://localhost:8000/api/auth/google/redirect'}>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 8h-1.26A8 8 0 1 0 20 15h1m-3-7v5m0 0l2.5 2.5M17 15l-2.5 2.5"/>
               </svg>
-              Google
+              Sign up with Google
             </button>
-            <button type="button" className="social-btn facebook">
+            <button type="button" className="social-btn facebook" onClick={() => window.location.href = 'http://localhost:8000/api/auth/facebook/redirect'}>
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
               </svg>
-              Facebook
+              Sign up with Facebook
+            </button>
+            <button type="button" className="social-btn linkedin" onClick={() => window.location.href = 'http://localhost:8000/api/auth/linkedin/redirect'}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+                <rect x="2" y="9" width="4" height="12"/>
+                <circle cx="4" cy="4" r="2"/>
+              </svg>
+              Sign up with LinkedIn
             </button>
           </div>
           

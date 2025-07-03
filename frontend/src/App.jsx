@@ -27,6 +27,8 @@ import ContactUs from './pages/CompanyContactUs';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import EditEvent from './pages/EditEvent';
 import AnnouncementsBanner from './components/common/AnnouncementsBanner';
+import OrganizerProfile from './pages/OrganizerProfile';
+import EmailVerificationStatus from './pages/EmailVerificationStatus';
 
 function App() {
   return (
@@ -47,6 +49,7 @@ function App() {
           <Route path="/api-diagnostics" element={<ApiTestPage />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/verify-email" element={<EmailVerificationStatus />} />
 
           {/* Attendee Routes */}
           <Route path="/get-ticket" element={<ProtectedRoute roles={['attendee']}><GetTicket /></ProtectedRoute>} />
@@ -64,6 +67,7 @@ function App() {
           <Route path="/company-dashboard/analytics" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
           <Route path="/company-dashboard/settings" element={<ProtectedRoute roles={['organizer']}><CompanyDashboard /></ProtectedRoute>} />
           <Route path="/edit-event/:id" element={<ProtectedRoute roles={['organizer']}><EditEvent /></ProtectedRoute>} />
+          <Route path="/organizer-profile" element={<ProtectedRoute roles={['organizer']}><OrganizerProfile /></ProtectedRoute>} />
 
           {/* Admin Routes */}
           <Route path="/admin-panel" element={<ProtectedRoute roles={['admin']}><AdminPanel /></ProtectedRoute>} />

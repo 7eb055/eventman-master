@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMail;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Validation\ValidationException;
 use App\Models\User;
@@ -31,8 +35,14 @@ class AuthController extends Controller
             'role'=> $data['role']
         ]);
 
+        // Send welcome email
+        Mail::to($user->email)->send(new WelcomeMail($user));
+        // Send email verification notification
+        event(new Registered($user));
+
         return response()->json([
-            'token' => $user->createToken('auth-token')->plainTextToken
+            'token' => $user->createToken('auth-token')->plainTextToken,
+            'role' => $user->role
         ], 201);
     }
 
@@ -112,5 +122,15 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logout successful',
         ]);
+    }
+
+    public function resendVerificationEmail(Request $request)
+    {
+        $user = $request->user();
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already verified.'], 400);
+        }
+        $user->sendEmailVerificationNotification();
+        return response()->json(['message' => 'Verification email resent.']);
     }
 }

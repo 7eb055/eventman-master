@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Events\TicketPurchased;
 use App\Notifications\TicketNotification;
 use App\Models\Ticket;
+use App\Services\SmsService;
 
 class SendTicketNotification
 {
@@ -31,7 +32,8 @@ class SendTicketNotification
         
         // Send SMS
         if ($ticket->attendee->phone) {
-            // Integrate with SMS gateway
+            $sms = app(SmsService::class);
+            $sms->send($ticket->attendee->phone, 'Your ticket for ' . $ticket->event->title . ' is confirmed!');
         }
     }
 }

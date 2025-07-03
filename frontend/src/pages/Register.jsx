@@ -10,12 +10,22 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [role, setRole] = useState('attendee');
+  const [companyName, setCompanyName] = useState('');
+  const [phone, setPhone] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real app, you would handle registration here
-    const user = await registerUser({ fullname, email, password, confirmPassword, agreeTerms });
-    // console.log('Registering:', { full_name: name, email, password, confirmPassword, agreeTerms });
+    const user = await registerUser({
+      full_name: fullname,
+      email,
+      password,
+      confirmPassword,
+      agreeTerms,
+      role,
+      company_name: role === 'organizer' ? companyName : '',
+      phone
+    });
   };
 
   return (
@@ -35,6 +45,48 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="signup-form">
+          {/* Account Type Selector */}
+          <div className="form-group">
+            <label className="form-label">Account Type</label>
+            <select className="form-control" value={role} onChange={e => setRole(e.target.value)} required>
+              <option value="attendee">Attendee</option>
+              <option value="organizer">Organizer / Company</option>
+            </select>
+          </div>
+          {/* Company Name (only for organizer) */}
+          {role === 'organizer' && (
+            <div className="form-group">
+              <div className="input-group">
+                <span className="input-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 3v4"/><path d="M8 3v4"/></svg>
+                </span>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Company Name"
+                  value={companyName}
+                  onChange={e => setCompanyName(e.target.value)}
+                  required={role === 'organizer'}
+                />
+              </div>
+            </div>
+          )}
+          {/* Phone Number (optional) */}
+          <div className="form-group">
+            <div className="input-group">
+              <span className="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92V19a2 2 0 0 1-2.18 2A19.72 19.72 0 0 1 3 5.18 2 2 0 0 1 5 3h2.09a2 2 0 0 1 2 1.72c.13 1.13.37 2.23.72 3.28a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c1.05.35 2.15.59 3.28.72A2 2 0 0 1 22 16.92z"></path></svg>
+              </span>
+              <input
+                type="tel"
+                className="form-control"
+                placeholder="Phone Number (optional)"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+              />
+            </div>
+          </div>
+
           <div className="form-group">
             <div className="input-group">
               <span className="input-icon">

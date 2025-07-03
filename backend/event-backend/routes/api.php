@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrganizerProfileController;
+use App\Http\Controllers\SocialAuthController;
 
 
 /*
@@ -28,6 +30,7 @@ use App\Http\Controllers\AdminController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{id}', [EventController::class, 'show']); // Allow public access to event details
 
 // Protected routes that require a valid token
 Route::middleware('auth:sanctum')->group(function () {
@@ -36,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'currentUser']);
     Route::post('/token', [AuthController::class, 'getToken']);
     Route::post('/revoke-token', [AuthController::class, 'revokeToken'])->middleware('auth:sanctum');
+    Route::post('/email/verification-notification', [AuthController::class, 'resendVerificationEmail']);
 
     // Events
     Route::apiResource('events', EventController::class)->except(['index', 'show']);
@@ -43,13 +47,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/events/upcoming', [EventController::class, 'upcoming']);
     Route::get('/events/past', [EventController::class, 'past']);
     Route::get('/events/organizer/{organizerId}', [EventController::class, 'byOrganizer']);
-    Route::get('/events/{id}', [EventController::class, 'show']);
+    // Route::get('/events/{id}', [EventController::class, 'show']); // Remove from protected routes
 
     // Tickets
     Route::post('events/{event}/tickets', [TicketController::class, 'purchase']);
 
     // Reports
-    Route::get('events/{event}/attendance-report', [ReportController::class, 'eventAttendance']);
+    Route::get('/reports/tickets-sold', [ReportController::class, 'ticketsSold']);
+    Route::get('/reports/companies', [ReportController::class, 'companies']);
+    Route::get('/reports/event-summary', [ReportController::class, 'eventSummary']);
+    Route::get('/reports/revenue', [ReportController::class, 'revenue']);
+    Route::get('/reports/user-activity', [ReportController::class, 'userActivity']);
+    Route::get('/reports/event-feedback', [ReportController::class, 'eventFeedback']);
+    Route::get('/reports/top-attendees', [ReportController::class, 'topAttendees']);
 
     // QR Verification
     Route::post('tickets/{ticket}/verify', [TicketController::class, 'verify']);
@@ -64,6 +74,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Routes for Organizers
     Route::middleware('role:organizer')->group(function () {
+        // Organizer profile management (role:organizer)
+        Route::get('/organizer/profile', [OrganizerProfileController::class, 'show']);
+        Route::put('/organizer/profile', [OrganizerProfileController::class, 'update']);
         Route::get('/organizer/dashboard', [OrganizerDashboardController::class, 'index']);
     });
 
@@ -152,3 +165,7 @@ Route::middleware('auth:sanctum')->post('/test/webhook', function (Request $requ
     $webhookController = new WebhookController;
     return $webhookController->handleStripeWebhook($request);
 });
+
+// Social OAuth routes
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback']);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\Ticket;
+use App\Models\User;
 
 class ReportController extends Controller
 {
@@ -59,5 +61,100 @@ class ReportController extends Controller
         $distance = $earthRadius * $c;
 
         return round($distance, 2);
+    }
+
+    // Tickets Sold Report
+    public function ticketsSold()
+    {
+        $tickets = Ticket::with('event')->get();
+        $report = $tickets->groupBy('event_id')->map(function($tickets, $eventId) {
+            $event = $tickets->first()->event;
+            return [
+                'event' => $event ? $event->title : 'Unknown',
+                'tickets_sold' => $tickets->count(),
+                'revenue' => $tickets->sum('price'),
+            ];
+        })->values();
+        return response()->json($report);
+    }
+
+    // Company List Report
+    public function companies()
+    {
+        $companies = User::where('role', 'organizer')->get(['id', 'name', 'email', 'company_name', 'phone']);
+        return response()->json($companies);
+    }
+
+    // Example: Event Summary Report
+    public function eventSummary()
+    {
+        $events = Event::withCount('tickets')->get();
+        $summary = $events->map(function($event) {
+            return [
+                'event' => $event->title,
+                'date' => $event->start_date,
+                'tickets' => $event->tickets_count,
+            ];
+        });
+        return response()->json($summary);
+    }
+
+    // Revenue Report
+    public function revenue()
+    {
+        $tickets = \App\Models\Ticket::with('event')->get();
+        $report = $tickets->groupBy('event_id')->map(function($tickets, $eventId) {
+            $event = $tickets->first()->event;
+            return [
+                'event' => $event ? $event->title : 'Unknown',
+                'revenue' => $tickets->sum('price'),
+                'tickets_sold' => $tickets->count(),
+            ];
+        })->values();
+        return response()->json($report);
+    }
+
+    // User Activity Report
+    public function userActivity()
+    {
+        $users = \App\Models\User::with(['tickets', 'organizedEvents'])->get();
+        $report = $users->map(function($user) {
+            return [
+                'user' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                'events_attended' => $user->tickets->count(),
+                'events_organized' => $user->organizedEvents->count(),
+            ];
+        });
+        return response()->json($report);
+    }
+
+    // Event Feedback Report
+    public function eventFeedback()
+    {
+        $feedbacks = \App\Models\Event::with('feedback')->get();
+        $report = $feedbacks->map(function($event) {
+            return [
+                'event' => $event->title,
+                'feedback_count' => $event->feedback ? $event->feedback->count() : 0,
+                'average_rating' => $event->feedback && $event->feedback->count() > 0 ? round($event->feedback->avg('rating'), 2) : null,
+            ];
+        });
+        return response()->json($report);
+    }
+
+    // Top Attendees Report
+    public function topAttendees()
+    {
+        $users = \App\Models\User::withCount('tickets')->orderBy('tickets_count', 'desc')->take(10)->get();
+        $report = $users->map(function($user) {
+            return [
+                'user' => $user->name,
+                'email' => $user->email,
+                'tickets_purchased' => $user->tickets_count,
+            ];
+        });
+        return response()->json($report);
     }
 }

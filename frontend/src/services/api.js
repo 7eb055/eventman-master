@@ -329,5 +329,37 @@ export const verifyTicket = async (ticketId, location) => {
   }
 };
 
+// Organizer Profile API
+export const getOrganizerProfile = async () => {
+  try {
+    const response = await api.get('/organizer/profile');
+    return response.data;
+  } catch (error) {
+    console.error('Get Organizer Profile Error:', error);
+    throw error;
+  }
+};
+
+export const updateOrganizerProfile = async (profileData) => {
+  try {
+    const response = await api.put('/organizer/profile', profileData);
+    return response.data;
+  } catch (error) {
+    console.error('Update Organizer Profile Error:', error);
+    throw error;
+  }
+};
+
+// Resend verification email
+export const resendVerificationEmail = async () => {
+  try {
+    const response = await api.post('/email/verification-notification');
+    return response.data;
+  } catch (error) {
+    console.error('Resend Verification Email Error:', error);
+    throw error;
+  }
+};
+
 // Export default axios instance
 export default api;

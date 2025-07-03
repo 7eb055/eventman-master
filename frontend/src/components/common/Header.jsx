@@ -82,6 +82,22 @@ const Header = () => {
             )}
           </div>
         </div>
+
+        {/* Navigation based on user role */}
+        {user && user.role === 'organizer' && (
+          <nav className="role-nav">
+            <Link to="/organizer-dashboard">Dashboard</Link>
+            <Link to="/create-event">Create Event</Link>
+            <Link to="/organizer-profile">Company Profile</Link>
+          </nav>
+        )}
+        {user && user.role === 'attendee' && (
+          <nav className="role-nav">
+            <Link to="/attendee-dashboard">Dashboard</Link>
+            <Link to="/browse-events">Browse Events</Link>
+            <Link to="/profile">Profile</Link>
+          </nav>
+        )}
       </div>
     </header>
   );
