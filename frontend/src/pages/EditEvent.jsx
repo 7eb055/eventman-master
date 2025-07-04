@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { getToken } from '../services/auth';
+import { useTranslation } from 'react-i18next';
 
 const EditEvent = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState(null);
@@ -21,13 +23,13 @@ const EditEvent = () => {
         });
         setFormData(res.data);
       } catch (err) {
-        setError('Failed to load event data.');
+        setError(t('edit_event.load_error'));
       } finally {
         setLoading(false);
       }
     };
     fetchEvent();
-  }, [id]);
+  }, [id, t]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,13 +47,13 @@ const EditEvent = () => {
       });
       navigate('/organizer-dashboard');
     } catch (err) {
-      setError('Failed to update event.');
+      setError(t('edit_event.update_error'));
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>;
+  if (loading) return <div className="text-center mt-5">{t('common.loading')}</div>;
   if (error) return <div className="alert alert-danger mt-5">{error}</div>;
   if (!formData) return null;
 
@@ -61,49 +63,49 @@ const EditEvent = () => {
         <div className="col-lg-8">
           <div className="card shadow-lg border-0 rounded-4 overflow-hidden">
             <div className="card-header bg-primary text-white py-4">
-              <h1 className="text-center mb-0">Edit Event</h1>
+              <h1 className="text-center mb-0">{t('edit_event.title')}</h1>
             </div>
             <div className="card-body p-4 p-md-5">
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Title</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.title')}</label>
                   <input type="text" className="form-control" name="title" value={formData.title || ''} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Event Type</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.event_type')}</label>
                   <input type="text" className="form-control" name="event_type" value={formData.event_type || ''} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Venue</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.venue')}</label>
                   <input type="text" className="form-control" name="venue" value={formData.venue || ''} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Location</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.location')}</label>
                   <input type="text" className="form-control" name="location" value={formData.location || ''} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Start Date</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.start_date')}</label>
                   <input type="datetime-local" className="form-control" name="start_date" value={formData.start_date ? formData.start_date.substring(0,16) : ''} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Capacity</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.capacity')}</label>
                   <input type="number" className="form-control" name="capacity" value={formData.capacity || ''} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Ticket Price</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.ticket_price')}</label>
                   <input type="number" className="form-control" name="ticket_price" value={formData.ticket_price || ''} onChange={handleChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Image URL</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.image')}</label>
                   <input type="text" className="form-control" name="image" value={formData.image || ''} onChange={handleChange} />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Description</label>
+                  <label className="form-label fw-bold">{t('edit_event.fields.description')}</label>
                   <textarea className="form-control" name="description" rows="4" value={formData.description || ''} onChange={handleChange}></textarea>
                 </div>
                 <div className="d-flex justify-content-end gap-2">
-                  <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>Cancel</button>
-                  <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving...' : 'Save Changes'}</button>
+                  <button type="button" className="btn btn-secondary" onClick={() => navigate(-1)}>{t('edit_event.cancel')}</button>
+                  <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? t('edit_event.saving') : t('edit_event.save_button')}</button>
                 </div>
               </form>
             </div>

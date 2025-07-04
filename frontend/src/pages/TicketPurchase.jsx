@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const TicketPurchase = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -59,39 +61,35 @@ const TicketPurchase = () => {
   });
 
   const steps = [
-    { number: 1, title: 'Customer Info', icon: 'fas fa-user' },
-    { number: 2, title: 'Billing Details', icon: 'fas fa-address-card' },
-    { number: 3, title: 'Payment', icon: 'fas fa-credit-card' },
-    { number: 4, title: 'Confirmation', icon: 'fas fa-check-circle' }
+    { number: 1, title: t('ticket_purchase.steps.customer_info'), icon: 'fas fa-user' },
+    { number: 2, title: t('ticket_purchase.steps.billing_details'), icon: 'fas fa-address-card' },
+    { number: 3, title: t('ticket_purchase.steps.payment'), icon: 'fas fa-credit-card' },
+    { number: 4, title: t('ticket_purchase.steps.confirmation'), icon: 'fas fa-check-circle' }
   ];
 
   const validateStep = (step) => {
     const newErrors = {};
-    
     if (step === 1) {
-      if (!customerInfo.firstName) newErrors.firstName = 'First name is required';
-      if (!customerInfo.lastName) newErrors.lastName = 'Last name is required';
-      if (!customerInfo.email) newErrors.email = 'Email is required';
-      if (!customerInfo.phone) newErrors.phone = 'Phone number is required';
+      if (!customerInfo.firstName) newErrors.firstName = t('ticket_purchase.errors.first_name');
+      if (!customerInfo.lastName) newErrors.lastName = t('ticket_purchase.errors.last_name');
+      if (!customerInfo.email) newErrors.email = t('ticket_purchase.errors.email');
+      if (!customerInfo.phone) newErrors.phone = t('ticket_purchase.errors.phone');
     }
-    
     if (step === 2) {
-      if (!billingInfo.address) newErrors.address = 'Address is required';
-      if (!billingInfo.city) newErrors.city = 'City is required';
-      if (!billingInfo.region) newErrors.region = 'Region is required';
+      if (!billingInfo.address) newErrors.address = t('ticket_purchase.errors.address');
+      if (!billingInfo.city) newErrors.city = t('ticket_purchase.errors.city');
+      if (!billingInfo.region) newErrors.region = t('ticket_purchase.errors.region');
     }
-    
     if (step === 3) {
       if (paymentMethod === 'card') {
-        if (!paymentInfo.cardNumber) newErrors.cardNumber = 'Card number is required';
-        if (!paymentInfo.cardName) newErrors.cardName = 'Name on card is required';
-        if (!paymentInfo.expiryDate) newErrors.expiryDate = 'Expiry date is required';
-        if (!paymentInfo.cvv) newErrors.cvv = 'CVV is required';
+        if (!paymentInfo.cardNumber) newErrors.cardNumber = t('ticket_purchase.errors.card_number');
+        if (!paymentInfo.cardName) newErrors.cardName = t('ticket_purchase.errors.card_name');
+        if (!paymentInfo.expiryDate) newErrors.expiryDate = t('ticket_purchase.errors.expiry_date');
+        if (!paymentInfo.cvv) newErrors.cvv = t('ticket_purchase.errors.cvv');
       } else if (paymentMethod === 'mobile') {
-        if (!paymentInfo.mobileNumber) newErrors.mobileNumber = 'Mobile number is required';
+        if (!paymentInfo.mobileNumber) newErrors.mobileNumber = t('ticket_purchase.errors.mobile_number');
       }
     }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -186,63 +184,63 @@ const TicketPurchase = () => {
       <div className="col-md-8">
         <div className="card shadow-lg rounded-4 border-0">
           <div className="card-header bg-white py-4">
-            <h3 className="mb-0 fw-bold">Customer Information</h3>
-            <p className="text-muted mb-0">Please provide your details for ticket delivery</p>
+            <h3 className="mb-0 fw-bold">{t('ticket_purchase.customer_info.title')}</h3>
+            <p className="text-muted mb-0">{t('ticket_purchase.customer_info.subtitle')}</p>
           </div>
           <div className="card-body p-4">
             <div className="row g-3">
               <div className="col-md-6">
-                <label className="form-label fw-medium">First Name *</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.first_name')}</label>
                 <input
                   type="text"
                   className={`form-control ${errors.firstName ? 'is-invalid' : ''}`}
                   value={customerInfo.firstName}
                   onChange={(e) => handleInputChange('customer', 'firstName', e.target.value)}
-                  placeholder="Enter your first name"
+                  placeholder={t('ticket_purchase.placeholders.first_name')}
                 />
                 {errors.firstName && <div className="invalid-feedback">{errors.firstName}</div>}
               </div>
               <div className="col-md-6">
-                <label className="form-label fw-medium">Last Name *</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.last_name')}</label>
                 <input
                   type="text"
                   className={`form-control ${errors.lastName ? 'is-invalid' : ''}`}
                   value={customerInfo.lastName}
                   onChange={(e) => handleInputChange('customer', 'lastName', e.target.value)}
-                  placeholder="Enter your last name"
+                  placeholder={t('ticket_purchase.placeholders.last_name')}
                 />
                 {errors.lastName && <div className="invalid-feedback">{errors.lastName}</div>}
               </div>
               <div className="col-md-6">
-                <label className="form-label fw-medium">Email Address *</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.email')}</label>
                 <input
                   type="email"
                   className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                   value={customerInfo.email}
                   onChange={(e) => handleInputChange('customer', 'email', e.target.value)}
-                  placeholder="your.email@example.com"
+                  placeholder={t('ticket_purchase.placeholders.email')}
                 />
                 {errors.email && <div className="invalid-feedback">{errors.email}</div>}
               </div>
               <div className="col-md-6">
-                <label className="form-label fw-medium">Phone Number *</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.phone')}</label>
                 <input
                   type="tel"
                   className={`form-control ${errors.phone ? 'is-invalid' : ''}`}
                   value={customerInfo.phone}
                   onChange={(e) => handleInputChange('customer', 'phone', e.target.value)}
-                  placeholder="055 123 4567"
+                  placeholder={t('ticket_purchase.placeholders.phone')}
                 />
                 {errors.phone && <div className="invalid-feedback">{errors.phone}</div>}
               </div>
-              <div className="col-12">
-                <label className="form-label fw-medium">Emergency Contact</label>
+              <div className="col-md-12">
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.emergency_contact')}</label>
                 <input
                   type="text"
                   className="form-control"
                   value={customerInfo.emergencyContact}
                   onChange={(e) => handleInputChange('customer', 'emergencyContact', e.target.value)}
-                  placeholder="Emergency contact name and phone (optional)"
+                  placeholder={t('ticket_purchase.placeholders.emergency_contact')}
                 />
               </div>
             </div>
@@ -257,56 +255,56 @@ const TicketPurchase = () => {
       <div className="col-md-8">
         <div className="card shadow-lg rounded-4 border-0">
           <div className="card-header bg-white py-4">
-            <h3 className="mb-0 fw-bold">Billing Information</h3>
-            <p className="text-muted mb-0">Where should we send your receipt?</p>
+            <h3 className="mb-0 fw-bold">{t('ticket_purchase.billing_info.title')}</h3>
+            <p className="text-muted mb-0">{t('ticket_purchase.billing_info.subtitle')}</p>
           </div>
           <div className="card-body p-4">
             <div className="row g-3">
               <div className="col-12">
-                <label className="form-label fw-medium">Street Address *</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.street_address')}</label>
                 <input
                   type="text"
                   className={`form-control ${errors.address ? 'is-invalid' : ''}`}
                   value={billingInfo.address}
                   onChange={(e) => handleInputChange('billing', 'address', e.target.value)}
-                  placeholder="123 Main Street"
+                  placeholder={t('ticket_purchase.placeholders.street_address')}
                 />
                 {errors.address && <div className="invalid-feedback">{errors.address}</div>}
               </div>
               <div className="col-md-4">
-                <label className="form-label fw-medium">City *</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.city')}</label>
                 <input
                   type="text"
                   className={`form-control ${errors.city ? 'is-invalid' : ''}`}
                   value={billingInfo.city}
                   onChange={(e) => handleInputChange('billing', 'city', e.target.value)}
-                  placeholder="Accra"
+                  placeholder={t('ticket_purchase.placeholders.city')}
                 />
                 {errors.city && <div className="invalid-feedback">{errors.city}</div>}
               </div>
               <div className="col-md-4">
-                <label className="form-label fw-medium">Region *</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.region')}</label>
                 <select
                   className={`form-select ${errors.region ? 'is-invalid' : ''}`}
                   value={billingInfo.region}
                   onChange={(e) => handleInputChange('billing', 'region', e.target.value)}
                 >
-                  <option value="">Select Region</option>
-                  <option value="Greater Accra">Greater Accra</option>
-                  <option value="Ashanti">Ashanti</option>
-                  <option value="Central">Central</option>
-                  <option value="Eastern">Eastern</option>
-                  <option value="Northern">Northern</option>
-                  <option value="Upper East">Upper East</option>
-                  <option value="Upper West">Upper West</option>
-                  <option value="Volta">Volta</option>
-                  <option value="Western">Western</option>
-                  <option value="Brong Ahafo">Brong Ahafo</option>
+                  <option value="">{t('ticket_purchase.placeholders.select_region')}</option>
+                  <option value="Greater Accra">{t('regions.Greater Accra')}</option>
+                  <option value="Ashanti">{t('regions.Ashanti')}</option>
+                  <option value="Central">{t('regions.Central')}</option>
+                  <option value="Eastern">{t('regions.Eastern')}</option>
+                  <option value="Northern">{t('regions.Northern')}</option>
+                  <option value="Upper East">{t('regions.Upper East')}</option>
+                  <option value="Upper West">{t('regions.Upper West')}</option>
+                  <option value="Volta">{t('regions.Volta')}</option>
+                  <option value="Western">{t('regions.Western')}</option>
+                  <option value="Brong Ahafo">{t('regions.Brong Ahafo')}</option>
                 </select>
                 {errors.region && <div className="invalid-feedback">{errors.region}</div>}
               </div>
               <div className="col-md-4">
-                <label className="form-label fw-medium">Country</label>
+                <label className="form-label fw-medium">{t('ticket_purchase.labels.country')}</label>
                 <input
                   type="text"
                   className="form-control"
@@ -327,8 +325,8 @@ const TicketPurchase = () => {
       <div className="col-md-8">
         <div className="card shadow-lg rounded-4 border-0">
           <div className="card-header bg-white py-4">
-            <h3 className="mb-0 fw-bold">Payment Information</h3>
-            <p className="text-muted mb-0">Choose your preferred payment method</p>
+            <h3 className="mb-0 fw-bold">{t('ticket_purchase.payment_info.title')}</h3>
+            <p className="text-muted mb-0">{t('ticket_purchase.payment_info.subtitle')}</p>
           </div>
           <div className="card-body p-4">
             {/* Payment Method Selection */}
@@ -343,8 +341,8 @@ const TicketPurchase = () => {
                   <div className="d-flex align-items-center">
                     <i className="fas fa-credit-card fa-2x text-primary me-3"></i>
                     <div>
-                      <h6 className="mb-0 fw-bold">Credit/Debit Card</h6>
-                      <small className="text-muted">Visa, Mastercard accepted</small>
+                      <h6 className="mb-0 fw-bold">{t('ticket_purchase.payment_methods.card.title')}</h6>
+                      <small className="text-muted">{t('ticket_purchase.payment_methods.card.subtitle')}</small>
                     </div>
                     {paymentMethod === 'card' && (
                       <i className="fas fa-check-circle text-primary ms-auto"></i>
@@ -362,8 +360,8 @@ const TicketPurchase = () => {
                   <div className="d-flex align-items-center">
                     <i className="fas fa-mobile-alt fa-2x text-primary me-3"></i>
                     <div>
-                      <h6 className="mb-0 fw-bold">Mobile Money</h6>
-                      <small className="text-muted">MTN, Vodafone, AirtelTigo</small>
+                      <h6 className="mb-0 fw-bold">{t('ticket_purchase.payment_methods.mobile.title')}</h6>
+                      <small className="text-muted">{t('ticket_purchase.payment_methods.mobile.subtitle')}</small>
                     </div>
                     {paymentMethod === 'mobile' && (
                       <i className="fas fa-check-circle text-primary ms-auto"></i>
@@ -378,46 +376,46 @@ const TicketPurchase = () => {
               <div className="bg-light p-4 rounded-3">
                 <div className="row g-3">
                   <div className="col-12">
-                    <label className="form-label fw-medium">Card Number *</label>
+                    <label className="form-label fw-medium">{t('ticket_purchase.labels.card_number')}</label>
                     <input
                       type="text"
                       className={`form-control ${errors.cardNumber ? 'is-invalid' : ''}`}
                       value={paymentInfo.cardNumber}
                       onChange={(e) => handleInputChange('payment', 'cardNumber', e.target.value)}
-                      placeholder="1234 5678 9012 3456"
+                      placeholder={t('ticket_purchase.placeholders.card_number')}
                     />
                     {errors.cardNumber && <div className="invalid-feedback">{errors.cardNumber}</div>}
                   </div>
                   <div className="col-12">
-                    <label className="form-label fw-medium">Name on Card *</label>
+                    <label className="form-label fw-medium">{t('ticket_purchase.labels.card_name')}</label>
                     <input
                       type="text"
                       className={`form-control ${errors.cardName ? 'is-invalid' : ''}`}
                       value={paymentInfo.cardName}
                       onChange={(e) => handleInputChange('payment', 'cardName', e.target.value)}
-                      placeholder="John Doe"
+                      placeholder={t('ticket_purchase.placeholders.card_name')}
                     />
                     {errors.cardName && <div className="invalid-feedback">{errors.cardName}</div>}
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label fw-medium">Expiry Date *</label>
+                    <label className="form-label fw-medium">{t('ticket_purchase.labels.expiry_date')}</label>
                     <input
                       type="text"
                       className={`form-control ${errors.expiryDate ? 'is-invalid' : ''}`}
                       value={paymentInfo.expiryDate}
                       onChange={(e) => handleInputChange('payment', 'expiryDate', e.target.value)}
-                      placeholder="MM/YY"
+                      placeholder={t('ticket_purchase.placeholders.expiry_date')}
                     />
                     {errors.expiryDate && <div className="invalid-feedback">{errors.expiryDate}</div>}
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label fw-medium">CVV *</label>
+                    <label className="form-label fw-medium">{t('ticket_purchase.labels.cvv')}</label>
                     <input
                       type="text"
                       className={`form-control ${errors.cvv ? 'is-invalid' : ''}`}
                       value={paymentInfo.cvv}
                       onChange={(e) => handleInputChange('payment', 'cvv', e.target.value)}
-                      placeholder="123"
+                      placeholder={t('ticket_purchase.placeholders.cvv')}
                     />
                     {errors.cvv && <div className="invalid-feedback">{errors.cvv}</div>}
                   </div>
@@ -429,25 +427,25 @@ const TicketPurchase = () => {
               <div className="bg-light p-4 rounded-3">
                 <div className="row g-3">
                   <div className="col-md-6">
-                    <label className="form-label fw-medium">Mobile Network *</label>
+                    <label className="form-label fw-medium">{t('ticket_purchase.labels.mobile_network')}</label>
                     <select
                       className="form-select"
                       value={paymentInfo.mobileNetwork}
                       onChange={(e) => handleInputChange('payment', 'mobileNetwork', e.target.value)}
                     >
-                      <option value="MTN">MTN Mobile Money</option>
-                      <option value="Vodafone">Vodafone Cash</option>
-                      <option value="AirtelTigo">AirtelTigo Money</option>
+                      <option value="MTN">{t('mobile_networks.MTN')}</option>
+                      <option value="Vodafone">{t('mobile_networks.Vodafone')}</option>
+                      <option value="AirtelTigo">{t('mobile_networks.AirtelTigo')}</option>
                     </select>
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label fw-medium">Phone Number *</label>
+                    <label className="form-label fw-medium">{t('ticket_purchase.labels.phone_number')}</label>
                     <input
                       type="tel"
                       className={`form-control ${errors.mobileNumber ? 'is-invalid' : ''}`}
                       value={paymentInfo.mobileNumber}
                       onChange={(e) => handleInputChange('payment', 'mobileNumber', e.target.value)}
-                      placeholder="055 123 4567"
+                      placeholder={t('ticket_purchase.placeholders.phone_number')}
                     />
                     {errors.mobileNumber && <div className="invalid-feedback">{errors.mobileNumber}</div>}
                   </div>
@@ -469,32 +467,32 @@ const TicketPurchase = () => {
               <div className="mb-4">
                 <i className="fas fa-check-circle fa-5x text-success"></i>
               </div>
-              <h2 className="fw-bold text-success mb-3">Purchase Successful!</h2>
+              <h2 className="fw-bold text-success mb-3">{t('ticket_purchase.confirmation.success_title')}</h2>
               <p className="lead mb-4">
-                Your tickets have been confirmed and sent to your email address.
+                {t('ticket_purchase.confirmation.success_message')}
               </p>
               <div className="bg-light p-4 rounded-3 mb-4">
-                <h5 className="fw-bold mb-3">Order Summary</h5>
+                <h5 className="fw-bold mb-3">{t('ticket_purchase.confirmation.order_summary')}</h5>
                 <div className="d-flex justify-content-between mb-2">
                   <span>{ticketData.quantity} x {ticketData.selectedTicket.name}</span>
                   <span>GHS {ticketData.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="d-flex justify-content-between mb-2">
-                  <span>Service Fee</span>
+                  <span>{t('ticket_purchase.confirmation.service_fee')}</span>
                   <span>GHS {ticketData.serviceFee.toFixed(2)}</span>
                 </div>
                 <hr />
                 <div className="d-flex justify-content-between fw-bold">
-                  <span>Total Paid</span>
+                  <span>{t('ticket_purchase.confirmation.total_paid')}</span>
                   <span className="text-success">GHS {ticketData.total.toFixed(2)}</span>
                 </div>
               </div>
               <div className="d-flex gap-3 justify-content-center">
                 <button className="btn btn-primary" onClick={() => navigate('/attendee-dashboard')}>
-                  View My Tickets
+                  {t('ticket_purchase.confirmation.view_tickets')}
                 </button>
                 <button className="btn btn-outline-primary" onClick={() => navigate('/browse-events')}>
-                  Browse More Events
+                  {t('ticket_purchase.confirmation.browse_events')}
                 </button>
               </div>
             </div>
@@ -503,10 +501,10 @@ const TicketPurchase = () => {
           <div className="card shadow-lg rounded-4 border-0">
             <div className="card-body p-4 text-center">
               <div className="spinner-border text-primary mb-3" role="status">
-                <span className="visually-hidden">Processing...</span>
+                <span className="visually-hidden">{t('ticket_purchase.confirmation.processing')}</span>
               </div>
-              <h4 className="fw-bold mb-2">Processing Your Payment</h4>
-              <p className="text-muted">Please wait while we process your transaction...</p>
+              <h4 className="fw-bold mb-2">{t('ticket_purchase.confirmation.processing_title')}</h4>
+              <p className="text-muted">{t('ticket_purchase.confirmation.processing_message')}</p>
             </div>
           </div>
         )}
@@ -519,8 +517,8 @@ const TicketPurchase = () => {
       <div className="container">
         {/* Header */}
         <div className="text-center mb-5">
-          <h1 className="display-4 fw-bold text-primary">Complete Your Purchase</h1>
-          <p className="lead text-muted">Just a few more steps to secure your tickets</p>
+          <h1 className="display-4 fw-bold text-primary">{t('ticket_purchase.header.title')}</h1>
+          <p className="lead text-muted">{t('ticket_purchase.header.subtitle')}</p>
         </div>
 
         {renderStepIndicator()}
@@ -537,7 +535,7 @@ const TicketPurchase = () => {
           <div className="col-lg-4">
             <div className="card shadow-lg rounded-4 border-0 sticky-top" style={{ top: '20px' }}>
               <div className="card-header bg-white py-3">
-                <h5 className="mb-0 fw-bold">Order Summary</h5>
+                <h5 className="mb-0 fw-bold">{t('ticket_purchase.order_summary.title')}</h5>
               </div>
               <div className="card-body p-4">
                 {/* Event Details */}
@@ -571,12 +569,12 @@ const TicketPurchase = () => {
                     <span>GHS {ticketData.subtotal.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Service Fee</span>
+                    <span>{t('ticket_purchase.order_summary.service_fee')}</span>
                     <span>GHS {ticketData.serviceFee.toFixed(2)}</span>
                   </div>
                   <hr />
                   <div className="d-flex justify-content-between fw-bold fs-5">
-                    <span>Total</span>
+                    <span>{t('ticket_purchase.order_summary.total')}</span>
                     <span className="text-primary">GHS {ticketData.total.toFixed(2)}</span>
                   </div>
                 </div>
@@ -589,7 +587,7 @@ const TicketPurchase = () => {
                         className="btn btn-outline-secondary flex-grow-1"
                         onClick={handlePrevious}
                       >
-                        Previous
+                        {t('ticket_purchase.actions.previous')}
                       </button>
                     )}
                     {currentStep < 3 ? (
@@ -597,7 +595,7 @@ const TicketPurchase = () => {
                         className="btn btn-primary flex-grow-1"
                         onClick={handleNext}
                       >
-                        Next Step
+                        {t('ticket_purchase.actions.next')}
                       </button>
                     ) : (
                       <button
@@ -608,10 +606,10 @@ const TicketPurchase = () => {
                         {processing ? (
                           <>
                             <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                            Processing...
+                            {t('ticket_purchase.actions.processing')}
                           </>
                         ) : (
-                          `Complete Purchase - GHS ${ticketData.total.toFixed(2)}`
+                          `${t('ticket_purchase.actions.complete_purchase')} - GHS ${ticketData.total.toFixed(2)}`
                         )}
                       </button>
                     )}
@@ -622,7 +620,7 @@ const TicketPurchase = () => {
                 <div className="text-center mt-3">
                   <p className="small text-muted mb-0">
                     <i className="fas fa-lock me-1"></i>
-                    SSL encrypted & secure payment
+                    {t('ticket_purchase.security.ssl_encryption')}
                   </p>
                 </div>
               </div>

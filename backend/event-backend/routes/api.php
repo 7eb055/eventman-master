@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrganizerProfileController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\FeedbackController;
 
 
 /*
@@ -153,6 +154,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/api-keys', [AdminController::class, 'createApiKey']);
     Route::post('/admin/api-keys/{id}/revoke', [AdminController::class, 'revokeApiKey']);
     Route::delete('/admin/api-keys/{id}', [AdminController::class, 'deleteApiKey']);
+
+    // Feedback endpoints
+    Route::get('/events/{event}/feedback', [FeedbackController::class, 'index']); // all feedback for event
+    Route::get('/events/{event}/feedback/me', [FeedbackController::class, 'myFeedback']); // current user's feedback
+    Route::post('/events/{event}/feedback', [FeedbackController::class, 'store']); // create/update feedback
 });
 
 // Webhook route (exclude CSRF protection)

@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const GetTicket = ({ event }) => {
+  const { t } = useTranslation();
   const [ticketCount, setTicketCount] = useState(1);
   const [selectedTicketType, setSelectedTicketType] = useState('general');
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -48,8 +50,8 @@ const GetTicket = ({ event }) => {
     <div className="page bg-light py-5">
       <div className="container">
         <div className="text-center mb-5">
-          <h1 className="display-4 fw-bold text-primary">Get Your Tickets</h1>
-          <p className="lead text-muted">Secure your spot for an unforgettable experience</p>
+          <h1 className="display-4 fw-bold text-primary">{t('get_ticket.title')}</h1>
+          <p className="lead text-muted">{t('get_ticket.subtitle')}</p>
         </div>
         <div className="row g-4">
           {/* Event Details */}
@@ -98,7 +100,7 @@ const GetTicket = ({ event }) => {
             {/* Ticket Selection */}
             <div className="card shadow-lg mt-4 rounded-4 border-0">
               <div className="card-header bg-white py-3">
-                <h3 className="mb-0 fw-bold">Select Your Ticket</h3>
+                <h3 className="mb-0 fw-bold">{t('get_ticket.select_ticket')}</h3>
               </div>
               <div className="card-body p-4">
                 <div className="d-flex flex-wrap gap-3 mb-4">
@@ -131,7 +133,7 @@ const GetTicket = ({ event }) => {
                 </div>
                 <div className="d-flex align-items-center justify-content-between mt-4">
                   <div>
-                    <label className="fw-medium me-2">Quantity:</label>
+                    <label className="fw-medium me-2">{t('get_ticket.quantity')}</label>
                     <div className="btn-group">
                       <button 
                         className="btn btn-outline-secondary"
@@ -152,7 +154,7 @@ const GetTicket = ({ event }) => {
                   </div>
                   <div className="text-end">
                     <h4 className="mb-0">GHS {subtotal.toFixed(2)}</h4>
-                    <p className="small text-muted mb-0">Before fees</p>
+                    <p className="small text-muted mb-0">{t('get_ticket.before_fees')}</p>
                   </div>
                 </div>
               </div>
@@ -162,7 +164,7 @@ const GetTicket = ({ event }) => {
           <div className="col-lg-5">
             <div className="card shadow-lg rounded-4 border-0 sticky-top" style={{top: '20px'}}>
               <div className="card-header bg-white py-3">
-                <h3 className="mb-0 fw-bold">Order Summary</h3>
+                <h3 className="mb-0 fw-bold">{t('get_ticket.order_summary')}</h3>
               </div>
               <div className="card-body p-4">
                 <div className="mb-4">
@@ -171,35 +173,35 @@ const GetTicket = ({ event }) => {
                     <span>GHS {subtotal.toFixed(2)}</span>
                   </div>
                   <div className="d-flex justify-content-between mb-2">
-                    <span>Service Fee</span>
+                    <span>{t('get_ticket.service_fee')}</span>
                     <span>GHS {serviceFee.toFixed(2)}</span>
                   </div>
                   <hr className="my-3" />
                   <div className="d-flex justify-content-between fw-bold fs-5">
-                    <span>Total</span>
+                    <span>{t('get_ticket.total')}</span>
                     <span className="text-primary">GHS {total.toFixed(2)}</span>
                   </div>
                 </div>
                 <div className="mb-4">
-                  <h5 className="fw-bold mb-3">Payment Method</h5>
+                  <h5 className="fw-bold mb-3">{t('get_ticket.payment_method')}</h5>
                   <div className="d-flex gap-2 mb-3">
                     <button 
                       className={`btn ${paymentMethod === 'card' ? 'btn-primary' : 'btn-outline-primary'} flex-grow-1`}
                       onClick={() => setPaymentMethod('card')}
                     >
-                      <i className="bi bi-credit-card me-2"></i> Card
+                      <i className="bi bi-credit-card me-2"></i> {t('get_ticket.card')}
                     </button>
                     <button 
                       className={`btn ${paymentMethod === 'mobile' ? 'btn-primary' : 'btn-outline-primary'} flex-grow-1`}
                       onClick={() => setPaymentMethod('mobile')}
                     >
-                      <i className="bi bi-phone me-2"></i> Mobile Money
+                      <i className="bi bi-phone me-2"></i> {t('get_ticket.mobile_money')}
                     </button>
                   </div>
                   {paymentMethod === 'card' && (
                     <div className="bg-light p-3 rounded-3">
                       <div className="mb-3">
-                        <label className="form-label fw-medium">Card Number</label>
+                        <label className="form-label fw-medium">{t('get_ticket.card_number')}</label>
                         <input 
                           type="text" 
                           className="form-control" 
@@ -210,7 +212,7 @@ const GetTicket = ({ event }) => {
                         />
                       </div>
                       <div className="mb-3">
-                        <label className="form-label fw-medium">Name on Card</label>
+                        <label className="form-label fw-medium">{t('get_ticket.name_on_card')}</label>
                         <input 
                           type="text" 
                           className="form-control" 
@@ -222,7 +224,7 @@ const GetTicket = ({ event }) => {
                       </div>
                       <div className="row g-3">
                         <div className="col-md-6">
-                          <label className="form-label fw-medium">Expiry Date</label>
+                          <label className="form-label fw-medium">{t('get_ticket.expiry_date')}</label>
                           <input 
                             type="text" 
                             className="form-control" 
@@ -233,7 +235,7 @@ const GetTicket = ({ event }) => {
                           />
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label fw-medium">CVV</label>
+                          <label className="form-label fw-medium">{t('get_ticket.cvv')}</label>
                           <input 
                             type="text" 
                             className="form-control" 
@@ -249,7 +251,7 @@ const GetTicket = ({ event }) => {
                   {paymentMethod === 'mobile' && (
                     <div className="bg-light p-3 rounded-3">
                       <div className="mb-3">
-                        <label className="form-label fw-medium">Mobile Network</label>
+                        <label className="form-label fw-medium">{t('get_ticket.mobile_network')}</label>
                         <select className="form-select">
                           <option>MTN Mobile Money</option>
                           <option>Vodafone Cash</option>
@@ -257,7 +259,7 @@ const GetTicket = ({ event }) => {
                         </select>
                       </div>
                       <div className="mb-3">
-                        <label className="form-label fw-medium">Phone Number</label>
+                        <label className="form-label fw-medium">{t('get_ticket.phone_number')}</label>
                         <input 
                           type="tel" 
                           className="form-control" 
@@ -274,19 +276,18 @@ const GetTicket = ({ event }) => {
                     id="termsCheck" 
                   />
                   <label className="form-check-label small" htmlFor="termsCheck">
-                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Refund Policy</a>. 
-                    Tickets are non-refundable except in the case of event cancellation.
+                    {t('get_ticket.terms')}
                   </label>
                 </div>
                 <button 
                   className="btn btn-primary w-100 py-3 fw-bold fs-5"
                   onClick={handlePurchase}
                 >
-                  Purchase Tickets - GHS {total.toFixed(2)}
+                  {t('get_ticket.purchase_button', { total: total.toFixed(2) })}
                 </button>
                 <div className="text-center mt-3">
                   <p className="small text-muted mb-0">
-                    <i className="bi bi-lock-fill me-1"></i> Your payment is securely encrypted
+                    <i className="bi bi-lock-fill me-1"></i> {t('get_ticket.secure_payment')}
                   </p>
                 </div>
               </div>

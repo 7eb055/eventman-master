@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { resendVerificationEmail } from '../services/api';
+import { useTranslation } from 'react-i18next';
 
 const EmailVerificationStatus = () => {
+  const { t } = useTranslation();
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -13,9 +15,9 @@ const EmailVerificationStatus = () => {
     try {
       await resendVerificationEmail();
       setSuccess(true);
-      setMessage('Verification email resent! Please check your inbox.');
+      setMessage(t('email_verification.resent_success'));
     } catch (err) {
-      setMessage('Failed to resend verification email. Please try again.');
+      setMessage(t('email_verification.resent_error'));
     } finally {
       setLoading(false);
     }
@@ -23,10 +25,10 @@ const EmailVerificationStatus = () => {
 
   return (
     <div className="container py-5" style={{ maxWidth: 500 }}>
-      <h2>Email Verification Required</h2>
-      <p>Please check your email and click the verification link to activate your account.</p>
+      <h2>{t('email_verification.title')}</h2>
+      <p>{t('email_verification.instructions')}</p>
       <button className="btn btn-primary" onClick={handleResend} disabled={loading}>
-        {loading ? 'Resending...' : 'Resend Verification Email'}
+        {loading ? t('email_verification.resending') : t('email_verification.resend_button')}
       </button>
       {message && <div className={`alert mt-3 ${success ? 'alert-success' : 'alert-danger'}`}>{message}</div>}
     </div>

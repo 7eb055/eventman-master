@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import EventCard from './EventCard';
 import Button from '../Button';
 import '../../components/css/EventList.css';
 import { getEvents } from '../../services/api';
 
 const EventList = () => {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -41,33 +43,33 @@ const EventList = () => {
   return (
     <div className="event-list">
       <div className="event-list-header">
-        <h1 className="event-list-title">Discover Upcoming Events</h1>
-        <p className="event-list-subtitle">Find experiences that match your interests</p>
+        <h1 className="event-list-title">{t('event_list.title')}</h1>
+        <p className="event-list-subtitle">{t('event_list.subtitle')}</p>
         
         <div className="event-filters">
           <button 
             className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
             onClick={() => handleFilter('all')}
           >
-            All Events
+            {t('event_list.filters.all')}
           </button>
           <button 
             className={`filter-btn ${filter === 'today' ? 'active' : ''}`}
             onClick={() => handleFilter('today')}
           >
-            Today
+            {t('event_list.filters.today')}
           </button>
           <button 
             className={`filter-btn ${filter === 'week' ? 'active' : ''}`}
             onClick={() => handleFilter('week')}
           >
-            This Week
+            {t('event_list.filters.week')}
           </button>
           <button 
             className={`filter-btn ${filter === 'month' ? 'active' : ''}`}
             onClick={() => handleFilter('month')}
           >
-            This Month
+            {t('event_list.filters.month')}
           </button>
         </div>
       </div>
@@ -81,7 +83,7 @@ const EventList = () => {
       {loading && (
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Finding amazing events...</p>
+          <p>{t('event_list.loading')}</p>
         </div>
       )}
 
@@ -92,7 +94,7 @@ const EventList = () => {
             variant="outline"
             className="load-more-btn"
           >
-            Show More Events
+            {t('event_list.show_more')}
             <i className="fas fa-arrow-down"></i>
           </Button>
         </div>
@@ -101,15 +103,15 @@ const EventList = () => {
       {!hasMore && (
         <div className="no-more-events">
           <div className="divider-line"></div>
-          <p>You've reached the end! Check back later for more events.</p>
+          <p>{t('event_list.no_more')}</p>
         </div>
       )}
 
       {error && (
         <div className="error-message">
           <i className="fas fa-exclamation-triangle"></i>
-          <p>{error.message || 'Failed to load events'}</p>
-          <Button onClick={() => fetchEvents(1)}>Try Again</Button>
+          <p>{error.message || t('event_list.error')}</p>
+          <Button onClick={() => fetchEvents(1)}>{t('common.try_again')}</Button>
         </div>
       )}
     </div>

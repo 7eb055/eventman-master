@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 import { 
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -10,6 +11,7 @@ import autoTable from 'jspdf-autotable';
 import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 
 const OrganizerDashboard = () => {
+  const { t } = useTranslation();
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -115,17 +117,17 @@ const OrganizerDashboard = () => {
     setEventToDelete(null);
   };
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>;
-  if (error) return <div className="alert alert-danger mt-5">{error}</div>;
+  if (loading) return <div className="text-center mt-5">{t('organizer_dashboard.loading')}</div>;
+  if (error) return <div className="alert alert-danger mt-5">{t('organizer_dashboard.error', { error })}</div>;
   if (!dashboard) return null;
 
   return (
     <div className="container-fluid">
       {/* Page Heading */}
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 className="h3 mb-0 text-gray-800">Organizer Dashboard</h1>
+        <h1 className="h3 mb-0 text-gray-800">{t('organizer_dashboard.title')}</h1>
         <Link to="/create-event" className="d-none d-sm-inline-block btn btn-primary shadow-sm">
-          <i className="fas fa-plus fa-sm text-white-50 me-1"></i> Create Event
+          <i className="fas fa-plus fa-sm text-white-50 me-1"></i> {t('organizer_dashboard.create_event')}
         </Link>
       </div>
 
@@ -137,7 +139,7 @@ const OrganizerDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-primary text-uppercase mb-1">
-                    Total Events
+                    {t('organizer_dashboard.total_events')}
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{dashboard.total_events}</div>
                 </div>
@@ -155,7 +157,7 @@ const OrganizerDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-success text-uppercase mb-1">
-                    Upcoming Events
+                    {t('organizer_dashboard.upcoming_events')}
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{dashboard.upcoming_events_count}</div>
                 </div>
@@ -173,7 +175,7 @@ const OrganizerDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-info text-uppercase mb-1">
-                    Tickets Sold
+                    {t('organizer_dashboard.tickets_sold')}
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{dashboard.total_tickets_sold}</div>
                 </div>
@@ -191,7 +193,7 @@ const OrganizerDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-warning text-uppercase mb-1">
-                    Revenue
+                    {t('organizer_dashboard.revenue')}
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">${dashboard.total_revenue}</div>
                 </div>
@@ -207,19 +209,19 @@ const OrganizerDashboard = () => {
       {/* Recent Events Table */}
       <div className="card shadow mb-4">
         <div className="card-header py-3">
-          <h6 className="m-0 fw-bold text-primary">Your Events</h6>
+          <h6 className="m-0 fw-bold text-primary">{t('organizer_dashboard.your_events')}</h6>
         </div>
         <div className="card-body">
           <div className="table-responsive">
             <table className="table table-bordered" width="100%" cellSpacing="0">
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Start Date</th>
-                  <th>Tickets Sold</th>
-                  <th>Revenue</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
+                  <th>{t('organizer_dashboard.event_title')}</th>
+                  <th>{t('organizer_dashboard.start_date')}</th>
+                  <th>{t('organizer_dashboard.tickets_sold')}</th>
+                  <th>{t('organizer_dashboard.revenue')}</th>
+                  <th>{t('organizer_dashboard.edit')}</th>
+                  <th>{t('organizer_dashboard.delete')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -231,14 +233,14 @@ const OrganizerDashboard = () => {
                       <td>{event.tickets_sold}</td>
                       <td>${event.revenue}</td>
                       <td>
-                        <Link to={`/edit-event/${event.id}`} className="btn btn-sm btn-outline-primary" title="Edit Event">
+                        <Link to={`/edit-event/${event.id}`} className="btn btn-sm btn-outline-primary" title={t('organizer_dashboard.edit_event')}>
                           <i className="bi bi-pencil"></i>
                         </Link>
                       </td>
                       <td>
                         <button
                           className="btn btn-sm btn-outline-danger"
-                          title="Delete Event"
+                          title={t('organizer_dashboard.delete_event')}
                           onClick={() => handleDeleteClick(event)}
                           disabled={deletingId === event.id}
                         >
@@ -252,7 +254,7 @@ const OrganizerDashboard = () => {
                     </tr>
                   ))
                 ) : (
-                  <tr><td colSpan="6" className="text-center">No events found.</td></tr>
+                  <tr><td colSpan="6" className="text-center">{t('organizer_dashboard.no_events')}</td></tr>
                 )}
               </tbody>
             </table>
@@ -263,13 +265,13 @@ const OrganizerDashboard = () => {
       {/* Export Buttons */}
       <div className="mb-4 d-flex gap-2">
         <button className="btn btn-outline-success" onClick={exportEventsCSV}>
-          <i className="fas fa-file-csv me-1"></i> Export Events CSV
+          <i className="fas fa-file-csv me-1"></i> {t('organizer_dashboard.export_csv')}
         </button>
         <button className="btn btn-outline-info" onClick={exportStatsJSON}>
-          <i className="fas fa-file-code me-1"></i> Export Dashboard JSON
+          <i className="fas fa-file-code me-1"></i> {t('organizer_dashboard.export_json')}
         </button>
         <button className="btn btn-outline-danger" onClick={exportPDF}>
-          <i className="fas fa-file-pdf me-1"></i> Export Events PDF
+          <i className="fas fa-file-pdf me-1"></i> {t('organizer_dashboard.export_pdf')}
         </button>
       </div>
 
@@ -279,7 +281,7 @@ const OrganizerDashboard = () => {
         <div className="col-lg-6 mb-4">
           <div className="card shadow h-100">
             <div className="card-header py-3">
-              <h6 className="m-0 fw-bold text-primary">Revenue by Event</h6>
+              <h6 className="m-0 fw-bold text-primary">{t('organizer_dashboard.revenue_by_event')}</h6>
             </div>
             <div className="card-body">
               <ResponsiveContainer width="100%" height={250}>
@@ -297,7 +299,7 @@ const OrganizerDashboard = () => {
         <div className="col-lg-6 mb-4">
           <div className="card shadow h-100">
             <div className="card-header py-3">
-              <h6 className="m-0 fw-bold text-primary">Tickets Sold Distribution</h6>
+              <h6 className="m-0 fw-bold text-primary">{t('organizer_dashboard.tickets_sold_distribution')}</h6>
             </div>
             <div className="card-body d-flex justify-content-center align-items-center">
               <ResponsiveContainer width="100%" height={250}>

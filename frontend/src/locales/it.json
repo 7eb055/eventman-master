@@ -1,0 +1,523 @@
+{
+  "event_management": "Piattaforma di gestione eventi",
+  "welcome": "Benvenuto",
+  "login": "Accedi",
+  "logout": "Disconnetti",
+  "register": "Registrati",
+  "dashboard": "Dashboard",
+  "my_events": "I miei eventi",
+  "create_event": "Crea evento",
+  "delete_event": "Elimina evento",
+  "event_details": "Dettagli evento",
+  "attendees": "Partecipanti",
+  "tickets": "Biglietti",
+  "buy_ticket": "Acquista biglietto",
+  "promo_code": "Codice promozionale",
+  "apply": "Applica",
+  "feedback": "Feedback",
+  "submit_feedback": "Invia feedback",
+  "update_feedback": "Aggiorna feedback",
+  "your_feedback": "Il tuo feedback",
+  "all_reviews": "Tutte le recensioni",
+  "share": "Condividi",
+  "analytics": "Analisi",
+  "language": "Lingua",
+  "english": "Inglese",
+  "french": "Francese",
+  "spanish": "Spagnolo",
+  "german": "Tedesco",
+  "italian": "Italiano",
+  "event_name": "Nome evento",
+  "date": "Data",
+  "location": "Luogo",
+  "description": "Descrizione",
+  "organizer": "Organizzatore",
+  "actions": "Azioni",
+  "save": "Salva",
+  "cancel": "Annulla",
+  "no_events": "Nessun evento trovato.",
+  "no_feedback": "Nessun feedback ancora.",
+  "rating": "Valutazione",
+  "review": "Recensione",
+  "submit": "Invia",
+  "edit": "Modifica",
+  "delete": "Elimina",
+  "success": "Successo!",
+  "error": "Errore!",
+  "invalid_promo": "Codice promozionale non valido.",
+  "promo_applied": "Codice promozionale applicato!",
+  "event_past": "Questo evento si è già svolto.",
+  "event_upcoming": "Evento imminente",
+  "event_ongoing": "Evento in corso",
+  "event_cancelled": "Evento annullato",
+  "home": {
+    "discover_events": "Scopri eventi straordinari vicino a te",
+    "join_thousands": "Unisciti a migliaia di persone che partecipano a conferenze, workshop, concerti e altro con il nostro sistema intelligente di gestione eventi.",
+    "cta_title": "Pronto a creare il tuo evento?",
+    "cta_description": "Inizia a organizzare e vendere biglietti in pochi minuti con la nostra piattaforma smart per eventi.",
+    "cta_button": "Crea evento"
+  },
+  "event_list": {
+    "title": "Scopri i prossimi eventi",
+    "subtitle": "Trova esperienze che corrispondono ai tuoi interessi",
+    "filters": {
+      "all": "Tutti gli eventi",
+      "today": "Oggi",
+      "week": "Questa settimana",
+      "month": "Questo mese"
+    },
+    "loading": "Ricerca di eventi straordinari...",
+    "show_more": "Mostra altri eventi",
+    "no_more": "Hai raggiunto la fine! Torna più tardi per altri eventi.",
+    "error": "Impossibile caricare gli eventi"
+  },
+  "common": {
+    "try_again": "Riprova"
+  },
+  "event_card": {
+    "default_type": "Conferenza",
+    "default_title": "Evento",
+    "tba": "Da definire",
+    "free": "Gratis",
+    "view_details": "Vedi dettagli"
+  },
+  "browse_events": {
+    "loading": "Caricamento eventi...",
+    "fetch_error": "Impossibile recuperare gli eventi",
+    "upcoming": "Prossimi eventi",
+    "discover": "Scopri eventi entusiasmanti vicino a te"
+  },
+  "attendee_dashboard": {
+    "loading_user": "Caricamento dettagli utente...",
+    "user_error": "Impossibile caricare i dettagli dell'utente.",
+    "loading_events": "Caricamento eventi...",
+    "events_error": "Impossibile caricare gli eventi.",
+    "dashboard": "Dashboard",
+    "welcome": "Bentornato, {{name}}",
+    "email": "Email",
+    "joined": "Iscritto",
+    "tickets_purchased": "Biglietti acquistati",
+    "events_attended": "Eventi partecipati",
+    "upcoming_events": "Prossimi eventi",
+    "past_events": "Eventi passati",
+    "recommended": "Consigliato per te",
+    "na": "N/D"
+  },
+  "organizer_dashboard": {
+    "loading": "Caricamento dashboard...",
+    "error": "Impossibile caricare i dati della dashboard. {{error}}",
+    "title": "Dashboard organizzatore",
+    "create_event": "Crea evento",
+    "total_events": "Eventi totali",
+    "upcoming_events": "Prossimi eventi",
+    "tickets_sold": "Biglietti venduti",
+    "revenue": "Entrate",
+    "your_events": "I tuoi eventi",
+    "event_title": "Titolo",
+    "start_date": "Data di inizio",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "no_events": "Nessun evento trovato.",
+    "export_csv": "Esporta eventi CSV",
+    "export_json": "Esporta dashboard JSON",
+    "export_pdf": "Esporta eventi PDF",
+    "revenue_by_event": "Entrate per evento",
+    "tickets_sold_distribution": "Distribuzione biglietti venduti"
+  },
+  "get_ticket": {
+    "title": "Acquista i tuoi biglietti",
+    "subtitle": "Assicurati il tuo posto per un'esperienza indimenticabile",
+    "select_ticket": "Seleziona il tuo biglietto",
+    "quantity": "Quantità:",
+    "before_fees": "Prima delle commissioni",
+    "order_summary": "Riepilogo ordine",
+    "service_fee": "Commissione di servizio",
+    "total": "Totale",
+    "payment_method": "Metodo di pagamento",
+    "card": "Carta",
+    "mobile_money": "Mobile Money",
+    "card_number": "Numero di carta",
+    "name_on_card": "Nome sulla carta",
+    "expiry_date": "Data di scadenza",
+    "cvv": "CVV",
+    "mobile_network": "Rete mobile",
+    "phone_number": "Numero di telefono",
+    "terms": "Accetto i <a href='#'>Termini di servizio</a> e la <a href='#'>Politica di rimborso</a>. I biglietti non sono rimborsabili salvo annullamento dell'evento.",
+    "purchase_button": "Acquista biglietti - GHS {{total}}",
+    "secure_payment": "Il tuo pagamento è protetto e criptato"
+  },
+  "help": {
+    "title": "Centro assistenza",
+    "subtitle": "Trova risposte alle tue domande e sfrutta al massimo EventMan",
+    "search_placeholder": "Cerca articoli di aiuto, FAQ...",
+    "faq_title": "Domande frequenti",
+    "no_results": "Nessun risultato trovato",
+    "no_results_desc": "Prova con altre parole chiave o consulta le nostre categorie di aiuto qui sopra.",
+    "still_need_help": "Hai ancora bisogno di aiuto?",
+    "still_need_help_desc": "Non trovi quello che cerchi? Il nostro team di supporto è qui per aiutarti a raggiungere il successo.",
+    "support_hours": "Orari di supporto: Lunedì - Venerdì, 8:00 - 18:00 GMT",
+    "categories": {
+      "title": "Categorie di aiuto",
+      "getting_started": "Primi passi",
+      "getting_started_desc": "Impara le basi di EventMan",
+      "events": "Gestione eventi",
+      "events_desc": "Crea, modifica e gestisci i tuoi eventi",
+      "tickets": "Biglietti e pagamenti",
+      "tickets_desc": "Tutto su acquisto e vendita di biglietti",
+      "account": "Account e profilo",
+      "account_desc": "Gestisci le impostazioni del tuo account",
+      "organizer": "Per organizzatori",
+      "organizer_desc": "Strumenti e consigli per organizzatori",
+      "troubleshooting": "Risoluzione dei problemi",
+      "troubleshooting_desc": "Problemi comuni e soluzioni",
+      "billing": "Fatturazione e rimborsi",
+      "billing_desc": "Problemi di pagamento e politiche di rimborso",
+      "technical": "Supporto tecnico",
+      "technical_desc": "Requisiti tecnici e supporto"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Trasformare le esperienze degli eventi",
+      "highlight": "In tutto il mondo",
+      "desc": "Dal 2015 colleghiamo organizzatori e pubblico con la nostra innovativa piattaforma di registrazione e biglietteria per eventi.",
+      "cta": "Scopri la nostra piattaforma",
+      "contact": "Contattaci",
+      "platform": "Piattaforma eventi smart"
+    },
+    "mission_vision": {
+      "title": "La nostra missione e visione",
+      "mission": "La nostra missione",
+      "mission_desc": "Rendere la gestione degli eventi semplice e accessibile a tutti, dai raduni locali alle conferenze internazionali. Diamo potere agli organizzatori con strumenti intuitivi e offriamo esperienze eccezionali ai partecipanti di tutto il mondo.",
+      "vision": "La nostra visione",
+      "vision_desc": "Diventare lo standard globale per la registrazione agli eventi, creando un mondo in cui chiunque possa facilmente scoprire, creare e partecipare a esperienze significative. Stiamo costruendo il futuro della connessione umana attraverso la tecnologia innovativa per eventi."
+    },
+    "stats": {
+      "title": "In numeri",
+      "desc": "Il nostro impatto nel settore degli eventi dal 2015",
+      "events": "Eventi ospitati",
+      "tickets": "Biglietti venduti",
+      "countries": "Paesi serviti",
+      "satisfaction": "Soddisfazione del cliente"
+    },
+    "values": {
+      "title": "I nostri valori fondamentali",
+      "desc": "Principi che guidano tutto ciò che facciamo",
+      "innovation": "Innovazione",
+      "innovation_desc": "Evolviamo costantemente la nostra piattaforma con funzionalità all'avanguardia",
+      "customer": "Focus sul cliente",
+      "customer_desc": "Mettiamo i nostri utenti al centro di tutto ciò che facciamo",
+      "integrity": "Integrità",
+      "integrity_desc": "Costruiamo fiducia attraverso trasparenza e affidabilità",
+      "excellence": "Eccellenza",
+      "excellence_desc": "Miriamo alla perfezione in ogni aspetto del nostro servizio"
+    },
+    "team": {
+      "title": "Il nostro team di leadership",
+      "desc": "Il team appassionato che guida la nostra visione",
+      "sarah": "Sarah Johnson",
+      "ceo": "CEO e fondatrice",
+      "sarah_bio": "Oltre 10 anni nella tecnologia degli eventi",
+      "michael": "Michael Chen",
+      "cto": "CTO",
+      "michael_bio": "Architetto software e sviluppatore della piattaforma",
+      "emma": "Emma Rodriguez",
+      "marketing": "Responsabile marketing",
+      "emma_bio": "Strategia di brand e crescita clienti",
+      "david": "David Wilson",
+      "cs": "Customer Success",
+      "david_bio": "Garantire esperienze eccezionali ai clienti"
+    },
+    "timeline": {
+      "title": "Il nostro percorso",
+      "desc": "Traguardi nella storia della nostra azienda",
+      "founded": "Fondazione dell'azienda",
+      "founded_desc": "Lanciati con la visione di trasformare la gestione degli eventi",
+      "platform": "Lancio della piattaforma",
+      "platform_desc": "Rilasciata la prima versione della nostra piattaforma di biglietteria",
+      "expansion": "Espansione globale",
+      "expansion_desc": "Servizi estesi a oltre 50 paesi",
+      "mobile": "Rilascio app mobile",
+      "mobile_desc": "Lancio di app iOS e Android per la scoperta di eventi",
+      "ai": "Integrazione AI",
+      "ai_desc": "Implementate raccomandazioni eventi basate su AI"
+    },
+    "cta": {
+      "title": "Pronto a trasformare i tuoi eventi?",
+      "desc": "Unisciti a migliaia di organizzatori che usano la nostra piattaforma per creare esperienze indimenticabili.",
+      "button": "Inizia oggi"
+    }
+  },
+  "contact_us": {
+    "title": "Contatta i nostri esperti di eventi",
+    "subtitle": "Hai domande sulla nostra piattaforma di biglietteria? Contatta il nostro team di supporto 24/7",
+    "get_in_touch": "Mettiti in contatto",
+    "email": "Email",
+    "phone": "Telefono",
+    "phone_hours": "Lun-Ven, 9-17 (PST)",
+    "headquarters": "Sede centrale",
+    "country": "Stati Uniti",
+    "follow_us": "Seguici",
+    "send_message": "Inviaci un messaggio",
+    "full_name": "Nome completo",
+    "name_placeholder": "Inserisci il tuo nome",
+    "email_address": "Indirizzo email",
+    "email_placeholder": "tu@email.com",
+    "subject": "Oggetto",
+    "subject_select": "Seleziona un'opzione",
+    "subject_technical": "Supporto tecnico",
+    "subject_registration": "Aiuto registrazione evento",
+    "subject_billing": "Richiesta di fatturazione",
+    "subject_partnership": "Partnership commerciale",
+    "subject_feedback": "Feedback/Suggerimenti",
+    "message": "Messaggio",
+    "message_placeholder": "Come possiamo aiutarti?",
+    "subscribe_newsletter": "Iscriviti alla nostra newsletter per aggiornamenti e promozioni sugli eventi",
+    "send_button": "Invia messaggio"
+  },
+  "signup": {
+    "title": "Crea il tuo account",
+    "subtitle": "Unisciti alla nostra community per iniziare",
+    "placeholders": {
+      "full_name": "Inserisci il tuo nome completo",
+      "email": "tu@esempio.com",
+      "company": "Nome azienda",
+      "phone": "Numero di telefono (opzionale)",
+      "password": "Crea una password",
+      "confirm_password": "Conferma la tua password"
+    },
+    "labels": {
+      "role": "Mi registro come:"
+    },
+    "options": {
+      "attendee": "Partecipante all'evento",
+      "organizer": "Organizzatore / Azienda"
+    },
+    "password": {
+      "strength": "Sicurezza della password",
+      "weak": "Debole",
+      "medium": "Media",
+      "strong": "Forte",
+      "very_strong": "Molto forte",
+      "hint": "Usa almeno 8 caratteri, con maiuscole, minuscole, numeri e simboli."
+    },
+    "terms": "Termini di servizio",
+    "privacy": "Informativa sulla privacy",
+    "terms_html": "Accetto i {{terms}} e l'{{privacy}}",
+    "button": "Registrati",
+    "loading": "Creazione account...",
+    "or_social": "oppure registrati con",
+    "social": {
+      "google": "Registrati con Google",
+      "facebook": "Registrati con Facebook",
+      "linkedin": "Registrati con LinkedIn"
+    },
+    "already_account": "Hai già un account?",
+    "signin_link": "Accedi",
+    "errors": {
+      "full_name_required": "Il nome completo è obbligatorio.",
+      "email_invalid": "Inserisci un indirizzo email valido.",
+      "password_length": "La password deve contenere almeno 8 caratteri.",
+      "passwords_no_match": "Le password non corrispondono.",
+      "company_required": "Il nome azienda è obbligatorio per gli organizzatori.",
+      "phone_invalid": "Inserisci un numero di telefono valido."
+    }
+  },
+  "signin": {
+    "app_name": "EventMan",
+    "title": "Bentornato",
+    "subtitle": "Accedi per continuare al tuo account",
+    "placeholders": {
+      "email": "Indirizzo email",
+      "password": "Password"
+    },
+    "remember_me": "Ricordami",
+    "forgot_password": "Password dimenticata?",
+    "button": "Accedi",
+    "loading": "Accesso in corso...",
+    "or_social": "oppure continua con",
+    "social": {
+      "google": "Google",
+      "github": "GitHub"
+    },
+    "no_account": "Non hai un account?",
+    "signup_link": "Registrati",
+    "errors": {
+      "invalid_login": "Email o password non validi. Riprova."
+    }
+  },
+  "profile": {
+    "loading": "Caricamento...",
+    "alt": { "profile": "Profilo" },
+    "tickets": "Biglietti",
+    "events": "Eventi",
+    "stats": {
+      "title": "Statistiche account",
+      "events_attended": "Eventi partecipati",
+      "tickets_purchased": "Biglietti acquistati",
+      "member_since": "Membro dal",
+      "account_status": "Stato account",
+      "active": "Attivo"
+    },
+    "header": {
+      "title": "Il mio profilo",
+      "subtitle": "Gestisci le tue informazioni personali e impostazioni"
+    },
+    "tabs": {
+      "profile": "Profilo",
+      "security": "Sicurezza",
+      "notifications": "Notifiche"
+    },
+    "personal_info": "Informazioni personali",
+    "labels": {
+      "first_name": "Nome",
+      "last_name": "Cognome",
+      "email": "Indirizzo email",
+      "email_help": "Non condivideremo mai la tua email con nessuno",
+      "phone": "Numero di telefono",
+      "phone_placeholder": "(555) 123-4567",
+      "company": "Nome azienda"
+    },
+    "buttons": {
+      "save_changes": "Salva modifiche",
+      "change_password": "Cambia password",
+      "save_preferences": "Salva preferenze"
+    },
+    "success": {
+      "update": "Profilo aggiornato con successo!",
+      "password": "Password cambiata con successo!",
+      "notifications": "Preferenze di notifica aggiornate!"
+    },
+    "errors": {
+      "load_user": "Impossibile caricare i dati utente.",
+      "update": "Impossibile aggiornare il profilo.",
+      "password": "Impossibile cambiare la password.",
+      "notifications": "Impossibile aggiornare le preferenze di notifica."
+    },
+    "security": {
+      "title": "Cambia password",
+      "current_password": "Password attuale",
+      "new_password": "Nuova password",
+      "confirm_password": "Conferma nuova password"
+    },
+    "notifications": {
+      "title": "Preferenze di notifica",
+      "event_updates": "Aggiornamenti evento",
+      "ticket_reminders": "Promemoria biglietti",
+      "promotional": "Offerte promozionali",
+      "partner_offers": "Offerte partner"
+    }
+  },
+  "register": {
+    "app_name": "EventMan",
+    "title": "Crea account",
+    "subtitle": "Registrati per iniziare",
+    "account_type": "Tipo di account",
+    "options": {
+      "attendee": "Partecipante",
+      "organizer": "Organizzatore / Azienda"
+    },
+    "placeholders": {
+      "company": "Nome azienda",
+      "phone": "Numero di telefono (opzionale)",
+      "full_name": "Nome completo",
+      "email": "Indirizzo email",
+      "password": "Password",
+      "confirm_password": "Conferma password"
+    },
+    "terms": "Termini e condizioni",
+    "terms_html": "Accetto i {{terms}}",
+    "button": "Registrati",
+    "or_social": "oppure continua con",
+    "social": {
+      "google": "Google",
+      "github": "GitHub"
+    },
+    "already_account": "Hai già un account?",
+    "signin_link": "Accedi"
+  },
+  "ticket_purchase": {
+    "steps": {
+      "customer_info": "Dati cliente",
+      "billing_details": "Dettagli di fatturazione",
+      "payment": "Pagamento",
+      "confirmation": "Conferma"
+    },
+    "errors": {
+      "first_name": "Il nome è obbligatorio",
+      "last_name": "Il cognome è obbligatorio",
+      "email": "L'email è obbligatoria",
+      "phone": "Il numero di telefono è obbligatorio",
+      "address": "L'indirizzo è obbligatorio",
+      "city": "La città è obbligatoria",
+      "region": "La regione è obbligatoria",
+      "card_number": "Il numero di carta è obbligatorio",
+      "card_name": "Il nome sulla carta è obbligatorio",
+      "expiry_date": "La data di scadenza è obbligatoria",
+      "cvv": "Il CVV è obbligatorio",
+      "mobile_number": "Il numero di cellulare è obbligatorio"
+    },
+    "customer_info": {
+      "title": "Informazioni cliente",
+      "subtitle": "Fornisci i tuoi dati per la consegna del biglietto"
+    },
+    "labels": {
+      "first_name": "Nome *",
+      "last_name": "Cognome *",
+      "email": "Email *",
+      "phone": "Numero di telefono *",
+      "emergency_contact": "Contatto di emergenza (opzionale)"
+    }
+  },
+  "organizer_profile": {
+    "title": "Profilo aziendale",
+    "logo": "URL logo azienda",
+    "description": "Descrizione",
+    "website": "Sito web",
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "save_button": "Salva profilo",
+    "update_success": "Profilo aggiornato con successo!",
+    "update_error": "Errore durante l'aggiornamento del profilo.",
+    "load_error": "Errore durante il caricamento del profilo."
+  },
+  "event_detail": {
+    "organized_by": "Organizzato da:",
+    "day1": "Giorno 1",
+    "registration_welcome": "Registrazione e caffè di benvenuto",
+    "opening_keynote": "Keynote di apertura: Il futuro della tecnologia",
+    "networking_lunch": "Pranzo di networking",
+    "day2_3": "Giorni 2-3",
+    "workshops_panel": "Workshop, tavole rotonde e altre keynote. Programma dettagliato in arrivo.",
+    "faq_included": "Cosa è incluso nel prezzo del biglietto?",
+    "faq_included_desc": "Il tuo biglietto include l'accesso a tutte le keynote, workshop, eventi di networking e pasti durante la conferenza. L'alloggio non è incluso.",
+    "faq_dress": "C'è un dress code?",
+    "faq_dress_desc": "Si consiglia un abbigliamento business casual.",
+    "faq_refund": "Posso ottenere un rimborso se non posso partecipare?",
+    "faq_refund_desc": "Sì, i rimborsi sono disponibili fino a 14 giorni prima dell'evento.",
+    "venue_map": "Mappa interattiva del centro congressi tecnologico",
+    "venue_address": "123 Innovation Street, San Francisco, CA 94103",
+    "registration_success": "Registrazione avvenuta con successo! Controlla la tua email per la conferma."
+  },
+  "edit_event": {
+    "title": "Modifica evento",
+    "fields": {
+      "title": "Titolo",
+      "event_type": "Tipo di evento",
+      "venue": "Sede",
+      "location": "Luogo",
+      "start_date": "Data di inizio",
+      "capacity": "Capienza",
+      "ticket_price": "Prezzo del biglietto",
+      "image": "URL immagine",
+      "description": "Descrizione"
+    },
+    "cancel": "Annulla",
+    "save_button": "Salva modifiche",
+    "saving": "Salvataggio...",
+    "load_error": "Errore nel caricamento dei dati dell'evento.",
+    "update_error": "Errore nell'aggiornamento dell'evento."
+  }
+}

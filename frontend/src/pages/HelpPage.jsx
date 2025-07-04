@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 const HelpPage = () => {
+  const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('getting-started');
   const [searchTerm, setSearchTerm] = useState('');
   const [openFAQ, setOpenFAQ] = useState(null);
@@ -9,51 +11,51 @@ const HelpPage = () => {
   const helpCategories = [
     {
       id: 'getting-started',
-      title: 'Getting Started',
+      title: t('help.categories.getting_started'),
       icon: 'fas fa-play-circle',
-      description: 'Learn the basics of using EventMan'
+      description: t('help.categories.getting_started_desc')
     },
     {
       id: 'events',
-      title: 'Managing Events',
+      title: t('help.categories.events'),
       icon: 'fas fa-calendar-alt',
-      description: 'Create, edit, and manage your events'
+      description: t('help.categories.events_desc')
     },
     {
       id: 'tickets',
-      title: 'Tickets & Payments',
+      title: t('help.categories.tickets'),
       icon: 'fas fa-ticket-alt',
-      description: 'Everything about buying and selling tickets'
+      description: t('help.categories.tickets_desc')
     },
     {
       id: 'account',
-      title: 'Account & Profile',
+      title: t('help.categories.account'),
       icon: 'fas fa-user-cog',
-      description: 'Manage your account settings'
+      description: t('help.categories.account_desc')
     },
     {
       id: 'organizer',
-      title: 'For Organizers',
+      title: t('help.categories.organizer'),
       icon: 'fas fa-users-cog',
-      description: 'Tools and tips for event organizers'
+      description: t('help.categories.organizer_desc')
     },
     {
       id: 'troubleshooting',
-      title: 'Troubleshooting',
+      title: t('help.categories.troubleshooting'),
       icon: 'fas fa-tools',
-      description: 'Common issues and solutions'
+      description: t('help.categories.troubleshooting_desc')
     },
     {
       id: 'billing',
-      title: 'Billing & Refunds',
+      title: t('help.categories.billing'),
       icon: 'fas fa-credit-card',
-      description: 'Payment issues and refund policies'
+      description: t('help.categories.billing_desc')
     },
     {
       id: 'technical',
-      title: 'Technical Support',
+      title: t('help.categories.technical'),
       icon: 'fas fa-headset',
-      description: 'Technical requirements and support'
+      description: t('help.categories.technical_desc')
     }
   ];
 
@@ -561,8 +563,8 @@ const HelpPage = () => {
       <div className="container">
         {/* Header */}
         <div className="text-center mb-5">
-          <h1 className="display-4 fw-bold text-primary">Help Center</h1>
-          <p className="lead text-muted">Find answers to your questions and get the most out of EventMan</p>
+          <h1 className="display-4 fw-bold text-primary">{t('help.title')}</h1>
+          <p className="lead text-muted">{t('help.subtitle')}</p>
           
           {/* Search Bar */}
           <div className="row justify-content-center mt-4">
@@ -574,7 +576,7 @@ const HelpPage = () => {
                 <input
                   type="text"
                   className="form-control border-start-0"
-                  placeholder="Search for help articles, FAQs..."
+                  placeholder={t('help.search_placeholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -588,7 +590,7 @@ const HelpPage = () => {
           <div className="col-lg-3">
             <div className="card shadow-sm rounded-3 border-0 sticky-top" style={{ top: '20px' }}>
               <div className="card-header bg-white py-3">
-                <h5 className="mb-0 fw-bold">Help Categories</h5>
+                <h5 className="mb-0 fw-bold">{t('help.categories.title')}</h5>
               </div>
               <div className="list-group list-group-flush">
                 {helpCategories.map(category => (
@@ -619,7 +621,7 @@ const HelpPage = () => {
             {/* Help Articles */}
             <div className="card shadow-sm rounded-3 border-0 mb-4">
               <div className="card-header bg-white py-4">
-                <h3 className="mb-0 fw-bold">{helpContent[activeCategory]?.title}</h3>
+                <h3 className="mb-0 fw-bold">{t(helpContent[activeCategory]?.title)}</h3>
               </div>
               <div className="card-body p-4">
                 {helpContent[activeCategory]?.articles.map((article, index) => (
@@ -638,7 +640,7 @@ const HelpPage = () => {
             {/* FAQ Section */}
             <div className="card shadow-sm rounded-3 border-0">
               <div className="card-header bg-white py-4">
-                <h3 className="mb-0 fw-bold">Frequently Asked Questions</h3>
+                <h3 className="mb-0 fw-bold">{t('help.faq_title')}</h3>
               </div>
               <div className="card-body p-4">
                 <div className="accordion" id="faqAccordion">
@@ -666,8 +668,8 @@ const HelpPage = () => {
                 {filteredFAQs.length === 0 && searchTerm && (
                   <div className="text-center py-5">
                     <i className="fas fa-search fa-3x text-muted mb-3"></i>
-                    <h5>No results found</h5>
-                    <p className="text-muted">Try different keywords or browse our help categories above.</p>
+                    <h5>{t('help.no_results')}</h5>
+                    <p className="text-muted">{t('help.no_results_desc')}</p>
                   </div>
                 )}
               </div>
@@ -681,9 +683,9 @@ const HelpPage = () => {
             <div className="card shadow-lg rounded-4 border-0 bg-primary text-white">
               <div className="card-body p-5 text-center">
                 <i className="fas fa-headset fa-3x mb-3"></i>
-                <h3 className="fw-bold mb-3">Still Need Help?</h3>
+                <h3 className="fw-bold mb-3">{t('help.still_need_help')}</h3>
                 <p className="lead mb-4">
-                  Can't find what you're looking for? Our support team is here to help you succeed.
+                  {t('help.still_need_help_desc')}
                 </p>
                 <div className="row g-3 justify-content-center">
                   <div className="col-md-4">
@@ -708,7 +710,7 @@ const HelpPage = () => {
                 <div className="mt-4">
                   <small>
                     <i className="fas fa-clock me-1"></i>
-                    Support Hours: Monday - Friday, 8:00 AM - 6:00 PM GMT
+                    {t('help.support_hours')}
                   </small>
                 </div>
               </div>

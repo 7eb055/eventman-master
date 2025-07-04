@@ -3,6 +3,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 import HomePage from './pages/Home';
@@ -31,10 +32,17 @@ import OrganizerProfile from './pages/OrganizerProfile';
 import EmailVerificationStatus from './pages/EmailVerificationStatus';
 
 function App() {
+  const { i18n } = useTranslation();
+
   return (
     <Router>
       <Header />
       <AnnouncementsBanner />
+      {/* Language Switcher */}
+      <div style={{ position: 'fixed', top: 10, right: 10, zIndex: 9999 }}>
+        <button onClick={() => i18n.changeLanguage('en')} disabled={i18n.language === 'en'}>EN</button>
+        <button onClick={() => i18n.changeLanguage('fr')} disabled={i18n.language === 'fr'}>FR</button>
+      </div>
       <main className="main-content">
         <Routes>
           {/* Public Routes */}

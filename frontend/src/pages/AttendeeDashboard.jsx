@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getUser } from '../services/auth';
 import axios from 'axios';
 import './css/AttendeeDashboard.css';
@@ -9,6 +10,8 @@ import { Link, useNavigate } from 'react-router-dom';
 const API_URL = 'http://localhost:8000/api';
 
 const AttendeeDashboard = () => {
+  const { t } = useTranslation();
+
   // User data from API
   const [user, setUser] = useState(null);
   const [userLoading, setUserLoading] = useState(true);
@@ -100,10 +103,42 @@ const AttendeeDashboard = () => {
     document.body.removeChild(link);
   };
 
-  if (userLoading) return <div>Loading user details...</div>;
-  if (userError) return <div className="text-danger">{userError}</div>;
-  if (loading) return <div>Loading events...</div>;
-  if (error) return <div className="text-danger">{error}</div>;
+  // Feedback state for past events
+  const [feedbacks, setFeedbacks] = useState({}); // { [eventId]: { rating, comment, submitting, error, success } }
+  const commentRefs = useRef({});
+
+  // Handler to submit feedback
+  const handleFeedbackSubmit = async (eventId) => {
+    const feedback = feedbacks[eventId] || {};
+    setFeedbacks(prev => ({ ...prev, [eventId]: { ...feedback, submitting: true, error: null, success: null } }));
+    try {
+      await axios.post(`${API_URL}/events/${eventId}/feedback`, {
+        rating: feedback.rating,
+        comment: feedback.comment,
+      });
+      setFeedbacks(prev => ({ ...prev, [eventId]: { ...feedback, submitting: false, error: null, success: 'Feedback submitted!' } }));
+    } catch (err) {
+      setFeedbacks(prev => ({ ...prev, [eventId]: { ...feedback, submitting: false, error: 'Failed to submit feedback', success: null } }));
+    }
+  };
+
+  // Handler to update feedback state
+  const handleFeedbackChange = (eventId, field, value) => {
+    setFeedbacks(prev => ({
+      ...prev,
+      [eventId]: {
+        ...prev[eventId],
+        [field]: value,
+        error: null,
+        success: null,
+      },
+    }));
+  };
+
+  if (userLoading) return <div>{t('attendee_dashboard.loading_user')}</div>;
+  if (userError) return <div className="text-danger">{t('attendee_dashboard.user_error')}</div>;
+  if (loading) return <div>{t('attendee_dashboard.loading_events')}</div>;
+  if (error) return <div className="text-danger">{t('attendee_dashboard.events_error')}</div>;
 
   return (
     <div className="page bg-light">
@@ -111,13 +146,13 @@ const AttendeeDashboard = () => {
         {/* Dashboard Header */}
         <div className="d-flex justify-content-between align-items-center mb-5">
           <div>
-            <h1 className="display-5 fw-bold text-primary mb-1">Dashboard</h1>
-            <p className="text-muted">Welcome back, {user && user.user && user.user.name}</p>
+            <h1 className="display-5 fw-bold text-primary mb-1">{t('attendee_dashboard.dashboard')}</h1>
+            <p className="text-muted">{t('attendee_dashboard.welcome', { name: user && user.user && user.user.name })}</p>
             <div className="user-details">
-              <div><strong>Email:</strong> {user && user.user && user.user.email}</div>
-              <div><strong>Joined:</strong> {user && user.user && user.user.created_at ? formatDate(user.user.created_at) : 'N/A'}</div>
-              <div><strong>Tickets Purchased:</strong> {user && user.user && user.user.ticketsPurchased}</div>
-              <div><strong>Events Attended:</strong> {user && user.user && user.user.eventsAttended}</div>
+              <div><strong>{t('attendee_dashboard.email')}:</strong> {user && user.user && user.user.email}</div>
+              <div><strong>{t('attendee_dashboard.joined')}:</strong> {user && user.user && user.user.created_at ? formatDate(user.user.created_at) : t('attendee_dashboard.na')}</div>
+              <div><strong>{t('attendee_dashboard.tickets_purchased')}:</strong> {user && user.user && user.user.ticketsPurchased}</div>
+              <div><strong>{t('attendee_dashboard.events_attended')}:</strong> {user && user.user && user.user.eventsAttended}</div>
             </div>
           </div>
           <div className="d-flex align-items-center">
@@ -144,14 +179,13 @@ const AttendeeDashboard = () => {
                     <i className="bi bi-ticket-perforated fs-3 text-primary"></i>
                   </div>
                   <div>
-                    <h5 className="text-muted mb-1">Tickets Purchased</h5>
+                    <h5 className="text-muted mb-1">{t('attendee_dashboard.tickets_purchased')}</h5>
                     <h2 className="mb-0 fw-bold">{user.ticketsPurchased}</h2>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          
           <div className="col-md-4 mb-4">
             <div className="card border-0 shadow-sm rounded-4 h-100">
               <div className="card-body p-4">
@@ -160,14 +194,13 @@ const AttendeeDashboard = () => {
                     <i className="bi bi-calendar-check fs-3 text-success"></i>
                   </div>
                   <div>
-                    <h5 className="text-muted mb-1">Events Attended</h5>
+                    <h5 className="text-muted mb-1">{t('attendee_dashboard.events_attended')}</h5>
                     <h2 className="mb-0 fw-bold">{user.eventsAttended}</h2>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          
           <div className="col-md-4 mb-4">
             <div className="card border-0 shadow-sm rounded-4 h-100">
               <div className="card-body p-4">
@@ -176,7 +209,7 @@ const AttendeeDashboard = () => {
                     <i className="bi bi-calendar-event fs-3 text-warning"></i>
                   </div>
                   <div>
-                    <h5 className="text-muted mb-1">Upcoming Events</h5>
+                    <h5 className="text-muted mb-1">{t('attendee_dashboard.upcoming_events')}</h5>
                     <h2 className="mb-0 fw-bold">{upcomingEvents.length}</h2>
                   </div>
                 </div>
@@ -190,7 +223,7 @@ const AttendeeDashboard = () => {
           <div className="card-header bg-white border-0 py-3">
             <h2 className="mb-0 fw-bold d-flex align-items-center">
               <i className="bi bi-calendar2-check me-2 text-primary"></i> 
-              Upcoming Events
+              {t('attendee_dashboard.upcoming_events')}
             </h2>
           </div>
           <div className="card-body p-4">
@@ -216,7 +249,7 @@ const AttendeeDashboard = () => {
           <div className="card-header bg-white border-0 py-3">
             <h2 className="mb-0 fw-bold d-flex align-items-center">
               <i className="bi bi-clock-history me-2 text-secondary"></i> 
-              Past Events
+              {t('attendee_dashboard.past_events')}
             </h2>
           </div>
           <div className="card-body p-4">
@@ -224,17 +257,17 @@ const AttendeeDashboard = () => {
               <table className="table table-borderless table-hover align-middle">
                 <thead>
                   <tr>
-                    <th scope="col">Event</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Rating</th>
-                    <th scope="col">Review</th>
+                    <th scope="col">{t('attendee_dashboard.event')}</th>
+                    <th scope="col">{t('attendee_dashboard.date')}</th>
+                    <th scope="col">{t('attendee_dashboard.location')}</th>
+                    <th scope="col">{t('attendee_dashboard.rating')}</th>
+                    <th scope="col">{t('attendee_dashboard.review')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pastEvents.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center">No attended events (0)</td>
+                      <td colSpan={5} className="text-center">{t('attendee_dashboard.no_attended_events')}</td>
                     </tr>
                   ) : (
                     pastEvents.map(event => (
@@ -250,16 +283,41 @@ const AttendeeDashboard = () => {
                         <td>{formatDate(event.date)}</td>
                         <td>{event.location}</td>
                         <td>
-                          <div className="d-flex text-warning">
+                          <div className="d-flex text-warning align-items-center">
                             {[...Array(5)].map((_, i) => (
-                              <i 
-                                key={i} 
-                                className={`bi ${i < event.rating ? 'bi-star-fill' : 'bi-star'} me-1`}
+                              <i
+                                key={i}
+                                className={`bi ${feedbacks[event.id]?.rating > i ? 'bi-star-fill' : 'bi-star'} me-1`}
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleFeedbackChange(event.id, 'rating', i + 1)}
                               ></i>
                             ))}
                           </div>
                         </td>
-                        <td className="text-truncate" style={{maxWidth: '200px'}}>{event.review}</td>
+                        <td style={{maxWidth: '300px'}}>
+                          <div className="d-flex flex-column gap-2">
+                            <textarea
+                              ref={el => (commentRefs.current[event.id] = el)}
+                              className="form-control form-control-sm"
+                              rows={2}
+                              placeholder={t('attendee_dashboard.leave_review')}
+                              value={feedbacks[event.id]?.comment || ''}
+                              onChange={e => handleFeedbackChange(event.id, 'comment', e.target.value)}
+                              maxLength={300}
+                            />
+                            <div className="d-flex align-items-center gap-2">
+                              <button
+                                className="btn btn-sm btn-primary"
+                                disabled={feedbacks[event.id]?.submitting || !feedbacks[event.id]?.rating}
+                                onClick={() => handleFeedbackSubmit(event.id)}
+                              >
+                                {feedbacks[event.id]?.submitting ? t('attendee_dashboard.submitting') : t('attendee_dashboard.submit')}
+                              </button>
+                              {feedbacks[event.id]?.error && <span className="text-danger small">{feedbacks[event.id].error}</span>}
+                              {feedbacks[event.id]?.success && <span className="text-success small">{feedbacks[event.id].success}</span>}
+                            </div>
+                          </div>
+                        </td>
                       </tr>
                     ))
                   )}
@@ -274,7 +332,7 @@ const AttendeeDashboard = () => {
           <div className="card-header bg-white border-0 py-3">
             <h2 className="mb-0 fw-bold d-flex align-items-center">
               <i className="bi bi-lightning me-2 text-warning"></i> 
-              Recommended For You
+              {t('attendee_dashboard.recommended')}
             </h2>
           </div>
           <div className="card-body p-4">
@@ -291,7 +349,7 @@ const AttendeeDashboard = () => {
                             <span>{formatDate(event.date)}</span>
                           </div>
                         </div>
-                        <span className="badge bg-warning text-dark">New</span>
+                        <span className="badge bg-warning text-dark">{t('attendee_dashboard.new')}</span>
                       </div>
                       
                       <div className="d-flex align-items-center mb-3">
@@ -302,7 +360,7 @@ const AttendeeDashboard = () => {
                       <div className="d-flex justify-content-between align-items-center mt-auto">
                         <h4 className="mb-0 text-success fw-bold">GHS {event.price}</h4>
                         <button className="btn btn-sm btn-primary" onClick={() => handleGetTickets(event.id)}>
-                          Get Tickets
+                          {t('attendee_dashboard.get_tickets')}
                         </button>
                       </div>
                     </div>

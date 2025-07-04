@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { getOrganizerProfile, updateOrganizerProfile } from '../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from 'react-i18next';
 
 const OrganizerProfile = () => {
+  const { t } = useTranslation();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,13 +35,13 @@ const OrganizerProfile = () => {
           instagram: res.instagram || ''
         });
       } catch (err) {
-        setError('Failed to load profile.');
+        setError(t('organizer_profile.load_error'));
       } finally {
         setLoading(false);
       }
     };
     fetchProfile();
-  }, []);
+  }, [t]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,52 +55,52 @@ const OrganizerProfile = () => {
     setSuccess('');
     try {
       await updateOrganizerProfile(form);
-      setSuccess('Profile updated successfully!');
-      toast.success('Profile updated successfully!');
+      setSuccess(t('organizer_profile.update_success'));
+      toast.success(t('organizer_profile.update_success'));
     } catch (err) {
-      setError('Failed to update profile.');
-      toast.error('Failed to update profile.');
+      setError(t('organizer_profile.update_error'));
+      toast.error(t('organizer_profile.update_error'));
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t('common.loading')}</div>;
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
     <div className="container py-4" style={{ maxWidth: 700 }}>
-      <h2 className="mb-4">Company Profile</h2>
+      <h2 className="mb-4">{t('organizer_profile.title')}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label">Company Logo URL</label>
+          <label className="form-label">{t('organizer_profile.logo')}</label>
           <input type="text" className="form-control" name="logo" value={form.logo} onChange={handleChange} placeholder="https://..." />
         </div>
         <div className="mb-3">
-          <label className="form-label">Description</label>
+          <label className="form-label">{t('organizer_profile.description')}</label>
           <textarea className="form-control" name="description" value={form.description} onChange={handleChange} rows={3} />
         </div>
         <div className="mb-3">
-          <label className="form-label">Website</label>
+          <label className="form-label">{t('organizer_profile.website')}</label>
           <input type="text" className="form-control" name="website" value={form.website} onChange={handleChange} placeholder="https://..." />
         </div>
         <div className="mb-3">
-          <label className="form-label">Facebook</label>
+          <label className="form-label">{t('organizer_profile.facebook')}</label>
           <input type="text" className="form-control" name="facebook" value={form.facebook} onChange={handleChange} placeholder="https://facebook.com/..." />
         </div>
         <div className="mb-3">
-          <label className="form-label">Twitter</label>
+          <label className="form-label">{t('organizer_profile.twitter')}</label>
           <input type="text" className="form-control" name="twitter" value={form.twitter} onChange={handleChange} placeholder="https://twitter.com/..." />
         </div>
         <div className="mb-3">
-          <label className="form-label">LinkedIn</label>
+          <label className="form-label">{t('organizer_profile.linkedin')}</label>
           <input type="text" className="form-control" name="linkedin" value={form.linkedin} onChange={handleChange} placeholder="https://linkedin.com/..." />
         </div>
         <div className="mb-3">
-          <label className="form-label">Instagram</label>
+          <label className="form-label">{t('organizer_profile.instagram')}</label>
           <input type="text" className="form-control" name="instagram" value={form.instagram} onChange={handleChange} placeholder="https://instagram.com/..." />
         </div>
-        <button type="submit" className="btn btn-primary">Save Profile</button>
+        <button type="submit" className="btn btn-primary">{t('organizer_profile.save_button')}</button>
         {success && <div className="alert alert-success mt-3">{success}</div>}
         {error && <div className="alert alert-danger mt-3">{error}</div>}
       </form>

@@ -1,38 +1,41 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FaUsers, FaCalendarAlt, FaGlobe, FaLightbulb, FaHandshake, FaChartLine } from 'react-icons/fa';
 
 const AboutUs = () => {
+  const { t } = useTranslation();
+
   // Team members data
   const teamMembers = [
-    { id: 1, name: "Sarah Johnson", role: "CEO & Founder", bio: "10+ years in event technology", imgClass: "bg-ceo" },
-    { id: 2, name: "Michael Chen", role: "CTO", bio: "Software architect & platform developer", imgClass: "bg-cto" },
-    { id: 3, name: "Emma Rodriguez", role: "Head of Marketing", bio: "Brand strategy & customer growth", imgClass: "bg-marketing" },
-    { id: 4, name: "David Wilson", role: "Customer Success", bio: "Ensuring exceptional client experiences", imgClass: "bg-cs" }
+    { id: 1, name: t('about.team.sarah'), role: t('about.team.ceo'), bio: t('about.team.sarah_bio'), imgClass: 'bg-ceo' },
+    { id: 2, name: t('about.team.michael'), role: t('about.team.cto'), bio: t('about.team.michael_bio'), imgClass: 'bg-cto' },
+    { id: 3, name: t('about.team.emma'), role: t('about.team.marketing'), bio: t('about.team.emma_bio'), imgClass: 'bg-marketing' },
+    { id: 4, name: t('about.team.david'), role: t('about.team.cs'), bio: t('about.team.david_bio'), imgClass: 'bg-cs' }
   ];
 
   // Statistics data
   const stats = [
-    { value: "250K+", label: "Events Hosted", icon: <FaCalendarAlt className="display-3" /> },
-    { value: "8M+", label: "Tickets Sold", icon: <FaUsers className="display-3" /> },
-    { value: "120+", label: "Countries Served", icon: <FaGlobe className="display-3" /> },
-    { value: "98.7%", label: "Client Satisfaction", icon: <FaHandshake className="display-3" /> }
+    { value: '250K+', label: t('about.stats.events'), icon: <FaCalendarAlt className="display-3" /> },
+    { value: '8M+', label: t('about.stats.tickets'), icon: <FaUsers className="display-3" /> },
+    { value: '120+', label: t('about.stats.countries'), icon: <FaGlobe className="display-3" /> },
+    { value: '98.7%', label: t('about.stats.satisfaction'), icon: <FaHandshake className="display-3" /> }
   ];
 
   // Values data
   const values = [
-    { icon: <FaLightbulb />, title: "Innovation", desc: "Constantly evolving our platform with cutting-edge features" },
-    { icon: <FaUsers />, title: "Customer Focus", desc: "Putting our users at the center of everything we do" },
-    { icon: <FaHandshake />, title: "Integrity", desc: "Building trust through transparency and reliability" },
-    { icon: <FaChartLine />, title: "Excellence", desc: "Striving for perfection in every aspect of our service" }
+    { icon: <FaLightbulb />, title: t('about.values.innovation'), desc: t('about.values.innovation_desc') },
+    { icon: <FaUsers />, title: t('about.values.customer'), desc: t('about.values.customer_desc') },
+    { icon: <FaHandshake />, title: t('about.values.integrity'), desc: t('about.values.integrity_desc') },
+    { icon: <FaChartLine />, title: t('about.values.excellence'), desc: t('about.values.excellence_desc') }
   ];
 
   // Timeline data
   const timeline = [
-    { year: "2015", title: "Company Founded", desc: "Launched with a vision to transform event management" },
-    { year: "2017", title: "Platform Launch", desc: "Released our first ticketing platform version" },
-    { year: "2019", title: "Global Expansion", desc: "Expanded services to 50+ countries" },
-    { year: "2021", title: "Mobile App Release", desc: "Launched iOS and Android apps for event discovery" },
-    { year: "2023", title: "AI Integration", desc: "Implemented AI-powered event recommendations" }
+    { year: '2015', title: t('about.timeline.founded'), desc: t('about.timeline.founded_desc') },
+    { year: '2017', title: t('about.timeline.platform'), desc: t('about.timeline.platform_desc') },
+    { year: '2019', title: t('about.timeline.expansion'), desc: t('about.timeline.expansion_desc') },
+    { year: '2021', title: t('about.timeline.mobile'), desc: t('about.timeline.mobile_desc') },
+    { year: '2023', title: t('about.timeline.ai'), desc: t('about.timeline.ai_desc') }
   ];
 
   return (
@@ -43,17 +46,17 @@ const AboutUs = () => {
           <div className="row align-items-center">
             <div className="col-lg-6">
               <h1 className="display-3 fw-bold mb-4">
-                Transforming Event Experiences <span className="text-primary">Worldwide</span>
+                {t('about.hero.title')} <span className="text-primary">{t('about.hero.highlight')}</span>
               </h1>
               <p className="lead mb-5">
-                Since 2015, we've been connecting organizers with audiences through our innovative event registration and ticketing platform.
+                {t('about.hero.desc')}
               </p>
               <div className="d-flex gap-3">
                 <button className="btn btn-primary btn-lg px-4 py-3 rounded-pill fw-bold">
-                  Explore Our Platform
+                  {t('about.hero.cta')}
                 </button>
                 <button className="btn btn-outline-light btn-lg px-4 py-3 rounded-pill fw-bold">
-                  Contact Us
+                  {t('about.hero.contact')}
                 </button>
               </div>
             </div>
@@ -62,7 +65,7 @@ const AboutUs = () => {
                 <div className="bg-primary d-flex align-items-center justify-content-center">
                   <div className="p-4 text-center">
                     <div className="display-1 text-white mb-3"><FaCalendarAlt /></div>
-                    <h2 className="text-white">Smart Event Platform</h2>
+                    <h2 className="text-white">{t('about.hero.platform')}</h2>
                   </div>
                 </div>
               </div>
@@ -81,7 +84,7 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8 text-center mb-6">
-              <h2 className="display-5 fw-bold mb-3">Our Mission & Vision</h2>
+              <h2 className="display-5 fw-bold mb-3">{t('about.mission_vision.title')}</h2>
               <div className="divider mx-auto bg-primary"></div>
             </div>
           </div>
@@ -93,9 +96,9 @@ const AboutUs = () => {
                   <div className="icon-box bg-primary text-white mb-4">
                     <FaGlobe className="display-5" />
                   </div>
-                  <h3 className="h2 fw-bold mb-3">Our Mission</h3>
+                  <h3 className="h2 fw-bold mb-3">{t('about.mission_vision.mission')}</h3>
                   <p className="fs-5 mb-0">
-                    To make event management seamless and accessible for everyone, from local community gatherings to international conferences. We empower organizers with intuitive tools and deliver exceptional experiences for attendees worldwide.
+                    {t('about.mission_vision.mission_desc')}
                   </p>
                 </div>
               </div>
@@ -107,9 +110,9 @@ const AboutUs = () => {
                   <div className="icon-box bg-info text-white mb-4">
                     <FaLightbulb className="display-5" />
                   </div>
-                  <h3 className="h2 fw-bold mb-3">Our Vision</h3>
+                  <h3 className="h2 fw-bold mb-3">{t('about.mission_vision.vision')}</h3>
                   <p className="fs-5 mb-0">
-                    To become the global standard for event registration, creating a world where anyone can easily discover, create, and participate in meaningful experiences. We're building the future of human connection through innovative event technology.
+                    {t('about.mission_vision.vision_desc')}
                   </p>
                 </div>
               </div>
@@ -123,8 +126,8 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center mb-6">
             <div className="col-lg-8 text-center">
-              <h2 className="display-5 fw-bold mb-3">By The Numbers</h2>
-              <p className="lead">Our impact in the event industry since 2015</p>
+              <h2 className="display-5 fw-bold mb-3">{t('about.stats.title')}</h2>
+              <p className="lead">{t('about.stats.desc')}</p>
               <div className="divider mx-auto bg-white"></div>
             </div>
           </div>
@@ -148,8 +151,8 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center mb-6">
             <div className="col-lg-8 text-center">
-              <h2 className="display-5 fw-bold mb-3">Our Core Values</h2>
-              <p className="lead">Principles that guide everything we do</p>
+              <h2 className="display-5 fw-bold mb-3">{t('about.values.title')}</h2>
+              <p className="lead">{t('about.values.desc')}</p>
               <div className="divider mx-auto bg-primary"></div>
             </div>
           </div>
@@ -177,8 +180,8 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center mb-6">
             <div className="col-lg-8 text-center">
-              <h2 className="display-5 fw-bold mb-3">Meet Our Leadership</h2>
-              <p className="lead">The passionate team driving our vision forward</p>
+              <h2 className="display-5 fw-bold mb-3">{t('about.team.title')}</h2>
+              <p className="lead">{t('about.team.desc')}</p>
               <div className="divider mx-auto bg-primary"></div>
             </div>
           </div>
@@ -209,8 +212,8 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center mb-6">
             <div className="col-lg-8 text-center">
-              <h2 className="display-5 fw-bold mb-3">Our Journey</h2>
-              <p className="lead">Milestones in our company's history</p>
+              <h2 className="display-5 fw-bold mb-3">{t('about.timeline.title')}</h2>
+              <p className="lead">{t('about.timeline.desc')}</p>
               <div className="divider mx-auto bg-primary"></div>
             </div>
           </div>
@@ -244,12 +247,12 @@ const AboutUs = () => {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-8 mb-5 mb-lg-0">
-              <h2 className="display-5 fw-bold mb-3">Ready to Transform Your Events?</h2>
-              <p className="lead mb-0">Join thousands of organizers using our platform to create unforgettable experiences.</p>
+              <h2 className="display-5 fw-bold mb-3">{t('about.cta.title')}</h2>
+              <p className="lead mb-0">{t('about.cta.desc')}</p>
             </div>
             <div className="col-lg-4 text-lg-end">
               <button className="btn btn-light btn-lg px-5 py-3 rounded-pill fw-bold">
-                Get Started Today
+                {t('about.cta.button')}
               </button>
             </div>
           </div>

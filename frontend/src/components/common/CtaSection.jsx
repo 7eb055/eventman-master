@@ -1,18 +1,22 @@
 import '../../components/css/CtaSection.css';
+import { useTranslation } from 'react-i18next';
 
 const CtaSection = ({
-  title = 'Ready to create your own event?',
-  description = 'Start organizing and selling tickets in minutes with our smart event platform.',
-  buttonText = 'Create Event',
+  title,
+  description,
+  buttonText,
   buttonLink = '/create-event',
-}) => (
-  <section className="cta-section">
-    <div className="cta-content">
-      <h2 className="cta-title">{title}</h2>
-      <p className="cta-description">{description}</p>
-      <a href={buttonLink} className="cta-button">{buttonText}</a>
-    </div>
-  </section>
-);
+}) => {
+  const { t } = useTranslation();
+  return (
+    <section className="cta-section">
+      <div className="cta-content">
+        <h2 className="cta-title">{title || t('home.cta_title')}</h2>
+        <p className="cta-description">{description || t('home.cta_description')}</p>
+        <a href={buttonLink} className="cta-button">{buttonText || t('home.cta_button')}</a>
+      </div>
+    </section>
+  );
+};
 
 export default CtaSection;

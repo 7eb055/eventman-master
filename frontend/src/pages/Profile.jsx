@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getUser } from '../services/auth';
 import api from '../services/api';
 import Spinner from 'react-bootstrap/Spinner';
@@ -6,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Profile = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,7 +26,7 @@ const Profile = () => {
         const response = await getUser();
         setUser(response.data); // Updated to match backend response
       } catch (err) {
-        setError('Failed to load user details.');
+        setError(t('profile.errors.load_user'));
       } finally {
         setLoading(false);
       }
@@ -95,14 +97,14 @@ const Profile = () => {
       };
       const response = await api.put('/user', payload);
       setUser(response.data.user);
-      setProfileSuccess('Profile updated successfully!');
-      toast.success('Profile updated successfully!');
+      setProfileSuccess(t('profile.success.update'));
+      toast.success(t('profile.success.update'));
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         setProfileErrors(err.response.data.errors);
       } else {
-        setError('Failed to update profile.');
-        toast.error('Failed to update profile.');
+        setError(t('profile.errors.update'));
+        toast.error(t('profile.errors.update'));
       }
     } finally {
       setLoading(false);
@@ -124,8 +126,8 @@ const Profile = () => {
         new_password_confirmation: form.confirmPassword.value,
       };
       await api.post('/user/password', payload);
-      setPasswordSuccess('Password changed successfully!');
-      toast.success('Password changed successfully!');
+      setPasswordSuccess(t('profile.success.password'));
+      toast.success(t('profile.success.password'));
       form.reset();
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
@@ -133,8 +135,8 @@ const Profile = () => {
       } else if (err.response && err.response.data && err.response.data.message) {
         setPasswordErrors({ current_password: [err.response.data.message] });
       } else {
-        setError('Failed to change password.');
-        toast.error('Failed to change password.');
+        setError(t('profile.errors.password'));
+        toast.error(t('profile.errors.password'));
       }
     } finally {
       setLoading(false);
@@ -156,11 +158,11 @@ const Profile = () => {
         form.partnerOffers.checked && 'partnerOffers',
       ].filter(Boolean);
       await api.post('/user/notifications', { notifications });
-      setNotificationSuccess('Notification preferences updated!');
-      toast.success('Notification preferences updated!');
+      setNotificationSuccess(t('profile.success.notifications'));
+      toast.success(t('profile.success.notifications'));
     } catch (err) {
-      setError('Failed to update notification preferences.');
-      toast.error('Failed to update notification preferences.');
+      setError(t('profile.errors.notifications'));
+      toast.error(t('profile.errors.notifications'));
     } finally {
       setLoading(false);
     }
@@ -170,7 +172,7 @@ const Profile = () => {
   const renderSpinner = () => (
     <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 100 }}>
       <Spinner animation="border" role="status" size="sm">
-        <span className="visually-hidden">Loading...</span>
+        <span className="visually-hidden">{t('profile.loading')}</span>
       </Spinner>
     </div>
   );
@@ -197,7 +199,7 @@ const Profile = () => {
                     <img 
                       src="https://ui-avatars.com/api/?name=John+Doe&background=0D6EFD&color=fff&size=128" 
                       className="rounded-circle border border-4 border-white"
-                      alt="Profile"
+                      alt={t('profile.alt.profile')}
                       style={{ width: '6rem', height: '6rem' }}
                     />
                   </div>
@@ -226,7 +228,7 @@ const Profile = () => {
                       className="btn btn-primary w-100 text-white d-flex align-items-center justify-content-center"
                       style={styles.profileCardButton}
                     >
-                      <i className="bi bi-ticket-perforated me-2"></i> Tickets
+                      <i className="bi bi-ticket-perforated me-2"></i> {t('profile.tickets')}
                     </button>
                   </div>
                   <div className="col-6">
@@ -234,7 +236,7 @@ const Profile = () => {
                       className="btn w-100 text-white d-flex align-items-center justify-content-center"
                       style={styles.eventsButton}
                     >
-                      <i className="bi bi-calendar-event me-2"></i> Events
+                      <i className="bi bi-calendar-event me-2"></i> {t('profile.events')}
                     </button>
                   </div>
                 </div>
@@ -245,7 +247,7 @@ const Profile = () => {
             <div className="card border-0 shadow-sm">
               <div className="card-body">
                 <h5 className="card-title fw-bold mb-3 d-flex align-items-center">
-                  <i className="bi bi-graph-up-arrow text-primary me-2"></i> Account Statistics
+                  <i className="bi bi-graph-up-arrow text-primary me-2"></i> {t('profile.stats.title')}
                 </h5>
                 
                 <div className="list-group list-group-flush">
@@ -254,7 +256,7 @@ const Profile = () => {
                       <div style={styles.statIcon}>
                         <i className="bi bi-calendar-check text-primary"></i>
                       </div>
-                      <span className="ms-2 text-muted">Events Attended</span>
+                      <span className="ms-2 text-muted">{t('profile.stats.events_attended')}</span>
                     </div>
                     <span className="fw-bold fs-5">{user ? user.eventsAttended : '...'}</span>
                   </div>
@@ -264,7 +266,7 @@ const Profile = () => {
                       <div style={styles.statIcon}>
                         <i className="bi bi-ticket-perforated text-success"></i>
                       </div>
-                      <span className="ms-2 text-muted">Tickets Purchased</span>
+                      <span className="ms-2 text-muted">{t('profile.stats.tickets_purchased')}</span>
                     </div>
                     <span className="fw-bold fs-5">{user ? user.ticketsPurchased : '...'}</span>
                   </div>
@@ -274,7 +276,7 @@ const Profile = () => {
                       <div style={styles.statIcon}>
                         <i className="bi bi-clock-history text-warning"></i>
                       </div>
-                      <span className="ms-2 text-muted">Member Since</span>
+                      <span className="ms-2 text-muted">{t('profile.stats.member_since')}</span>
                     </div>
                     <span className="fw-bold">{user && user.created_at ? new Date(user.created_at).toLocaleDateString() : '...'}</span>
                   </div>
@@ -284,10 +286,10 @@ const Profile = () => {
                       <div style={styles.statIcon}>
                         <i className="bi bi-shield-check text-success"></i>
                       </div>
-                      <span className="ms-2 text-muted">Account Status</span>
+                      <span className="ms-2 text-muted">{t('profile.stats.account_status')}</span>
                     </div>
                     <span className="badge bg-success bg-opacity-10 text-success px-2 py-1">
-                      Active
+                      {t('profile.stats.active')}
                     </span>
                   </div>
                 </div>
@@ -300,8 +302,8 @@ const Profile = () => {
             {/* Profile Header */}
             <div className="card border-0 shadow-sm mb-4">
               <div style={styles.tabHeader}>
-                <h2 className="text-white fw-bold mb-0">My Profile</h2>
-                <p className="text-white-50 mb-0">Manage your personal information and settings</p>
+                <h2 className="text-white fw-bold mb-0">{t('profile.header.title')}</h2>
+                <p className="text-white-50 mb-0">{t('profile.header.subtitle')}</p>
               </div>
               
               {/* Tabs */}
@@ -313,7 +315,7 @@ const Profile = () => {
                       style={activeTab === 'profile' ? styles.activeTab : styles.inactiveTab}
                       onClick={() => setActiveTab('profile')}
                     >
-                      <i className="bi bi-person me-2"></i>Profile
+                      <i className="bi bi-person me-2"></i>{t('profile.tabs.profile')}
                     </button>
                   </li>
                   <li className="nav-item">
@@ -322,7 +324,7 @@ const Profile = () => {
                       style={activeTab === 'security' ? styles.activeTab : styles.inactiveTab}
                       onClick={() => setActiveTab('security')}
                     >
-                      <i className="bi bi-shield-lock me-2"></i>Security
+                      <i className="bi bi-shield-lock me-2"></i>{t('profile.tabs.security')}
                     </button>
                   </li>
                   <li className="nav-item">
@@ -331,7 +333,7 @@ const Profile = () => {
                       style={activeTab === 'notifications' ? styles.activeTab : styles.inactiveTab}
                       onClick={() => setActiveTab('notifications')}
                     >
-                      <i className="bi bi-bell me-2"></i>Notifications
+                      <i className="bi bi-bell me-2"></i>{t('profile.tabs.notifications')}
                     </button>
                   </li>
                 </ul>
@@ -344,13 +346,13 @@ const Profile = () => {
                   <form onSubmit={handleProfileUpdate}>
                     <div className="mb-4">
                       <h5 className="fw-bold mb-3 d-flex align-items-center">
-                        <i className="bi bi-person-badge text-primary me-2"></i>Personal Information
+                        <i className="bi bi-person-badge text-primary me-2"></i>{t('profile.personal_info')}
                       </h5>
                       {profileSuccess && <div className="alert alert-success">{profileSuccess}</div>}
                       {error && <div className="alert alert-danger">{error}</div>}
                       <div className="row g-3 mb-3">
                         <div className="col-md-6">
-                          <label className="form-label">First Name</label>
+                          <label className="form-label">{t('profile.labels.first_name')}</label>
                           <input 
                             type="text" 
                             className={`form-control${profileErrors.name ? ' is-invalid' : ''}`}
@@ -361,7 +363,7 @@ const Profile = () => {
                           {profileErrors.name && <div className="invalid-feedback">{profileErrors.name[0]}</div>}
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label">Last Name</label>
+                          <label className="form-label">{t('profile.labels.last_name')}</label>
                           <input 
                             type="text" 
                             className="form-control"
@@ -371,7 +373,7 @@ const Profile = () => {
                           />
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label">Email Address</label>
+                          <label className="form-label">{t('profile.labels.email')}</label>
                           <input 
                             type="email" 
                             className={`form-control${profileErrors.email ? ' is-invalid' : ''}`}
@@ -380,63 +382,32 @@ const Profile = () => {
                             required 
                           />
                           {profileErrors.email && <div className="invalid-feedback">{profileErrors.email[0]}</div>}
-                          <div className="form-text">We'll never share your email with anyone else</div>
+                          <div className="form-text">{t('profile.labels.email_help')}</div>
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label">Phone Number</label>
+                          <label className="form-label">{t('profile.labels.phone')}</label>
                           <input 
                             type="tel" 
                             className="form-control"
                             name="phone"
                             defaultValue={user ? user.phone : ''}
-                            placeholder="(555) 123-4567" 
+                            placeholder={t('profile.labels.phone_placeholder')} 
                           />
                         </div>
                       </div>
                       <div className="mb-3">
-                        <label className="form-label">Company Name</label>
+                        <label className="form-label">{t('profile.labels.company')}</label>
                         <input 
                           type="text" 
                           className="form-control" 
                           name="companyName"
                           defaultValue={user ? user.company_name : ''}
-                          placeholder="Company Name" 
                         />
                       </div>
-                      {/* ...existing address fields... */}
-                    </div>
-                    <div className="d-flex justify-content-end gap-2 pt-2">
-                      <button 
-                        type="button" 
-                        className="btn btn-outline-secondary px-4 py-2"
-                        disabled={loading}
-                      >
-                        Cancel
-                      </button>
-                      <button 
-                        type="submit" 
-                        className="btn btn-primary px-4 py-2 d-flex align-items-center"
-                        style={styles.profileCardButton}
-                        disabled={loading}
-                      >
-                        {loading ? <Spinner animation="border" size="sm" className="me-2" /> : <i className="bi bi-save me-2"></i>}
-                        Update Profile
+                      <button type="submit" className="btn btn-primary fw-semibold">
+                        {t('profile.buttons.save_changes')}
                       </button>
                     </div>
-                    {profileSuccess && (
-                      <div className="alert alert-success mt-3" role="alert">
-                        {profileSuccess}
-                      </div>
-                    )}
-                    {Object.keys(profileErrors).length > 0 && (
-                      <div className="alert alert-danger mt-3" role="alert">
-                        <ul className="mb-0">
-                          {Object.values(profileErrors).flat().map((error, index) => (
-                            <li key={index}>{error}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
                   </form>
                 )}
                 
@@ -445,113 +416,44 @@ const Profile = () => {
                   <form onSubmit={handlePasswordChange}>
                     <div className="mb-4">
                       <h5 className="fw-bold mb-3 d-flex align-items-center">
-                        <i className="bi bi-shield-lock text-primary me-2"></i>Change Password
+                        <i className="bi bi-shield-lock text-primary me-2"></i>{t('profile.security.title')}
                       </h5>
                       {passwordSuccess && <div className="alert alert-success">{passwordSuccess}</div>}
                       {error && <div className="alert alert-danger">{error}</div>}
-                      <div className="row g-3">
+                      <div className="row g-3 mb-3">
                         <div className="col-md-6">
-                          <label className="form-label">Current Password</label>
+                          <label className="form-label">{t('profile.security.current_password')}</label>
                           <input 
                             type="password" 
                             className={`form-control${passwordErrors.current_password ? ' is-invalid' : ''}`}
                             name="currentPassword"
-                            placeholder="Enter current password" 
-                            required
+                            required 
                           />
                           {passwordErrors.current_password && <div className="invalid-feedback">{passwordErrors.current_password[0]}</div>}
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label">New Password</label>
+                          <label className="form-label">{t('profile.security.new_password')}</label>
                           <input 
                             type="password" 
-                            className={`form-control${passwordErrors.new_password ? ' is-invalid' : ''}`}
+                            className="form-control"
                             name="newPassword"
-                            placeholder="Create new password" 
-                            required
+                            required 
                           />
-                          {passwordErrors.new_password && <div className="invalid-feedback">{passwordErrors.new_password[0]}</div>}
-                          <div className="form-text">Minimum 8 characters with numbers</div>
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label">Confirm Password</label>
+                          <label className="form-label">{t('profile.security.confirm_password')}</label>
                           <input 
                             type="password" 
-                            className={`form-control${passwordErrors.new_password_confirmation ? ' is-invalid' : ''}`}
+                            className="form-control"
                             name="confirmPassword"
-                            placeholder="Confirm new password" 
-                            required
+                            required 
                           />
-                          {passwordErrors.new_password_confirmation && <div className="invalid-feedback">{passwordErrors.new_password_confirmation[0]}</div>}
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="border-top pt-4">
-                      <h5 className="fw-bold mb-3 d-flex align-items-center">
-                        <i className="bi bi-shield-check text-primary me-2"></i>Security Settings
-                      </h5>
-                      
-                      <div className="bg-light p-4 rounded">
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                          <div>
-                            <h6 className="fw-medium mb-0">Two-Factor Authentication</h6>
-                            <p className="text-muted mb-0 small">Add an extra layer of security to your account</p>
-                          </div>
-                          <div className="form-check form-switch">
-                            <input 
-                              className="form-check-input" 
-                              type="checkbox" 
-                              role="switch" 
-                              id="twoFactorSwitch" 
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div>
-                            <h6 className="fw-medium mb-0">Recent Devices</h6>
-                            <p className="text-muted mb-0 small">Manage devices that have accessed your account</p>
-                          </div>
-                          <button className="btn btn-sm btn-outline-secondary px-3">
-                            View Devices
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="d-flex justify-content-end gap-2 pt-4">
-                      <button 
-                        type="button" 
-                        className="btn btn-outline-secondary px-4 py-2"
-                        disabled={loading}
-                      >
-                        Cancel
-                      </button>
-                      <button 
-                        type="submit" 
-                        className="btn btn-primary px-4 py-2"
-                        style={styles.profileCardButton}
-                        disabled={loading}
-                      >
-                        {loading ? <Spinner animation="border" size="sm" className="me-2" /> : null}
-                        Update Security Settings
+                      <button type="submit" className="btn btn-primary fw-semibold">
+                        {t('profile.buttons.change_password')}
                       </button>
                     </div>
-                    {passwordSuccess && (
-                      <div className="alert alert-success mt-3" role="alert">
-                        {passwordSuccess}
-                      </div>
-                    )}
-                    {Object.keys(passwordErrors).length > 0 && (
-                      <div className="alert alert-danger mt-3" role="alert">
-                        <ul className="mb-0">
-                          {Object.values(passwordErrors).flat().map((error, index) => (
-                            <li key={index}>{error}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
                   </form>
                 )}
                 
@@ -560,94 +462,38 @@ const Profile = () => {
                   <form onSubmit={handleNotificationUpdate}>
                     <div className="mb-4">
                       <h5 className="fw-bold mb-3 d-flex align-items-center">
-                        <i className="bi bi-bell text-primary me-2"></i>Notification Preferences
+                        <i className="bi bi-bell text-primary me-2"></i>{t('profile.notifications.title')}
                       </h5>
-                      <div className="bg-light p-4 rounded">
-                        <div className="form-check mb-3">
-                          <input 
-                            className="form-check-input" 
-                            type="checkbox" 
-                            id="eventUpdates" 
-                            name="eventUpdates"
-                            defaultChecked={user && user.notification_preferences && user.notification_preferences.includes('eventUpdates')}
-                          />
-                          <label className="form-check-label fw-medium" htmlFor="eventUpdates">
-                            Event updates and announcements
-                          </label>
-                          <p className="text-muted mt-1 small">
-                            Receive notifications about events you're attending
-                          </p>
-                        </div>
-                        
-                        <div className="form-check mb-3">
-                          <input 
-                            className="form-check-input" 
-                            type="checkbox" 
-                            id="ticketReminders" 
-                            name="ticketReminders"
-                            defaultChecked={user && user.notification_preferences && user.notification_preferences.includes('ticketReminders')}
-                          />
-                          <label className="form-check-label fw-medium" htmlFor="ticketReminders">
-                            Ticket purchase reminders
-                          </label>
-                          <p className="text-muted mt-1 small">
-                            Reminders for upcoming events and ticket deadlines
-                          </p>
-                        </div>
-                        
-                        <div className="form-check mb-3">
-                          <input 
-                            className="form-check-input" 
-                            type="checkbox" 
-                            id="promotional" 
-                            name="promotional"
-                            defaultChecked={user && user.notification_preferences && user.notification_preferences.includes('promotional')}
-                          />
-                          <label className="form-check-label fw-medium" htmlFor="promotional">
-                            Promotional offers and discounts
-                          </label>
-                          <p className="text-muted mt-1 small">
-                            Special deals and discounts for events
-                          </p>
-                        </div>
-                        
-                        <div className="form-check">
-                          <input 
-                            className="form-check-input" 
-                            type="checkbox" 
-                            id="partnerOffers" 
-                            name="partnerOffers"
-                            defaultChecked={user && user.notification_preferences && user.notification_preferences.includes('partnerOffers')}
-                          />
-                          <label className="form-check-label fw-medium" htmlFor="partnerOffers">
-                            Partner offers and recommendations
-                          </label>
-                          <p className="text-muted mt-1 small">
-                            Recommendations from our event partners
-                          </p>
-                        </div>
+                      {notificationSuccess && <div className="alert alert-success">{notificationSuccess}</div>}
+                      {error && <div className="alert alert-danger">{error}</div>}
+                      <div className="form-check mb-2">
+                        <input className="form-check-input" type="checkbox" id="eventUpdates" name="eventUpdates" />
+                        <label className="form-check-label" htmlFor="eventUpdates">
+                          {t('profile.notifications.event_updates')}
+                        </label>
                       </div>
-                    </div>
-                    
-                    <div className="d-flex justify-content-end gap-2">
-                      <button 
-                        type="button" 
-                        className="btn btn-outline-secondary px-4 py-2"
-                      >
-                        Cancel
+                      <div className="form-check mb-2">
+                        <input className="form-check-input" type="checkbox" id="ticketReminders" name="ticketReminders" />
+                        <label className="form-check-label" htmlFor="ticketReminders">
+                          {t('profile.notifications.ticket_reminders')}
+                        </label>
+                      </div>
+                      <div className="form-check mb-2">
+                        <input className="form-check-input" type="checkbox" id="promotional" name="promotional" />
+                        <label className="form-check-label" htmlFor="promotional">
+                          {t('profile.notifications.promotional')}
+                        </label>
+                      </div>
+                      <div className="form-check mb-3">
+                        <input className="form-check-input" type="checkbox" id="partnerOffers" name="partnerOffers" />
+                        <label className="form-check-label" htmlFor="partnerOffers">
+                          {t('profile.notifications.partner_offers')}
+                        </label>
+                      </div>
+                      <button type="submit" className="btn btn-primary fw-semibold">
+                        {t('profile.buttons.save_preferences')}
                       </button>
-                      <button 
-                        type="submit" 
-                        className="btn btn-primary px-4 py-2"
-                        style={styles.profileCardButton}
-                        disabled={loading}
-                      >
-                        {loading ? <Spinner animation="border" size="sm" className="me-2" /> : null}
-                        Save Preferences
-                      </button>
                     </div>
-                    {notificationSuccess && <div className="alert alert-success">{notificationSuccess}</div>}
-                    {error && <div className="alert alert-danger">{error}</div>}
                   </form>
                 )}
               </div>

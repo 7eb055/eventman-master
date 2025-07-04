@@ -1,0 +1,506 @@
+{
+  "event": {
+    "about": "About the Event",
+    "schedule": "Event Schedule",
+    "faq": "Frequently Asked Questions",
+    "venue": "Venue",
+    "get_ticket": "Get Your Ticket",
+    "ticket_type": "Ticket Type:",
+    "num_tickets": "Number of Tickets:",
+    "price_per_ticket": "Price per Ticket:",
+    "subtotal": "Subtotal:",
+    "processing_fee": "Processing Fee:",
+    "total": "Total:",
+    "discount": "Discount:",
+    "promo_placeholder": "Promo code (optional)",
+    "apply": "Apply",
+    "purchase": "Purchase Ticket",
+    "all_sales_final": "* All sales are final. Please review your order before purchasing.",
+    "share": "Share This Event",
+    "reviews": "Event Reviews",
+    "your_feedback": "Your Feedback",
+    "all_reviews": "All Reviews",
+    "organized_by": "Organized by:",
+    "day1": "Day 1",
+    "registration_welcome": "Registration & Welcome Coffee",
+    "opening_keynote": "Opening Keynote: The Future of Tech",
+    "networking_lunch": "Networking Lunch",
+    "day2_3": "Day 2-3",
+    "workshops_panel": "Workshops, panel discussions, and more keynotes. Detailed schedule to be announced.",
+    "faq_included": "What’s included in the ticket price?",
+    "faq_included_desc": "Your ticket includes access to all keynote, workshops, networking events, and meals during the conference. Accommodation is not included.",
+    "faq_dress": "Is there a dress code?",
+    "faq_dress_desc": "Business casual is recommended.",
+    "faq_refund": "Can I get a refund if I can’t attend?",
+    "faq_refund_desc": "Yes, refunds are available up to 14 days before the event.",
+    "venue_map": "Interactive Map of Tech Convention Center",
+    "venue_address": "123 Innovation Street, San Francisco, CA 94103",
+    "registration_success": "Registration successful! Check your email for confirmation."
+  },
+  "form": {
+    "full_name": "Full Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "card_number": "Card Number",
+    "expiry": "MM/YY",
+    "cvv": "CVV"
+  },
+  "common": {
+    "submit": "Submit",
+    "loading": "Loading...",
+    "success": "Success!",
+    "error": "Error",
+    "try_again": "Try Again"
+  },
+  "home": {
+    "discover_events": "Discover Amazing Events Near You",
+    "join_thousands": "Join thousands of people attending conferences, workshops, concerts, and more with our Smart Event Management System.",
+    "cta_title": "Ready to create your own event?",
+    "cta_description": "Start organizing and selling tickets in minutes with our smart event platform.",
+    "cta_button": "Create Event"
+  },
+  "event_list": {
+    "title": "Discover Upcoming Events",
+    "subtitle": "Find experiences that match your interests",
+    "filters": {
+      "all": "All Events",
+      "today": "Today",
+      "week": "This Week",
+      "month": "This Month"
+    },
+    "loading": "Finding amazing events...",
+    "show_more": "Show More Events",
+    "no_more": "You've reached the end! Check back later for more events.",
+    "error": "Failed to load events"
+  },
+  "event_card": {
+    "default_type": "Conference",
+    "default_title": "Event",
+    "tba": "TBA",
+    "free": "Free",
+    "view_details": "View Details"
+  },
+  "browse_events": {
+    "loading": "Loading events...",
+    "fetch_error": "Failed to fetch events",
+    "upcoming": "Upcoming Events",
+    "discover": "Discover exciting events happening near you"
+  },
+  "attendee_dashboard": {
+    "loading_user": "Loading user details...",
+    "user_error": "Failed to load user details.",
+    "loading_events": "Loading events...",
+    "events_error": "Failed to load events.",
+    "dashboard": "Dashboard",
+    "welcome": "Welcome back, {{name}}",
+    "email": "Email",
+    "joined": "Joined",
+    "tickets_purchased": "Tickets Purchased",
+    "events_attended": "Events Attended",
+    "upcoming_events": "Upcoming Events",
+    "past_events": "Past Events",
+    "recommended": "Recommended For You",
+    "na": "N/A"
+  },
+  "organizer_dashboard": {
+    "loading": "Loading dashboard...",
+    "error": "Failed to load dashboard data. {{error}}",
+    "title": "Organizer Dashboard",
+    "create_event": "Create Event",
+    "total_events": "Total Events",
+    "upcoming_events": "Upcoming Events",
+    "tickets_sold": "Tickets Sold",
+    "revenue": "Revenue",
+    "your_events": "Your Events",
+    "event_title": "Title",
+    "start_date": "Start Date",
+    "edit": "Edit",
+    "delete": "Delete",
+    "edit_event": "Edit Event",
+    "delete_event": "Delete Event",
+    "no_events": "No events found.",
+    "export_csv": "Export Events CSV",
+    "export_json": "Export Dashboard JSON",
+    "export_pdf": "Export Events PDF",
+    "revenue_by_event": "Revenue by Event",
+    "tickets_sold_distribution": "Tickets Sold Distribution"
+  },
+  "get_ticket": {
+    "title": "Get Your Tickets",
+    "subtitle": "Secure your spot for an unforgettable experience",
+    "select_ticket": "Select Your Ticket",
+    "quantity": "Quantity:",
+    "before_fees": "Before fees",
+    "order_summary": "Order Summary",
+    "service_fee": "Service Fee",
+    "total": "Total",
+    "payment_method": "Payment Method",
+    "card": "Card",
+    "mobile_money": "Mobile Money",
+    "card_number": "Card Number",
+    "name_on_card": "Name on Card",
+    "expiry_date": "Expiry Date",
+    "cvv": "CVV",
+    "mobile_network": "Mobile Network",
+    "phone_number": "Phone Number",
+    "terms": "I agree to the <a href='#'>Terms of Service</a> and <a href='#'>Refund Policy</a>. Tickets are non-refundable except in the case of event cancellation.",
+    "purchase_button": "Purchase Tickets - GHS {{total}}",
+    "secure_payment": "Your payment is securely encrypted"
+  },
+  "help": {
+    "title": "Help Center",
+    "subtitle": "Find answers to your questions and get the most out of EventMan",
+    "search_placeholder": "Search for help articles, FAQs...",
+    "faq_title": "Frequently Asked Questions",
+    "no_results": "No results found",
+    "no_results_desc": "Try different keywords or browse our help categories above.",
+    "still_need_help": "Still Need Help?",
+    "still_need_help_desc": "Can't find what you're looking for? Our support team is here to help you succeed.",
+    "support_hours": "Support Hours: Monday - Friday, 8:00 AM - 6:00 PM GMT",
+    "categories": {
+      "title": "Help Categories",
+      "getting_started": "Getting Started",
+      "getting_started_desc": "Learn the basics of using EventMan",
+      "events": "Managing Events",
+      "events_desc": "Create, edit, and manage your events",
+      "tickets": "Tickets & Payments",
+      "tickets_desc": "Everything about buying and selling tickets",
+      "account": "Account & Profile",
+      "account_desc": "Manage your account settings",
+      "organizer": "For Organizers",
+      "organizer_desc": "Tools and tips for event organizers",
+      "troubleshooting": "Troubleshooting",
+      "troubleshooting_desc": "Common issues and solutions",
+      "billing": "Billing & Refunds",
+      "billing_desc": "Payment issues and refund policies",
+      "technical": "Technical Support",
+      "technical_desc": "Technical requirements and support"
+    }
+  },
+  "about": {
+    "hero": {
+      "title": "Transforming Event Experiences",
+      "highlight": "Worldwide",
+      "desc": "Since 2015, we've been connecting organizers with audiences through our innovative event registration and ticketing platform.",
+      "cta": "Explore Our Platform",
+      "contact": "Contact Us",
+      "platform": "Smart Event Platform"
+    },
+    "mission_vision": {
+      "title": "Our Mission & Vision",
+      "mission": "Our Mission",
+      "mission_desc": "To make event management seamless and accessible for everyone, from local community gatherings to international conferences. We empower organizers with intuitive tools and deliver exceptional experiences for attendees worldwide.",
+      "vision": "Our Vision",
+      "vision_desc": "To become the global standard for event registration, creating a world where anyone can easily discover, create, and participate in meaningful experiences. We're building the future of human connection through innovative event technology."
+    },
+    "stats": {
+      "title": "By The Numbers",
+      "desc": "Our impact in the event industry since 2015",
+      "events": "Events Hosted",
+      "tickets": "Tickets Sold",
+      "countries": "Countries Served",
+      "satisfaction": "Client Satisfaction"
+    },
+    "values": {
+      "title": "Our Core Values",
+      "desc": "Principles that guide everything we do",
+      "innovation": "Innovation",
+      "innovation_desc": "Constantly evolving our platform with cutting-edge features",
+      "customer": "Customer Focus",
+      "customer_desc": "Putting our users at the center of everything we do",
+      "integrity": "Integrity",
+      "integrity_desc": "Building trust through transparency and reliability",
+      "excellence": "Excellence",
+      "excellence_desc": "Striving for perfection in every aspect of our service"
+    },
+    "team": {
+      "title": "Meet Our Leadership",
+      "desc": "The passionate team driving our vision forward",
+      "sarah": "Sarah Johnson",
+      "ceo": "CEO & Founder",
+      "sarah_bio": "10+ years in event technology",
+      "michael": "Michael Chen",
+      "cto": "CTO",
+      "michael_bio": "Software architect & platform developer",
+      "emma": "Emma Rodriguez",
+      "marketing": "Head of Marketing",
+      "emma_bio": "Brand strategy & customer growth",
+      "david": "David Wilson",
+      "cs": "Customer Success",
+      "david_bio": "Ensuring exceptional client experiences"
+    },
+    "timeline": {
+      "title": "Our Journey",
+      "desc": "Milestones in our company's history",
+      "founded": "Company Founded",
+      "founded_desc": "Launched with a vision to transform event management",
+      "platform": "Platform Launch",
+      "platform_desc": "Released our first ticketing platform version",
+      "expansion": "Global Expansion",
+      "expansion_desc": "Expanded services to 50+ countries",
+      "mobile": "Mobile App Release",
+      "mobile_desc": "Launched iOS and Android apps for event discovery",
+      "ai": "AI Integration",
+      "ai_desc": "Implemented AI-powered event recommendations"
+    },
+    "cta": {
+      "title": "Ready to Transform Your Events?",
+      "desc": "Join thousands of organizers using our platform to create unforgettable experiences.",
+      "button": "Get Started Today"
+    }
+  },
+  "contact_us": {
+    "title": "Contact Our Event Experts",
+    "subtitle": "Have questions about our ticketing platform? Reach out to our support team 24/7",
+    "get_in_touch": "Get In Touch",
+    "email": "Email",
+    "phone": "Phone",
+    "phone_hours": "Mon-Fri, 9am-5pm PST",
+    "headquarters": "Headquarters",
+    "country": "United States",
+    "follow_us": "Follow Us",
+    "send_message": "Send us a message",
+    "full_name": "Full Name",
+    "name_placeholder": "Enter your name",
+    "email_address": "Email Address",
+    "email_placeholder": "your@email.com",
+    "subject": "Subject",
+    "subject_select": "Select an option",
+    "subject_technical": "Technical Support",
+    "subject_registration": "Event Registration Help",
+    "subject_billing": "Billing Inquiry",
+    "subject_partnership": "Business Partnership",
+    "subject_feedback": "Feedback/Suggestions",
+    "message": "Message",
+    "message_placeholder": "How can we help you?",
+    "subscribe_newsletter": "Subscribe to our newsletter for event updates and promotions",
+    "send_button": "Send Message"
+  },
+  "signup": {
+    "title": "Create Your Account",
+    "subtitle": "Join our community to get started",
+    "placeholders": {
+      "full_name": "Enter your full name",
+      "email": "you@example.com",
+      "company": "Company Name",
+      "phone": "Phone Number (optional)",
+      "password": "Create a password",
+      "confirm_password": "Confirm your password"
+    },
+    "labels": {
+      "role": "I am registering as a:"
+    },
+    "options": {
+      "attendee": "Event Attendee",
+      "organizer": "Event Organizer / Company"
+    },
+    "password": {
+      "strength": "Password strength",
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong",
+      "very_strong": "Very Strong",
+      "hint": "Use at least 8 characters, with uppercase, lowercase, numbers, and symbols."
+    },
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "terms_html": "I agree to the {{terms}} and {{privacy}}",
+    "button": "Sign Up",
+    "loading": "Creating Account...",
+    "or_social": "or sign up with",
+    "social": {
+      "google": "Sign up with Google",
+      "facebook": "Sign up with Facebook",
+      "linkedin": "Sign up with LinkedIn"
+    },
+    "already_account": "Already have an account?",
+    "signin_link": "Sign in",
+    "errors": {
+      "full_name_required": "Full name is required.",
+      "email_invalid": "Enter a valid email address.",
+      "password_length": "Password must be at least 8 characters.",
+      "passwords_no_match": "Passwords do not match.",
+      "company_required": "Company name is required for organizers.",
+      "phone_invalid": "Enter a valid phone number."
+    }
+  },
+  "signin": {
+    "app_name": "EventMan",
+    "title": "Welcome Back",
+    "subtitle": "Sign in to continue to your account",
+    "placeholders": {
+      "email": "Email address",
+      "password": "Password"
+    },
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?",
+    "button": "Sign In",
+    "loading": "Signing In...",
+    "or_social": "or continue with",
+    "social": {
+      "google": "Google",
+      "github": "GitHub"
+    },
+    "no_account": "Don't have an account?",
+    "signup_link": "Sign up",
+    "errors": {
+      "invalid_login": "Invalid email or password. Please try again."
+    }
+  },
+  "profile": {
+    "loading": "Loading...",
+    "alt": { "profile": "Profile" },
+    "tickets": "Tickets",
+    "events": "Events",
+    "stats": {
+      "title": "Account Statistics",
+      "events_attended": "Events Attended",
+      "tickets_purchased": "Tickets Purchased",
+      "member_since": "Member Since",
+      "account_status": "Account Status",
+      "active": "Active"
+    },
+    "header": {
+      "title": "My Profile",
+      "subtitle": "Manage your personal information and settings"
+    },
+    "tabs": {
+      "profile": "Profile",
+      "security": "Security",
+      "notifications": "Notifications"
+    },
+    "personal_info": "Personal Information",
+    "labels": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email Address",
+      "email_help": "We'll never share your email with anyone else",
+      "phone": "Phone Number",
+      "phone_placeholder": "(555) 123-4567",
+      "company": "Company Name"
+    },
+    "buttons": {
+      "save_changes": "Save Changes",
+      "change_password": "Change Password",
+      "save_preferences": "Save Preferences"
+    },
+    "success": {
+      "update": "Profile updated successfully!",
+      "password": "Password changed successfully!",
+      "notifications": "Notification preferences updated!"
+    },
+    "errors": {
+      "load_user": "Failed to load user details.",
+      "update": "Failed to update profile.",
+      "password": "Failed to change password.",
+      "notifications": "Failed to update notification preferences."
+    },
+    "security": {
+      "title": "Change Password",
+      "current_password": "Current Password",
+      "new_password": "New Password",
+      "confirm_password": "Confirm New Password"
+    },
+    "notifications": {
+      "title": "Notification Preferences",
+      "event_updates": "Event Updates",
+      "ticket_reminders": "Ticket Reminders",
+      "promotional": "Promotional Offers",
+      "partner_offers": "Partner Offers"
+    }
+  },
+  "register": {
+    "app_name": "EventMan",
+    "title": "Create Account",
+    "subtitle": "Sign up to get started",
+    "account_type": "Account Type",
+    "options": {
+      "attendee": "Attendee",
+      "organizer": "Organizer / Company"
+    },
+    "placeholders": {
+      "company": "Company Name",
+      "phone": "Phone Number (optional)",
+      "full_name": "Full Name",
+      "email": "Email address",
+      "password": "Password",
+      "confirm_password": "Confirm Password"
+    },
+    "terms": "Terms & Conditions",
+    "terms_html": "I agree to the {{terms}}",
+    "button": "Sign Up",
+    "or_social": "or continue with",
+    "social": {
+      "google": "Google",
+      "github": "GitHub"
+    },
+    "already_account": "Already have an account?",
+    "signin_link": "Sign in"
+  },
+  "ticket_purchase": {
+    "steps": {
+      "customer_info": "Customer Info",
+      "billing_details": "Billing Details",
+      "payment": "Payment",
+      "confirmation": "Confirmation"
+    },
+    "errors": {
+      "first_name": "First name is required",
+      "last_name": "Last name is required",
+      "email": "Email is required",
+      "phone": "Phone number is required",
+      "address": "Address is required",
+      "city": "City is required",
+      "region": "Region is required",
+      "card_number": "Card number is required",
+      "card_name": "Name on card is required",
+      "expiry_date": "Expiry date is required",
+      "cvv": "CVV is required",
+      "mobile_number": "Mobile number is required"
+    },
+    "customer_info": {
+      "title": "Customer Information",
+      "subtitle": "Please provide your details for ticket delivery"
+    },
+    "labels": {
+      "first_name": "First Name *",
+      "last_name": "Last Name *",
+      "email": "Email *",
+      "phone": "Phone Number *",
+      "emergency_contact": "Emergency Contact (optional)"
+    }
+  },
+  "organizer_profile": {
+    "title": "Company Profile",
+    "logo": "Company Logo URL",
+    "description": "Description",
+    "website": "Website",
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "save_button": "Save Profile",
+    "update_success": "Profile updated successfully!",
+    "update_error": "Failed to update profile.",
+    "load_error": "Failed to load profile."
+  },
+  "edit_event": {
+    "title": "Edit Event",
+    "fields": {
+      "title": "Title",
+      "event_type": "Event Type",
+      "venue": "Venue",
+      "location": "Location",
+      "start_date": "Start Date",
+      "capacity": "Capacity",
+      "ticket_price": "Ticket Price",
+      "image": "Image URL",
+      "description": "Description"
+    },
+    "cancel": "Cancel",
+    "save_button": "Save Changes",
+    "saving": "Saving...",
+    "load_error": "Failed to load event data.",
+    "update_error": "Failed to update event."
+  }
+}

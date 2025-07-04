@@ -40,4 +40,12 @@ class Event extends Model
     {
         return $this->hasMany(Ticket::class);
     }
+
+    /**
+     * Get the feedback for the event.
+     */
+    public function feedback()
+    {
+        return $this->hasMany(\App\Models\Feedback::class);
+    }
 }

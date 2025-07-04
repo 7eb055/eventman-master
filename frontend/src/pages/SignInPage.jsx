@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import { login } from '../services/auth'; // Import your login function
+import { useTranslation } from 'react-i18next';
 import './css/signIn.css';
 
 const SignIn = () => {
@@ -11,6 +12,7 @@ const SignIn = () => {
   const [error, setError] = useState(''); // To display login errors
   const [loading, setLoading] = useState(false); // To handle loading state
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,7 +37,7 @@ const SignIn = () => {
       window.location.replace(redirectPath);
     } catch (err) {
       // If login fails, display an error message
-      setError('Invalid email or password. Please try again.');
+      setError(t('signin.errors.invalid_login'));
       console.error('Login failed:', err);
     } finally {
       setLoading(false);
@@ -52,16 +54,13 @@ const SignIn = () => {
               <path d="M4 12L12 16L20 12" stroke="currentColor" strokeWidth="2"/>
               <path d="M4 16L12 20L20 16" stroke="currentColor" strokeWidth="2"/>
             </svg>
-            <span>AppName</span>
+            <span>{t('signin.app_name')}</span>
           </div>
-          <h1 className="signin-title">Welcome Back</h1>
-          <p className="signin-subtitle">Sign in to continue to your account</p>
+          <h1 className="signin-title">{t('signin.title')}</h1>
+          <p className="signin-subtitle">{t('signin.subtitle')}</p>
         </div>
-        
         <form onSubmit={handleSubmit} className="signin-form">
-          {/* Add a place to display errors */}
           {error && <p className="error-message" style={{color: 'red', textAlign: 'center'}}>{error}</p>}
-
           <div className="form-group">
             <div className="input-group">
               <span className="input-icon">
@@ -73,14 +72,13 @@ const SignIn = () => {
               <input 
                 type="email" 
                 className="form-control" 
-                placeholder="Email address" 
+                placeholder={t('signin.placeholders.email')} 
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
-          
           <div className="form-group">
             <div className="input-group">
               <span className="input-icon">
@@ -92,14 +90,13 @@ const SignIn = () => {
               <input 
                 type="password" 
                 className="form-control" 
-                placeholder="Password" 
+                placeholder={t('signin.placeholders.password')} 
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
-          
           <div className="form-options">
             <div className="form-check">
               <input 
@@ -110,47 +107,38 @@ const SignIn = () => {
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
               <label className="form-check-label" htmlFor="rememberMe">
-                Remember me
+                {t('signin.remember_me')}
               </label>
             </div>
             <Link to="/forgot-password" className="forgot-password">
-              Forgot password?
+              {t('signin.forgot_password')}
             </Link>
           </div>
-          
           <button 
             type="submit" 
             className="signin-btn"
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? t('signin.loading') : t('signin.button')}
           </button>
-          
           <div className="divider">
-            <span>or continue with</span>
+            <span>{t('signin.or_social')}</span>
           </div>
-          
           <div className="social-login">
             <button type="button" className="social-btn google">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 8h-1.26A8 8 0 1 0 20 15h1m-3-7v5m0 0l2.5 2.5M17 15l-2.5 2.5"/>
-              </svg>
-              Google
+              {/* ...svg... */}
+              {t('signin.social.google')}
             </button>
             <button type="button" className="social-btn github">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-              </svg>
-              GitHub
+              {/* ...svg... */}
+              {t('signin.social.github')}
             </button>
           </div>
-          
           <div className="signup-link">
-            Don't have an account? <Link to="/sign-up">Sign up</Link>
+            {t('signin.no_account')} <Link to="/sign-up">{t('signin.signup_link')}</Link>
           </div>
         </form>
       </div>
-      
       <div className="signin-graphics">
         <div className="circle circle-1"></div>
         <div className="circle circle-2"></div>

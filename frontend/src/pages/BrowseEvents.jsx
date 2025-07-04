@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useNavigate } from 'react-router-dom';
 
 const BrowseEvents = () => {
+  const { t } = useTranslation();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +15,7 @@ const BrowseEvents = () => {
     const fetchEvents = async () => {
       try {
         const response = await fetch('http://localhost:8000/api/events');
-        if (!response.ok) throw new Error('Failed to fetch events');
+        if (!response.ok) throw new Error(t('browse_events.fetch_error'));
         const data = await response.json();
         setEvents(Array.isArray(data) ? data : data.events || []);
       } catch (err) {
@@ -23,7 +25,7 @@ const BrowseEvents = () => {
       }
     };
     fetchEvents();
-  }, []);
+  }, [t]);
 
   // Format date to "Month Day, Year" format
   const formatDate = (dateString) => {
@@ -34,7 +36,7 @@ const BrowseEvents = () => {
 
   // Format price to GHS currency
   const formatPrice = (price) => {
-    if (!price || isNaN(price) || Number(price) === 0) return 'Free';
+    if (!price || isNaN(price) || Number(price) === 0) return t('event_card.free');
     return new Intl.NumberFormat('en-GH', {
       style: 'currency',
       currency: 'GHS',
@@ -42,14 +44,14 @@ const BrowseEvents = () => {
     }).format(Number(price));
   };
 
-  if (loading) return <div className="text-center mt-5">Loading events...</div>;
+  if (loading) return <div className="text-center mt-5">{t('browse_events.loading')}</div>;
   if (error) return <div className="text-center text-danger mt-5">{error}</div>;
 
   return (
     <div className="page container py-5">
       <div className="text-center mb-5">
-        <h1 className="display-4 fw-bold text-primary mb-3">Upcoming Events</h1>
-        <p className="lead text-muted">Discover exciting events happening near you</p>
+        <h1 className="display-4 fw-bold text-primary mb-3">{t('browse_events.upcoming')}</h1>
+        <p className="lead text-muted">{t('browse_events.discover')}</p>
       </div>
       <div className="row row-cols-1 row-cols-lg-2 g-4">
         {events.map(event => (
@@ -59,7 +61,7 @@ const BrowseEvents = () => {
                 <div className="col-md-5">
                   <div className="position-relative h-100">
                     <img 
-                      src={event.banner_url || event.image || `https://via.placeholder.com/600x300?text=${encodeURIComponent(event.title || 'Event')}`} 
+                      src={event.banner_url || event.image || `https://via.placeholder.com/600x300?text=${encodeURIComponent(event.title || t('event_card.default_title'))}`} 
                       alt={event.title} 
                       className="img-fluid h-100 object-fit-cover"
                     />
@@ -88,7 +90,7 @@ const BrowseEvents = () => {
                       <div className="d-flex justify-content-between align-items-center border-top pt-3">
                         <h4 className="text-success fw-bold mb-0">{formatPrice(event.ticket_price ?? event.price)}</h4>
                         <button className="btn btn-outline-primary d-flex align-items-center" onClick={() => navigate(`/events/${event.id}`)}>
-                          View Details <i className="bi bi-arrow-right ms-2"></i>
+                          {t('event_card.view_details')} <i className="bi bi-arrow-right ms-2"></i>
                         </button>
                       </div>
                     </div>
