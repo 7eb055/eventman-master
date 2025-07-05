@@ -25,6 +25,8 @@ class User extends Authenticatable
         'phone',
         'company_name',
         'notification_preferences',
+        'google2fa_secret',
+        'google2fa_enabled',
     ];
 
     /**

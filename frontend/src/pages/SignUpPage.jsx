@@ -86,12 +86,12 @@ const SignUpPage = () => {
 
       // Redirect based on user role
       if (response.role === 'organizer') {
-        setSuccess('Registration successful! Please check your email to verify your account before creating events.');
+        setSuccess(t('signup.success_organizer'));
         setTimeout(() => {
           navigate('/verify-email');
         }, 2000);
       } else {
-        setSuccess('Registration successful! Please check your email to verify your account.');
+        setSuccess(t('signup.success_attendee'));
         setTimeout(() => {
           navigate('/verify-email');
         }, 2000);
@@ -101,11 +101,11 @@ const SignUpPage = () => {
       
       // Check for known error messages
       if (err.message.includes('Cannot connect to')) {
-        setError('Server connection error: The backend server appears to be down. Please try again later or contact support.');
+        setError(t('signup.errors.server_connection'));
       } else if (err.message.includes('already been taken')) {
-        setError('This email is already registered. Please try logging in instead.');
+        setError(t('signup.errors.email_taken'));
       } else {
-        setError(err.message || 'Registration failed. Please try again.');
+        setError(err.message || t('signup.errors.registration_failed'));
       }
     } finally {
       setIsLoading(false);

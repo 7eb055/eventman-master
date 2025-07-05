@@ -7,8 +7,11 @@ import EmergencyActionsModal from '../components/common/EmergencyActionsModal';
 import UserModal from '../components/common/UserModal';
 import AnnouncementManager from '../components/admin/AnnouncementManager';
 import ApiKeyManager from '../components/admin/ApiKeyManager';
+import { useTranslation } from 'react-i18next';
 
 const AdminPanel = () => {
+  const { t } = useTranslation();
+
   // Dynamic state for all admin data
   const [stats, setStats] = useState(null);
   const [platformData, setPlatformData] = useState([]);
@@ -93,7 +96,7 @@ const AdminPanel = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
-                  <div className="text-xs fw-bold text-primary text-uppercase mb-1">Total Users</div>
+                  <div className="text-xs fw-bold text-primary text-uppercase mb-1">{t('admin.total_users')}</div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{stats.totalUsers?.toLocaleString?.() ?? stats.totalUsers}</div>
                 </div>
                 <div className="col-auto">
@@ -109,7 +112,7 @@ const AdminPanel = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
-                  <div className="text-xs fw-bold text-success text-uppercase mb-1">Total Events</div>
+                  <div className="text-xs fw-bold text-success text-uppercase mb-1">{t('admin.total_events')}</div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{stats.totalEvents}</div>
                 </div>
                 <div className="col-auto">
@@ -125,7 +128,7 @@ const AdminPanel = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
-                  <div className="text-xs fw-bold text-info text-uppercase mb-1">Total Revenue</div>
+                  <div className="text-xs fw-bold text-info text-uppercase mb-1">{t('admin.total_revenue')}</div>
                   <div className="h5 mb-0 fw-bold text-gray-800">${Number(stats.totalRevenue).toLocaleString()}</div>
                 </div>
                 <div className="col-auto">
@@ -141,7 +144,7 @@ const AdminPanel = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
-                  <div className="text-xs fw-bold text-warning text-uppercase mb-1">Active Events</div>
+                  <div className="text-xs fw-bold text-warning text-uppercase mb-1">{t('admin.active_events')}</div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{stats.activeEvents}</div>
                 </div>
                 <div className="col-auto">
@@ -157,7 +160,7 @@ const AdminPanel = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
-                  <div className="text-xs fw-bold text-secondary text-uppercase mb-1">Pending Approvals</div>
+                  <div className="text-xs fw-bold text-secondary text-uppercase mb-1">{t('admin.pending_approvals')}</div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{stats.pendingApprovals}</div>
                 </div>
                 <div className="col-auto">
@@ -173,7 +176,7 @@ const AdminPanel = () => {
             <div className="card-body">
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
-                  <div className="text-xs fw-bold text-dark text-uppercase mb-1">Support Tickets</div>
+                  <div className="text-xs fw-bold text-dark text-uppercase mb-1">{t('admin.support_tickets')}</div>
                   <div className="h5 mb-0 fw-bold text-gray-800">{stats.supportTickets}</div>
                 </div>
                 <div className="col-auto">
@@ -191,7 +194,7 @@ const AdminPanel = () => {
         <div className="col-xl-8 col-lg-7">
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">Platform Growth Overview</h6>
+              <h6 className="m-0 fw-bold text-primary">{t('admin.platform_growth_overview')}</h6>
             </div>
             <div className="card-body">
               <div className="chart-area" style={{ height: '320px' }}>
@@ -200,8 +203,8 @@ const AdminPanel = () => {
                     <XAxis dataKey="month" />
                     <YAxis />
                     <Tooltip />
-                    <Line type="monotone" dataKey="users" stroke="#4e73df" strokeWidth={3} name="Users" />
-                    <Line type="monotone" dataKey="events" stroke="#1cc88a" strokeWidth={3} name="Events" />
+                    <Line type="monotone" dataKey="users" stroke="#4e73df" strokeWidth={3} name={t('admin.users')} />
+                    <Line type="monotone" dataKey="events" stroke="#1cc88a" strokeWidth={3} name={t('admin.events')} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -213,7 +216,7 @@ const AdminPanel = () => {
         <div className="col-xl-4 col-lg-5">
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">User Distribution</h6>
+              <h6 className="m-0 fw-bold text-primary">{t('admin.user_distribution')}</h6>
             </div>
             <div className="card-body">
               <div className="chart-pie pt-4 pb-2" style={{ height: '280px' }}>
@@ -254,8 +257,8 @@ const AdminPanel = () => {
         <div className="col-xl-6">
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">Recent System Activity</h6>
-              <button className="btn btn-sm btn-outline-primary" onClick={handleViewAllActivity}>View All</button>
+              <h6 className="m-0 fw-bold text-primary">{t('admin.recent_system_activity')}</h6>
+              <button className="btn btn-sm btn-outline-primary" onClick={handleViewAllActivity}>{t('admin.view_all')}</button>
             </div>
             <div className="card-body">
               <div className="list-group list-group-flush">
@@ -281,18 +284,18 @@ const AdminPanel = () => {
         <div className="col-xl-6">
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">Pending Approvals</h6>
-              <button className="btn btn-sm btn-outline-primary">Manage All</button>
+              <h6 className="m-0 fw-bold text-primary">{t('admin.pending_approvals')}</h6>
+              <button className="btn btn-sm btn-outline-primary">{t('admin.manage_all')}</button>
             </div>
             <div className="card-body">
               <div className="table-responsive">
                 <table className="table table-sm">
                   <thead>
                     <tr>
-                      <th>Type</th>
-                      <th>Name</th>
-                      <th>Priority</th>
-                      <th>Actions</th>
+                      <th>{t('admin.type')}</th>
+                      <th>{t('admin.name')}</th>
+                      <th>{t('admin.priority')}</th>
+                      <th>{t('admin.actions')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -335,9 +338,9 @@ const AdminPanel = () => {
       <div className="col-12">
         <div className="card shadow mb-4">
           <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 className="m-0 fw-bold text-primary">System User Management</h6>
+            <h6 className="m-0 fw-bold text-primary">{t('admin.system_user_management')}</h6>
             <button className="btn btn-sm btn-primary" onClick={handleAddUser}>
-              <i className="fas fa-plus me-1"></i> Add Admin User
+              <i className="fas fa-plus me-1"></i> {t('admin.add_admin_user')}
             </button>
           </div>
           <div className="card-body">
@@ -345,13 +348,13 @@ const AdminPanel = () => {
               <table className="table table-hover">
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Last Active</th>
-                    <th>Status</th>
-                    <th>Join Date</th>
-                    <th>Actions</th>
+                    <th>{t('admin.name')}</th>
+                    <th>{t('admin.email')}</th>
+                    <th>{t('admin.role')}</th>
+                    <th>{t('admin.last_active')}</th>
+                    <th>{t('admin.status')}</th>
+                    <th>{t('admin.join_date')}</th>
+                    <th>{t('admin.actions')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -668,10 +671,10 @@ const AdminPanel = () => {
     <table className="table table-striped">
       <thead>
         <tr>
-          <th>User</th>
-          <th>Action</th>
-          <th>Time</th>
-          <th>Type</th>
+          <th>{t('admin.user')}</th>
+          <th>{t('admin.action')}</th>
+          <th>{t('admin.time')}</th>
+          <th>{t('admin.type')}</th>
         </tr>
       </thead>
       <tbody>
@@ -692,11 +695,11 @@ const AdminPanel = () => {
     <table className="table table-bordered">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Requestor</th>
-          <th>Date</th>
-          <th>Status/Priority</th>
+          <th>{t('admin.name')}</th>
+          <th>{t('admin.type')}</th>
+          <th>{t('admin.requestor')}</th>
+          <th>{t('admin.date')}</th>
+          <th>{t('admin.status_priority')}</th>
         </tr>
       </thead>
       <tbody>
@@ -718,11 +721,11 @@ const AdminPanel = () => {
     <table className="table table-hover">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th>Join Date</th>
+          <th>{t('admin.name')}</th>
+          <th>{t('admin.email')}</th>
+          <th>{t('admin.role')}</th>
+          <th>{t('admin.status')}</th>
+          <th>{t('admin.join_date')}</th>
         </tr>
       </thead>
       <tbody>
@@ -745,12 +748,12 @@ const AdminPanel = () => {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Type</th>
-            <th>Organizer</th>
-            <th>Status</th>
-            <th>Start Date</th>
-            <th>Actions</th>
+            <th>{t('admin.title')}</th>
+            <th>{t('admin.type')}</th>
+            <th>{t('admin.organizer')}</th>
+            <th>{t('admin.status')}</th>
+            <th>{t('admin.start_date')}</th>
+            <th>{t('admin.actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -878,7 +881,7 @@ const AdminPanel = () => {
   // {renderSystemUsersTable()}
   // {renderEventsTable()}
 
-  if (loading) return <div>Loading admin dashboard...</div>;
+  if (loading) return <div>{t('admin.loading_dashboard')}</div>;
   if (error) return <div style={{color: 'red'}}>{error}</div>;
   if (!stats) return null;
 
@@ -887,22 +890,22 @@ const AdminPanel = () => {
       {/* Page Heading */}
       <div className="d-sm-flex align-items-center justify-content-between mb-4">
         <div>
-          <h1 className="h3 mb-0 text-gray-800">System Administration</h1>
-          <p className="text-muted mb-0">Manage platform operations, users, and system settings</p>
+          <h1 className="h3 mb-0 text-gray-800">{t('admin.system_administration')}</h1>
+          <p className="text-muted mb-0">{t('admin.manage_platform_operations')}</p>
         </div>
         <div className="d-flex">
           <div className="btn-group me-2">
             <button className="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <i className="fas fa-download fa-sm me-1"></i> System Report
+              <i className="fas fa-download fa-sm me-1"></i> {t('admin.system_report')}
             </button>
             <ul className="dropdown-menu">
-              <li><button className="dropdown-item" onClick={handleDownloadCSV}>Download CSV</button></li>
-              <li><button className="dropdown-item" onClick={handleDownloadPDF}>Download PDF</button></li>
-              <li><button className="dropdown-item" onClick={handleDownloadJSON}>Download JSON</button></li>
+              <li><button className="dropdown-item" onClick={handleDownloadCSV}>{t('admin.download_csv')}</button></li>
+              <li><button className="dropdown-item" onClick={handleDownloadPDF}>{t('admin.download_pdf')}</button></li>
+              <li><button className="dropdown-item" onClick={handleDownloadJSON}>{t('admin.download_json')}</button></li>
             </ul>
           </div>
           <button className="btn btn-sm btn-danger" onClick={() => setShowEmergencyModal(true)}>
-            <i className="fas fa-exclamation-triangle fa-sm me-1"></i> Emergency Actions
+            <i className="fas fa-exclamation-triangle fa-sm me-1"></i> {t('admin.emergency_actions')}
           </button>
         </div>
       </div>
@@ -916,7 +919,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'dashboard' ? 'active' : ''}`}
                 onClick={() => setCurrentView('dashboard')}
               >
-                <i className="fas fa-tachometer-alt me-1"></i> Dashboard
+                <i className="fas fa-tachometer-alt me-1"></i> {t('admin.dashboard')}
               </button>
             </li>
             <li className="nav-item">
@@ -924,7 +927,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'users' ? 'active' : ''}`}
                 onClick={() => setCurrentView('users')}
               >
-                <i className="fas fa-users-cog me-1"></i> User Management
+                <i className="fas fa-users-cog me-1"></i> {t('admin.user_management')}
               </button>
             </li>
             <li className="nav-item">
@@ -932,7 +935,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'events' ? 'active' : ''}`}
                 onClick={() => setCurrentView('events')}
               >
-                <i className="fas fa-calendar-check me-1"></i> Event Oversight
+                <i className="fas fa-calendar-check me-1"></i> {t('admin.event_oversight')}
               </button>
             </li>
             <li className="nav-item">
@@ -940,7 +943,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'analytics' ? 'active' : ''}`}
                 onClick={() => setCurrentView('analytics')}
               >
-                <i className="fas fa-chart-line me-1"></i> Analytics
+                <i className="fas fa-chart-line me-1"></i> {t('admin.analytics')}
               </button>
             </li>
             <li className="nav-item">
@@ -948,7 +951,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'settings' ? 'active' : ''}`}
                 onClick={() => setCurrentView('settings')}
               >
-                <i className="fas fa-cogs me-1"></i> System Settings
+                <i className="fas fa-cogs me-1"></i> {t('admin.system_settings')}
               </button>
             </li>
             <li className="nav-item">
@@ -956,7 +959,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'roles' ? 'active' : ''}`}
                 onClick={() => setCurrentView('roles')}
               >
-                <i className="fas fa-user-shield me-1"></i> Role Management
+                <i className="fas fa-user-shield me-1"></i> {t('admin.role_management')}
               </button>
             </li>
             <li className="nav-item">
@@ -964,7 +967,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'announcements' ? 'active' : ''}`}
                 onClick={() => setCurrentView('announcements')}
               >
-                <i className="fas fa-bullhorn me-1"></i> Announcements
+                <i className="fas fa-bullhorn me-1"></i> {t('admin.announcements')}
               </button>
             </li>
             <li className="nav-item">
@@ -972,7 +975,7 @@ const AdminPanel = () => {
                 className={`nav-link ${currentView === 'apiKeys' ? 'active' : ''}`}
                 onClick={() => setCurrentView('apiKeys')}
               >
-                <i className="fas fa-key me-1"></i> API Keys
+                <i className="fas fa-key me-1"></i> {t('admin.api_keys')}
               </button>
             </li>
           </ul>
@@ -982,9 +985,9 @@ const AdminPanel = () => {
           {currentView === 'users' && renderUserManagement()}
           {currentView === 'events' && (
             <div className="p-4">
-              <h5 className="mb-3">Event Oversight</h5>
+              <h5 className="mb-3">{t('admin.event_oversight')}</h5>
               {eventLoading ? (
-                <div>Loading events...</div>
+                <div>{t('admin.loading_events')}</div>
               ) : eventError ? (
                 <div className="text-danger">{eventError}</div>
               ) : (
@@ -995,36 +998,36 @@ const AdminPanel = () => {
           {currentView === 'analytics' && (
             <div className="p-4 text-center">
               <i className="fas fa-chart-line fa-3x text-muted mb-3"></i>
-              <h5>Advanced Analytics</h5>
-              <p className="text-muted">Detailed platform analytics and reporting tools</p>
+              <h5>{t('admin.advanced_analytics')}</h5>
+              <p className="text-muted">{t('admin.detailed_platform_analytics')}</p>
             </div>
           )}
           {currentView === 'settings' && (
             <div className="p-4" style={{maxWidth: 600}}>
-              <h5 className="mb-3">System Settings</h5>
+              <h5 className="mb-3">{t('admin.system_settings')}</h5>
               {settingsLoading ? (
-                <div>Loading settings...</div>
+                <div>{t('admin.loading_settings')}</div>
               ) : settingsError ? (
                 <div className="text-danger">{settingsError}</div>
               ) : (
                 <form onSubmit={handleSaveSettings}>
                   <div className="form-check form-switch mb-3">
                     <input className="form-check-input" type="checkbox" id="maintenance" name="maintenance" checked={settings.maintenance} onChange={handleSettingsChange} />
-                    <label className="form-check-label" htmlFor="maintenance">Maintenance Mode</label>
+                    <label className="form-check-label" htmlFor="maintenance">{t('admin.maintenance_mode')}</label>
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Default Email Template</label>
+                    <label className="form-label">{t('admin.default_email_template')}</label>
                     <textarea className="form-control" name="emailTemplate" rows="4" value={settings.emailTemplate} onChange={handleSettingsChange}></textarea>
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Support Email</label>
+                    <label className="form-label">{t('admin.support_email')}</label>
                     <input className="form-control" name="supportEmail" type="email" value={settings.supportEmail} onChange={handleSettingsChange} required />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Max Upload Size (MB)</label>
+                    <label className="form-label">{t('admin.max_upload_size')} (MB)</label>
                     <input className="form-control" name="maxUploadSize" type="number" min="1" max="100" value={settings.maxUploadSize} onChange={handleSettingsChange} required />
                   </div>
-                  <button className="btn btn-primary" type="submit" disabled={settingsLoading}>Save Settings</button>
+                  <button className="btn btn-primary" type="submit" disabled={settingsLoading}>{t('admin.save_settings')}</button>
                   {settingsSuccess && <span className="text-success ms-3">{settingsSuccess}</span>}
                 </form>
               )}
@@ -1032,17 +1035,17 @@ const AdminPanel = () => {
           )}
           {currentView === 'roles' && (
             <div className="p-4" style={{maxWidth: 800}}>
-              <h5 className="mb-3">Role Management</h5>
-              <button className="btn btn-primary mb-3" onClick={handleAddRole}><i className="fas fa-plus me-1"></i> Add Role</button>
-              {roleLoading ? <div>Loading roles...</div> : roleError ? <div className="text-danger">{roleError}</div> : (
+              <h5 className="mb-3">{t('admin.role_management')}</h5>
+              <button className="btn btn-primary mb-3" onClick={handleAddRole}><i className="fas fa-plus me-1"></i> {t('admin.add_role')}</button>
+              {roleLoading ? <div>{t('admin.loading_roles')}</div> : roleError ? <div className="text-danger">{roleError}</div> : (
                 <div className="table-responsive">
                   <table className="table table-bordered">
                     <thead>
                       <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Permissions</th>
-                        <th>Actions</th>
+                        <th>{t('admin.name')}</th>
+                        <th>{t('admin.description')}</th>
+                        <th>{t('admin.permissions')}</th>
+                        <th>{t('admin.actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1067,21 +1070,21 @@ const AdminPanel = () => {
                   <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div className="modal-content bg-white">
                       <div className="modal-header bg-primary text-white">
-                        <h5 className="modal-title">{editingRole ? 'Edit Role' : 'Add Role'}</h5>
+                        <h5 className="modal-title">{editingRole ? t('admin.edit_role') : t('admin.add_role')}</h5>
                         <button type="button" className="btn-close" aria-label="Close" onClick={()=>setShowRoleModal(false)}></button>
                       </div>
                       <form onSubmit={handleSaveRole}>
                         <div className="modal-body">
                           <div className="mb-3">
-                            <label className="form-label">Role Name</label>
+                            <label className="form-label">{t('admin.role_name')}</label>
                             <input className="form-control" name="name" value={roleForm.name} onChange={handleRoleFormChange} required />
                           </div>
                           <div className="mb-3">
-                            <label className="form-label">Description</label>
+                            <label className="form-label">{t('admin.description')}</label>
                             <input className="form-control" name="description" value={roleForm.description} onChange={handleRoleFormChange} />
                           </div>
                           <div className="mb-3">
-                            <label className="form-label">Permissions</label>
+                            <label className="form-label">{t('admin.permissions')}</label>
                             <div className="row">
                               {permissions.map(perm => (
                                 <div className="col-md-4" key={perm.id}>
@@ -1095,8 +1098,8 @@ const AdminPanel = () => {
                           </div>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-secondary" onClick={()=>setShowRoleModal(false)}>Cancel</button>
-                          <button type="submit" className="btn btn-primary">{editingRole ? 'Save Changes' : 'Add Role'}</button>
+                          <button type="button" className="btn btn-secondary" onClick={()=>setShowRoleModal(false)}>{t('admin.cancel')}</button>
+                          <button type="submit" className="btn btn-primary">{editingRole ? t('admin.save_changes') : t('admin.add_role')}</button>
                         </div>
                       </form>
                     </div>
@@ -1107,13 +1110,13 @@ const AdminPanel = () => {
           )}
           {currentView === 'announcements' && (
             <div className="p-4" style={{maxWidth: 700}}>
-              <h5 className="mb-3">Platform Announcements</h5>
+              <h5 className="mb-3">{t('admin.platform_announcements')}</h5>
               <AnnouncementManager roles={roles} />
             </div>
           )}
           {currentView === 'apiKeys' && (
             <div className="p-4" style={{maxWidth: 700}}>
-              <h5 className="mb-3">API Key Management</h5>
+              <h5 className="mb-3">{t('admin.api_key_management')}</h5>
               <ApiKeyManager />
             </div>
           )}
@@ -1134,16 +1137,16 @@ const AdminPanel = () => {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content bg-white">
               <div className="modal-header bg-danger text-white">
-                <h5 className="modal-title">Confirm Action</h5>
+                <h5 className="modal-title">{t('admin.confirm_action')}</h5>
                 <button type="button" className="btn-close" aria-label="Close" onClick={handleCancelConfirm}></button>
               </div>
               <div className="modal-body">
-                <p>Are you sure you want to {confirmAction === 'lockdown' ? 'lockdown the platform' : confirmAction === 'alert' ? 'send a system-wide alert' : 'purge all inactive users'}?</p>
+                <p>{t(`admin.confirm_${confirmAction}`)}</p>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={handleCancelConfirm} disabled={loadingAction}>Cancel</button>
+                <button type="button" className="btn btn-secondary" onClick={handleCancelConfirm} disabled={loadingAction}>{t('admin.cancel')}</button>
                 <button type="button" className="btn btn-danger" onClick={handleConfirmAction} disabled={loadingAction}>
-                  {loadingAction ? 'Processing...' : 'Confirm'}
+                  {loadingAction ? t('admin.processing') : t('admin.confirm')}
                 </button>
               </div>
             </div>
@@ -1166,19 +1169,19 @@ const AdminPanel = () => {
           <div className="modal-dialog modal-xl modal-dialog-centered" role="document">
             <div className="modal-content bg-white">
               <div className="modal-header bg-primary text-white">
-                <h5 className="modal-title">System Activity Log</h5>
+                <h5 className="modal-title">{t('admin.system_activity_log')}</h5>
                 <button type="button" className="btn-close" aria-label="Close" onClick={()=>setShowActivityModal(false)}></button>
               </div>
               <div className="modal-body">
-                {activityLoading ? <div>Loading...</div> : activityError ? <div className="text-danger">{activityError}</div> : (
+                {activityLoading ? <div>{t('admin.loading')}</div> : activityError ? <div className="text-danger">{activityError}</div> : (
                   <div className="table-responsive" style={{maxHeight: '60vh', overflowY: 'auto'}}>
                     <table className="table table-striped">
                       <thead>
                         <tr>
-                          <th>User</th>
-                          <th>Action</th>
-                          <th>Time</th>
-                          <th>Type</th>
+                          <th>{t('admin.user')}</th>
+                          <th>{t('admin.action')}</th>
+                          <th>{t('admin.time')}</th>
+                          <th>{t('admin.type')}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1197,11 +1200,11 @@ const AdminPanel = () => {
               </div>
               <div className="modal-footer justify-content-between">
                 <div>
-                  Page {activityPage} of {Math.ceil(activityTotal / activityPerPage)}
+                  {t('admin.page')} {activityPage} {t('admin.of')} {Math.ceil(activityTotal / activityPerPage)}
                 </div>
                 <div>
-                  <button className="btn btn-secondary me-2" disabled={activityPage === 1} onClick={()=>fetchAllActivity(activityPage-1)}>Previous</button>
-                  <button className="btn btn-secondary" disabled={activityPage >= Math.ceil(activityTotal / activityPerPage)} onClick={()=>fetchAllActivity(activityPage+1)}>Next</button>
+                  <button className="btn btn-secondary me-2" disabled={activityPage === 1} onClick={()=>fetchAllActivity(activityPage-1)}>{t('admin.previous')}</button>
+                  <button className="btn btn-secondary" disabled={activityPage >= Math.ceil(activityTotal / activityPerPage)} onClick={()=>fetchAllActivity(activityPage+1)}>{t('admin.next')}</button>
                 </div>
               </div>
             </div>

@@ -314,13 +314,18 @@
     },
     "already_account": "¿Ya tienes una cuenta?",
     "signin_link": "Iniciar sesión",
+    "success_organizer": "¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta antes de crear eventos.",
+    "success_attendee": "¡Registro exitoso! Por favor, revisa tu correo electrónico para verificar tu cuenta.",
     "errors": {
       "full_name_required": "El nombre completo es obligatorio.",
       "email_invalid": "Introduce una dirección de correo válida.",
       "password_length": "La contraseña debe tener al menos 8 caracteres.",
       "passwords_no_match": "Las contraseñas no coinciden.",
       "company_required": "El nombre de la empresa es obligatorio para organizadores.",
-      "phone_invalid": "Introduce un número de teléfono válido."
+      "phone_invalid": "Introduce un número de teléfono válido.",
+      "server_connection": "Error de conexión al servidor: el servidor backend parece estar caído. Por favor, inténtalo de nuevo más tarde o contacta con soporte.",
+      "email_taken": "Este correo electrónico ya está registrado. Por favor, intenta iniciar sesión.",
+      "registration_failed": "El registro ha fallado. Por favor, inténtalo de nuevo."
     }
   },
   "signin": {
@@ -519,5 +524,90 @@
     "saving": "Guardando...",
     "load_error": "Error al cargar los datos del evento.",
     "update_error": "Error al actualizar el evento."
+  },
+  "email_verification": {
+    "title": "Verifica tu dirección de correo electrónico",
+    "instructions": "Se ha enviado un enlace de verificación a tu correo electrónico. Por favor, revisa tu bandeja de entrada y haz clic en el enlace para activar tu cuenta.",
+    "resend_button": "Reenviar correo de verificación",
+    "resending": "Reenviando...",
+    "resent_success": "¡Correo de verificación reenviado! Por favor, revisa tu bandeja de entrada.",
+    "resent_error": "No se pudo reenviar el correo de verificación. Por favor, inténtalo de nuevo más tarde."
+  },
+  "organizer_pricing": {
+    "title": "Precios para organizadores",
+    "basic_tier": "Nivel básico",
+    "basic_attendees": "Hasta 100 asistentes por evento",
+    "basic_support": "Soporte estándar",
+    "pro_tier": "Nivel Pro",
+    "pro_attendees": "Asistentes ilimitados",
+    "pro_support": "Soporte prioritario",
+    "pro_analytics": "Análisis y reportes avanzados"
+  },
+  "admin_user_management": {
+    "title": "Gestión de usuarios y empresas",
+    "search_placeholder": "Buscar por nombre, correo electrónico o rol...",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "role": "Rol",
+    "actions": "Acciones",
+    "no_users": "No se encontraron usuarios.",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "edit_user": "Editar usuario",
+    "all_fields_required": "Todos los campos son obligatorios.",
+    "user_deleted": "Usuario eliminado con éxito.",
+    "user_updated": "Usuario actualizado con éxito.",
+    "failed_load": "Error al cargar los usuarios.",
+    "failed_delete": "Error al eliminar el usuario.",
+    "failed_update": "Error al actualizar el usuario.",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "processing": "Procesando..."
+  },
+  "admin_event_approvals": {
+    "title": "Aprobaciones de eventos pendientes",
+    "event_title": "Título",
+    "organizer": "Organizador",
+    "date": "Fecha",
+    "actions": "Acciones",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "failed_load": "Error al cargar los eventos."
+  },
+  "attendance_report": {
+    "title": "Informe de asistencia",
+    "export_csv": "Exportar CSV",
+    "failed_load": "Error al cargar el informe de asistencia."
+  },
+  "event_summary_report": {
+    "title": "Informe resumen de eventos",
+    "export_csv": "Exportar CSV",
+    "failed_load": "Error al cargar el informe resumen de eventos."
+  },
+  "event_feedback_report": {
+    "title": "Informe de retroalimentación de eventos",
+    "export_csv": "Exportar CSV",
+    "failed_load": "Error al cargar el informe de retroalimentación de eventos."
+  },
+  "user_activity_report": {
+    "title": "Informe de actividad del usuario",
+    "export_csv": "Exportar CSV",
+    "failed_load": "Error al cargar el informe de actividad del usuario."
+  },
+  "top_attendees_report": {
+    "title": "Informe de los mejores asistentes",
+    "export_csv": "Exportar CSV",
+    "failed_load": "Error al cargar el informe de los mejores asistentes."
+  },
+  "tickets_sold_report": {
+    "title": "Informe de boletos vendidos",
+    "export_csv": "Exportar CSV",
+    "failed_load": "Error al cargar el informe de boletos vendidos."
+  },
+  "revenue_report": {
+    "title": "Informe de ingresos",
+    "export_csv": "Exportar CSV",
+    "failed_load": "Error al cargar el informe de ingresos."
   }
 }

@@ -314,13 +314,18 @@
     },
     "already_account": "Hai già un account?",
     "signin_link": "Accedi",
+    "success_organizer": "Registrazione avvenuta con successo! Controlla la tua email per verificare il tuo account prima di creare eventi.",
+    "success_attendee": "Registrazione avvenuta con successo! Controlla la tua email per verificare il tuo account.",
     "errors": {
       "full_name_required": "Il nome completo è obbligatorio.",
       "email_invalid": "Inserisci un indirizzo email valido.",
       "password_length": "La password deve contenere almeno 8 caratteri.",
       "passwords_no_match": "Le password non corrispondono.",
       "company_required": "Il nome azienda è obbligatorio per gli organizzatori.",
-      "phone_invalid": "Inserisci un numero di telefono valido."
+      "phone_invalid": "Inserisci un numero di telefono valido.",
+      "server_connection": "Errore di connessione al server: il backend sembra non essere disponibile. Riprova più tardi o contatta il supporto.",
+      "email_taken": "Questa email è già registrata. Prova ad accedere invece.",
+      "registration_failed": "Registrazione non riuscita. Riprova."
     }
   },
   "signin": {
@@ -519,5 +524,90 @@
     "saving": "Salvataggio...",
     "load_error": "Errore nel caricamento dei dati dell'evento.",
     "update_error": "Errore nell'aggiornamento dell'evento."
+  },
+  "email_verification": {
+    "title": "Verifica il tuo indirizzo email",
+    "instructions": "Un link di verifica è stato inviato alla tua email. Controlla la posta in arrivo e clicca sul link per attivare il tuo account.",
+    "resend_button": "Invia nuovamente l'email di verifica",
+    "resending": "Invio in corso...",
+    "resent_success": "Email di verifica inviata nuovamente! Controlla la tua posta in arrivo.",
+    "resent_error": "Impossibile inviare nuovamente l'email di verifica. Riprova più tardi."
+  },
+  "organizer_pricing": {
+    "title": "Prezzi per organizzatori",
+    "basic_tier": "Piano base",
+    "basic_attendees": "Fino a 100 partecipanti per evento",
+    "basic_support": "Supporto standard",
+    "pro_tier": "Piano Pro",
+    "pro_attendees": "Partecipanti illimitati",
+    "pro_support": "Supporto prioritario",
+    "pro_analytics": "Analisi e report avanzati"
+  },
+  "admin_user_management": {
+    "title": "Gestione utenti e aziende",
+    "search_placeholder": "Cerca per nome, email o ruolo...",
+    "name": "Nome",
+    "email": "Email",
+    "role": "Ruolo",
+    "actions": "Azioni",
+    "no_users": "Nessun utente trovato.",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "edit_user": "Modifica utente",
+    "all_fields_required": "Tutti i campi sono obbligatori.",
+    "user_deleted": "Utente eliminato con successo.",
+    "user_updated": "Utente aggiornato con successo.",
+    "failed_load": "Impossibile caricare gli utenti.",
+    "failed_delete": "Impossibile eliminare l'utente.",
+    "failed_update": "Impossibile aggiornare l'utente.",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "saving": "Salvataggio...",
+    "processing": "Elaborazione..."
+  },
+  "admin_event_approvals": {
+    "title": "Approvazioni eventi in sospeso",
+    "event_title": "Titolo",
+    "organizer": "Organizzatore",
+    "date": "Data",
+    "actions": "Azioni",
+    "approve": "Approva",
+    "reject": "Rifiuta",
+    "failed_load": "Impossibile caricare gli eventi."
+  },
+  "attendance_report": {
+    "title": "Report di presenza",
+    "export_csv": "Esporta CSV",
+    "failed_load": "Impossibile caricare il report di presenza."
+  },
+  "event_summary_report": {
+    "title": "Report riepilogativo eventi",
+    "export_csv": "Esporta CSV",
+    "failed_load": "Impossibile caricare il report riepilogativo eventi."
+  },
+  "event_feedback_report": {
+    "title": "Report feedback evento",
+    "export_csv": "Esporta CSV",
+    "failed_load": "Impossibile caricare il report feedback evento."
+  },
+  "user_activity_report": {
+    "title": "Report attività utente",
+    "export_csv": "Esporta CSV",
+    "failed_load": "Impossibile caricare il report attività utente."
+  },
+  "top_attendees_report": {
+    "title": "Report migliori partecipanti",
+    "export_csv": "Esporta CSV",
+    "failed_load": "Impossibile caricare il report migliori partecipanti."
+  },
+  "tickets_sold_report": {
+    "title": "Report biglietti venduti",
+    "export_csv": "Esporta CSV",
+    "failed_load": "Impossibile caricare il report biglietti venduti."
+  },
+  "revenue_report": {
+    "title": "Report entrate",
+    "export_csv": "Esporta CSV",
+    "failed_load": "Impossibile caricare il report entrate."
   }
 }

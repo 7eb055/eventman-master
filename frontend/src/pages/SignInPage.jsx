@@ -11,6 +11,10 @@ const SignIn = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState(''); // To display login errors
   const [loading, setLoading] = useState(false); // To handle loading state
+  const [show2FA, setShow2FA] = useState(false);
+  const [twoFAUserId, setTwoFAUserId] = useState(null);
+  const [twoFACode, setTwoFACode] = useState('');
+  const [twoFAError, setTwoFAError] = useState('');
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -22,7 +26,12 @@ const SignIn = () => {
     try {
       // Actually call the backend API to log in
       const userData = await login({ email, password });
-      
+      if (userData['2fa_required']) {
+        setShow2FA(true);
+        setTwoFAUserId(userData.user_id);
+        setLoading(false);
+        return;
+      }
       // If login is successful, redirect to a protected page
       // Redirect based on the user's role
       let redirectPath = '/';
@@ -39,6 +48,39 @@ const SignIn = () => {
       // If login fails, display an error message
       setError(t('signin.errors.invalid_login'));
       console.error('Login failed:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 2FA submit handler
+  const handle2FASubmit = async (e) => {
+    e.preventDefault();
+    setTwoFAError('');
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:8000/api/2fa/login-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ user_id: twoFAUserId, code: twoFACode })
+      });
+      if (!res.ok) {
+        const errData = await res.json();
+        setTwoFAError(errData.message || 'Invalid 2FA code.');
+        setLoading(false);
+        return;
+      }
+      const data = await res.json();
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      // Redirect as usual
+      let redirectPath = '/';
+      if (data.user.role === 'organizer') redirectPath = '/organizer-dashboard';
+      else if (data.user.role === 'attendee') redirectPath = '/attendee-dashboard';
+      else if (data.user.role === 'admin') redirectPath = '/admin-panel';
+      window.location.replace(redirectPath);
+    } catch (err) {
+      setTwoFAError('Network error.');
     } finally {
       setLoading(false);
     }
@@ -138,6 +180,36 @@ const SignIn = () => {
             {t('signin.no_account')} <Link to="/sign-up">{t('signin.signup_link')}</Link>
           </div>
         </form>
+        {show2FA && (
+          <div className="modal show" style={{ display: 'block', background: 'rgba(0,0,0,0.5)' }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Two-Factor Authentication</h5>
+                </div>
+                <form onSubmit={handle2FASubmit}>
+                  <div className="modal-body">
+                    <p>Please enter the 6-digit code from your authenticator app.</p>
+                    <input
+                      type="text"
+                      className="form-control mb-2"
+                      value={twoFACode}
+                      onChange={e => setTwoFACode(e.target.value)}
+                      maxLength={6}
+                      required
+                    />
+                    {twoFAError && <div className="alert alert-danger mt-2">{twoFAError}</div>}
+                  </div>
+                  <div className="modal-footer">
+                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                      {loading ? 'Verifying...' : 'Verify'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="signin-graphics">
         <div className="circle circle-1"></div>

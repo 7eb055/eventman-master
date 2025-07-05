@@ -315,13 +315,18 @@
     },
     "already_account": "Already have an account?",
     "signin_link": "Sign in",
+    "success_organizer": "Registration successful! Please check your email to verify your account before creating events.",
+    "success_attendee": "Registration successful! Please check your email to verify your account.",
     "errors": {
       "full_name_required": "Full name is required.",
       "email_invalid": "Enter a valid email address.",
       "password_length": "Password must be at least 8 characters.",
       "passwords_no_match": "Passwords do not match.",
       "company_required": "Company name is required for organizers.",
-      "phone_invalid": "Enter a valid phone number."
+      "phone_invalid": "Enter a valid phone number.",
+      "server_connection": "Server connection error: The backend server appears to be down. Please try again later or contact support.",
+      "email_taken": "This email is already registered. Please try logging in instead.",
+      "registration_failed": "Registration failed. Please try again."
     }
   },
   "signin": {
@@ -502,5 +507,90 @@
     "saving": "Saving...",
     "load_error": "Failed to load event data.",
     "update_error": "Failed to update event."
+  },
+  "email_verification": {
+    "title": "Verify Your Email Address",
+    "instructions": "A verification link has been sent to your email. Please check your inbox and click the link to activate your account.",
+    "resend_button": "Resend Verification Email",
+    "resending": "Resending...",
+    "resent_success": "Verification email resent! Please check your inbox.",
+    "resent_error": "Failed to resend verification email. Please try again later."
+  },
+  "organizer_pricing": {
+    "title": "Organizer Pricing",
+    "basic_tier": "Basic Tier",
+    "basic_attendees": "Up to 100 attendees per event",
+    "basic_support": "Standard support",
+    "pro_tier": "Pro Tier",
+    "pro_attendees": "Unlimited attendees",
+    "pro_support": "Priority support",
+    "pro_analytics": "Advanced analytics and reporting"
+  },
+  "admin_user_management": {
+    "title": "User & Company Management",
+    "search_placeholder": "Search by name, email, or role...",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "actions": "Actions",
+    "no_users": "No users found.",
+    "edit": "Edit",
+    "delete": "Delete",
+    "edit_user": "Edit User",
+    "all_fields_required": "All fields are required.",
+    "user_deleted": "User deleted successfully.",
+    "user_updated": "User updated successfully.",
+    "failed_load": "Failed to load users.",
+    "failed_delete": "Failed to delete user.",
+    "failed_update": "Failed to update user.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "processing": "Processing..."
+  },
+  "admin_event_approvals": {
+    "title": "Pending Event Approvals",
+    "event_title": "Title",
+    "organizer": "Organizer",
+    "date": "Date",
+    "actions": "Actions",
+    "approve": "Approve",
+    "reject": "Reject",
+    "failed_load": "Failed to load events."
+  },
+  "attendance_report": {
+    "title": "Attendance Report",
+    "export_csv": "Export CSV",
+    "failed_load": "Failed to load attendance report."
+  },
+  "event_summary_report": {
+    "title": "Event Summary Report",
+    "export_csv": "Export CSV",
+    "failed_load": "Failed to load event summary report."
+  },
+  "event_feedback_report": {
+    "title": "Event Feedback Report",
+    "export_csv": "Export CSV",
+    "failed_load": "Failed to load event feedback report."
+  },
+  "user_activity_report": {
+    "title": "User Activity Report",
+    "export_csv": "Export CSV",
+    "failed_load": "Failed to load user activity report."
+  },
+  "top_attendees_report": {
+    "title": "Top Attendees Report",
+    "export_csv": "Export CSV",
+    "failed_load": "Failed to load top attendees report."
+  },
+  "tickets_sold_report": {
+    "title": "Tickets Sold Report",
+    "export_csv": "Export CSV",
+    "failed_load": "Failed to load tickets sold report."
+  },
+  "revenue_report": {
+    "title": "Revenue Report",
+    "export_csv": "Export CSV",
+    "failed_load": "Failed to load revenue report."
   }
 }

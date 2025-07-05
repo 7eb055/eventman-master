@@ -159,6 +159,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/events/{event}/feedback', [FeedbackController::class, 'index']); // all feedback for event
     Route::get('/events/{event}/feedback/me', [FeedbackController::class, 'myFeedback']); // current user's feedback
     Route::post('/events/{event}/feedback', [FeedbackController::class, 'store']); // create/update feedback
+
+    // 2FA routes
+    Route::post('/2fa/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable']);
+    Route::post('/2fa/verify', [\App\Http\Controllers\TwoFactorController::class, 'verify']);
+    Route::post('/2fa/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable']);
+    Route::get('/2fa/status', [\App\Http\Controllers\TwoFactorController::class, 'status']);
+    Route::post('/2fa/login-verify', [\App\Http\Controllers\TwoFactorLoginController::class, 'verify']);
 });
 
 // Webhook route (exclude CSRF protection)

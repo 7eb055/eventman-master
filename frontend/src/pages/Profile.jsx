@@ -20,6 +20,16 @@ const Profile = () => {
   const [profileSuccess, setProfileSuccess] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
 
+  // 2FA state
+  const [twoFAStatus, setTwoFAStatus] = useState(null);
+  const [twoFASecret, setTwoFASecret] = useState('');
+  const [twoFAQr, setTwoFAQr] = useState('');
+  const [twoFAEnabled, setTwoFAEnabled] = useState(false);
+  const [twoFACode, setTwoFACode] = useState('');
+  const [twoFAError, setTwoFAError] = useState('');
+  const [twoFASuccess, setTwoFASuccess] = useState('');
+  const [twoFAStage, setTwoFAStage] = useState('idle'); // idle | setup | verify
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -33,6 +43,16 @@ const Profile = () => {
     };
     fetchUser();
   }, []);
+
+  // Fetch 2FA status on mount
+  useEffect(() => {
+    if (activeTab === 'security') {
+      api.get('/2fa/status').then(res => {
+        setTwoFAEnabled(res.data.enabled);
+        setTwoFAStatus(res.data.enabled ? 'enabled' : 'disabled');
+      });
+    }
+  }, [activeTab]);
 
   // Inline styles for gradients and other custom effects
   const styles = {
@@ -165,6 +185,42 @@ const Profile = () => {
       toast.error(t('profile.errors.notifications'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 2FA handlers
+  const handleEnable2FA = async () => {
+    setTwoFAError(''); setTwoFASuccess('');
+    try {
+      const res = await api.post('/2fa/enable');
+      setTwoFASecret(res.data.secret);
+      setTwoFAQr(res.data.qr_url);
+      setTwoFAStage('setup');
+    } catch (err) {
+      setTwoFAError('Failed to start 2FA setup.');
+    }
+  };
+  const handleVerify2FA = async (e) => {
+    e.preventDefault();
+    setTwoFAError(''); setTwoFASuccess('');
+    try {
+      await api.post('/2fa/verify', { code: twoFACode });
+      setTwoFASuccess('Two-factor authentication enabled!');
+      setTwoFAStage('idle');
+      setTwoFAEnabled(true);
+    } catch (err) {
+      setTwoFAError('Invalid code. Please try again.');
+    }
+  };
+  const handleDisable2FA = async () => {
+    setTwoFAError(''); setTwoFASuccess('');
+    try {
+      await api.post('/2fa/disable');
+      setTwoFASuccess('Two-factor authentication disabled.');
+      setTwoFAEnabled(false);
+      setTwoFAStage('idle');
+    } catch (err) {
+      setTwoFAError('Failed to disable 2FA.');
     }
   };
 
@@ -413,6 +469,7 @@ const Profile = () => {
                 
                 {/* Security Tab */}
                 {activeTab === 'security' && (
+                  <>
                   <form onSubmit={handlePasswordChange}>
                     <div className="mb-4">
                       <h5 className="fw-bold mb-3 d-flex align-items-center">
@@ -455,6 +512,36 @@ const Profile = () => {
                       </button>
                     </div>
                   </form>
+
+                  {/* 2FA Section */}
+                  <div className="mb-4 mt-5">
+                    <h5 className="fw-bold mb-3 d-flex align-items-center">
+                      <i className="bi bi-shield-check text-success me-2"></i>Two-Factor Authentication (2FA)
+                    </h5>
+                    {twoFASuccess && <div className="alert alert-success">{twoFASuccess}</div>}
+                    {twoFAError && <div className="alert alert-danger">{twoFAError}</div>}
+                    <div className="mb-3">
+                      <span className={`badge ${twoFAEnabled ? 'bg-success' : 'bg-secondary'}`}>{twoFAEnabled ? 'Enabled' : 'Disabled'}</span>
+                    </div>
+                    {twoFAStage === 'idle' && !twoFAEnabled && (
+                      <button className="btn btn-outline-primary" onClick={handleEnable2FA} type="button">Enable 2FA</button>
+                    )}
+                    {twoFAStage === 'idle' && twoFAEnabled && (
+                      <button className="btn btn-outline-danger" onClick={handleDisable2FA} type="button">Disable 2FA</button>
+                    )}
+                    {twoFAStage === 'setup' && (
+                      <div className="mt-3">
+                        <p>Scan this QR code with Google Authenticator or a compatible app:</p>
+                        <img src={twoFAQr} alt="2FA QR Code" style={{ width: 200 }} />
+                        <form className="mt-3" onSubmit={handleVerify2FA}>
+                          <label className="form-label">Enter the 6-digit code from your app:</label>
+                          <input type="text" className="form-control mb-2" value={twoFACode} onChange={e => setTwoFACode(e.target.value)} maxLength={6} required />
+                          <button className="btn btn-success" type="submit">Verify & Enable 2FA</button>
+                        </form>
+                      </div>
+                    )}
+                  </div>
+                  </>
                 )}
                 
                 {/* Notifications Tab */}

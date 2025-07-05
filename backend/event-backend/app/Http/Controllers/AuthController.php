@@ -70,6 +70,16 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
+        // 2FA check
+        if ($user->google2fa_enabled) {
+            // Do not issue token yet, require 2FA code
+            // Store user ID in session or return a temp token (stateless: return user_id)
+            return response()->json([
+                '2fa_required' => true,
+                'user_id' => $user->id,
+            ]);
+        }
+
         // Revoke previous tokens (optional, for security)
         $user->tokens()->delete();
 

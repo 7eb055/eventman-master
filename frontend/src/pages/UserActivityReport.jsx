@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import { useTranslation } from 'react-i18next';
 
 const UserActivityReport = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -12,13 +14,13 @@ const UserActivityReport = () => {
         const res = await api.get('/reports/user-activity');
         setData(res.data);
       } catch (err) {
-        setError('Failed to load user activity report.');
+        setError(t('user_activity_report.failed_load'));
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [t]);
 
   const exportCSV = () => {
     if (!data.length) return;
@@ -35,13 +37,13 @@ const UserActivityReport = () => {
     URL.revokeObjectURL(url);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t('common.loading')}</div>;
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
     <div className="container py-4">
-      <h2>User Activity Report</h2>
-      <button className="btn btn-outline-primary mb-3" onClick={exportCSV}>Export CSV</button>
+      <h2>{t('user_activity_report.title')}</h2>
+      <button className="btn btn-outline-primary mb-3" onClick={exportCSV}>{t('user_activity_report.export_csv')}</button>
       <div className="table-responsive">
         <table className="table table-bordered">
           <thead>

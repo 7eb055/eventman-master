@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
+import { useTranslation } from 'react-i18next';
 
 const TopAttendeesReport = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -12,13 +14,13 @@ const TopAttendeesReport = () => {
         const res = await api.get('/reports/top-attendees');
         setData(res.data);
       } catch (err) {
-        setError('Failed to load top attendees report.');
+        setError(t('top_attendees_report.failed_load'));
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [t]);
 
   const exportCSV = () => {
     if (!data.length) return;
@@ -35,13 +37,13 @@ const TopAttendeesReport = () => {
     URL.revokeObjectURL(url);
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>{t('common.loading')}</div>;
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
     <div className="container py-4">
-      <h2>Top Attendees Report</h2>
-      <button className="btn btn-outline-primary mb-3" onClick={exportCSV}>Export CSV</button>
+      <h2>{t('top_attendees_report.title')}</h2>
+      <button className="btn btn-outline-primary mb-3" onClick={exportCSV}>{t('top_attendees_report.export_csv')}</button>
       <div className="table-responsive">
         <table className="table table-bordered">
           <thead>
